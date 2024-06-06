@@ -120,6 +120,7 @@ model ReferralHistory {
 
   referrer User @relation(fields: [referrerId], references: [id], name: "referrer")
   referred User @relation(fields: [referredId], references: [id], name: "referred")
+  @@map("referral_histories")
 }
 
 model Employee {
