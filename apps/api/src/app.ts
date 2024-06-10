@@ -5,11 +5,11 @@ import express, {
   Request,
   Response,
   NextFunction,
-  Router,
 } from 'express';
 import cors from 'cors';
 import { PORT } from './config';
 import { SampleRouter } from './routers/sample.router';
+import { AuthRouter } from './routers/auth.router';
 
 export default class App {
   private app: Express;
@@ -52,12 +52,14 @@ export default class App {
 
   private routes(): void {
     const sampleRouter = new SampleRouter();
+    const authRouter = new AuthRouter();
 
-    this.app.get('/', (req: Request, res: Response) => {
-      res.send(`Hello, Purwadhika Student !`);
+    this.app.get('/api', (req: Request, res: Response) => {
+      res.send(`Welcome to belanja.in API !`);
     });
 
     this.app.use('/samples', sampleRouter.getRouter());
+    this.app.use('/api/auth', authRouter.getRouter());
   }
 
   public start(): void {

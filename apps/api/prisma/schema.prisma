@@ -94,15 +94,16 @@ model User {
   role       Role     @default(USER)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  addressId  Int
+  addressId  Int?
+  avatarUrl  String?
 
-  addresses    Address           @relation(fields: [addressId], references: [id])
-  employee     Employee?
-  Order        Order[]
-  userDiscount userDiscount[]
-  UserVoucher  UserVoucher[]
-  referrer     ReferralHistory[] @relation(name: "referrer")
-  referred     ReferralHistory[] @relation(name: "referred")
+  addresses            Address?               @relation(fields: [addressId], references: [id])
+  employee             Employee?
+  Order                Order[]
+  userDiscount         userDiscount[]
+  UserVoucher          UserVoucher[]
+  referrer             ReferralHistory[]      @relation(name: "referrer")
+  referred             ReferralHistory[]      @relation(name: "referred")
 
   @@map("users")
 }
@@ -120,6 +121,8 @@ model ReferralHistory {
 
   referrer User @relation(fields: [referrerId], references: [id], name: "referrer")
   referred User @relation(fields: [referredId], references: [id], name: "referred")
+
+  @@map("referral_histories")
 }
 
 model Employee {

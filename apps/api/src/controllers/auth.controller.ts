@@ -1,0 +1,65 @@
+import { getUserService } from '@/services/auth/get-user.service';
+import { loginWithGoogleService } from '@/services/auth/login-google.service';
+import { loginService } from '@/services/auth/login.service';
+import { registerService } from '@/services/auth/register.service';
+import { verifyService } from '@/services/auth/verify.service';
+import { NextFunction, Request, Response } from 'express';
+
+export class AuthController {
+  async registerController(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await registerService(req.body);
+
+      res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async loginController(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await loginService(req.body);
+
+      res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async verifyController(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = Number(req.body.user.id);
+      const password = req.body.password;
+      const result = await verifyService(userId, password);
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async loginWithGoogleController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const result = await loginWithGoogleService(req.body);
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getUserController(req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = req.params.id;
+      const result = await getUserService(Number(id));
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+}
