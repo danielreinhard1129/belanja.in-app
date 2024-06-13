@@ -25,8 +25,8 @@ const useLogin = () => {
         payload,
       );
 
-      dispatch(loginAction(data.data));
-      localStorage.setItem("token", data.token);
+      dispatch(loginAction({ user: data.data, token: data.token }));
+      localStorage.setItem("Authorization", `Bearer ${data.token}`);
       if (data.data.role === "USER") {
         router.push("/");
       }

@@ -1,9 +1,11 @@
+import { sendChangePasswordService } from '@/services/auth/send-change-password.service';
 import { getUserService } from '@/services/auth/get-user.service';
 import { loginWithGoogleService } from '@/services/auth/login-google.service';
 import { loginService } from '@/services/auth/login.service';
 import { registerService } from '@/services/auth/register.service';
 import { verifyService } from '@/services/auth/verify.service';
 import { NextFunction, Request, Response } from 'express';
+import { changePasswordService } from '@/services/auth/change-password.service';
 
 export class AuthController {
   async registerController(req: Request, res: Response, next: NextFunction) {
@@ -56,6 +58,37 @@ export class AuthController {
     try {
       const id = req.params.id;
       const result = await getUserService(Number(id));
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async sendChangePasswordController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const userId = Number(req.body.user.id);
+      const result = await sendChangePasswordService(userId);
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async changePasswordController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const userId = Number(req.body.user.id);
+      const password = req.body.password;
+      const result = await changePasswordService(userId, password);
 
       return res.status(200).send(result);
     } catch (error) {

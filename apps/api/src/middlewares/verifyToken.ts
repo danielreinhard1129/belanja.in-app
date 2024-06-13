@@ -30,7 +30,7 @@ export const verifyToken = (
   verify(token, secretKey, (err, payload) => {
     if (err) {
       if (err instanceof TokenExpiredError) {
-        return res.status(401).send({ message: 'token expired' });
+        return res.status(401).send({ message: 'token expired', token });
       } else {
         return res.status(401).send({ message: 'invalid token' });
       }

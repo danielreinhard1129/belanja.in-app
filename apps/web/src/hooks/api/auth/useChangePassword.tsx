@@ -1,21 +1,30 @@
+"use client";
+
 import { axiosInstance } from "@/lib/axios";
 import { AxiosError } from "axios";
+import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-interface IVerifyResponse {
+interface IChangePasswordResponse {
   message: string;
 }
 
-const useVerify = () => {
+interface DecodedToken {
+  id: number;
+  iat: number;
+  exp: number;
+}
+
+const useChangePassword = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
-  const verify = async (password: string, token: string) => {
+  const changePassword = async (password: string, token: string) => {
     try {
       setIsLoading(true);
-      const { data } = await axiosInstance.patch<IVerifyResponse>(
-        "/auth/verify",
+      const { data } = await axiosInstance.patch<IChangePasswordResponse>(
+        "/auth/change-password",
         { password },
         {
           headers: {
@@ -25,10 +34,10 @@ const useVerify = () => {
       );
 
       console.log(data.message);
+      const decode = jwtDecode<DecodedToken>(token);
 
-      router.replace("/login");
+      router.replace(`/user/${decode.id}`);
     } catch (error) {
-      console.log(error);
       if (error instanceof AxiosError) {
         console.log(error?.response?.data);
       }
@@ -36,8 +45,7 @@ const useVerify = () => {
       setIsLoading(false);
     }
   };
-
-  return { verify, isLoading };
+  return { changePassword, isLoading };
 };
 
-export default useVerify;
+export default useChangePassword;

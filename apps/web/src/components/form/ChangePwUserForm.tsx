@@ -15,8 +15,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { notFound, useSearchParams } from "next/navigation";
-import useVerify from "@/hooks/api/auth/useVerify";
 import { Loader2 } from "lucide-react";
+import useChangePassword from "@/hooks/api/auth/useChangePassword";
 
 const FormSchema = z
   .object({
@@ -36,7 +36,7 @@ const FormSchema = z
 
 type FormData = z.infer<typeof FormSchema>;
 
-const VerifyForm = () => {
+const ChangePwUserForm = () => {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
@@ -52,10 +52,10 @@ const VerifyForm = () => {
     },
   });
 
-  const { isLoading, verify } = useVerify();
+  const { changePassword, isLoading } = useChangePassword();
 
   const onSubmit = (data: FormData) => {
-    verify(data.password, token);
+    changePassword(data.password, token);
   };
 
   return (
@@ -108,4 +108,4 @@ const VerifyForm = () => {
   );
 };
 
-export default VerifyForm;
+export default ChangePwUserForm;

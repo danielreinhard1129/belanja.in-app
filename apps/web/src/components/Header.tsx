@@ -9,11 +9,23 @@ import logo from "../../public/belanjainlogotransparent.svg";
 import { Separator } from "./ui/separator";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { useRouter } from "next/navigation";
+import { logoutAction } from "@/redux/slices/userSlice";
+import useGoogleAuth from "@/hooks/api/auth/useGoogleAuth";
 
 export const Header = () => {
-  const dispatch = useAppDispatch();
   const router = useRouter();
-  const { id, name, role } = useAppSelector((state) => state.user);
+  const { id, name, role, avatarUrl, provider } = useAppSelector(
+    (state) => state.user,
+  );
+  const dispatch = useAppDispatch();
+  const { logout } = useGoogleAuth();
+
+  const userLogout = () => {
+    localStorage.removeItem("token");
+    dispatch(logoutAction());
+    router.push("/");
+  };
+
   return (
     <nav>
       <div className="container m-0 mx-auto flex h-20 items-center justify-between px-4 py-2 md:px-[120px]">
@@ -48,21 +60,79 @@ export const Header = () => {
               <ShoppingCart size="20px" color="#7c7c7c" />
             </Button>
           </div>
-          <div className="hidden gap-2 md:flex">
-            <Button
-              variant="link"
-              className="px-4 py-2"
-              onClick={() => router.push("/login")}
-            >
-              Login
-            </Button>
-            <Button variant="default" className="px-4 py-2" onClick={() => router.push("/register")}>
-              Register
-            </Button>
-          </div>
-          <div className="flex md:hidden">
-            <Button variant="link">Login/Register</Button>
-          </div>
+          {Boolean(id) ? (
+            <div>
+              {role === "USER" ? (
+                <Button
+                  variant="link"
+                  className="px-4 py-2"
+                  onClick={() => router.push(`/user/${id}`)}
+                >
+                  {Boolean(avatarUrl) ? (
+                    <div className="flex">
+                      <Avatar>
+                        <AvatarImage
+                          src="https://github.com/shadcn.png"
+                          alt="pfp"
+                        />
+                        <AvatarFallback>{name.substring(0, 1)}</AvatarFallback>
+                      </Avatar>
+                      {name}
+                    </div>
+                  ) : (
+                    <p>{name}</p>
+                  )}
+                </Button>
+              ) : (
+                <Button
+                  variant="link"
+                  className="px-4 py-2"
+                  onClick={() => router.push("/dashboard")}
+                >
+                  Dashboard
+                </Button>
+              )}
+              {provider === "GOOGLE" ? (
+                <Button
+                  variant="link"
+                  className="px-4 py-2"
+                  onClick={() => logout()}
+                >
+                  Logout
+                </Button>
+              ) : (
+                <Button
+                  variant="link"
+                  className="px-4 py-2"
+                  onClick={() => userLogout()}
+                >
+                  Logout
+                </Button>
+              )}
+            </div>
+          ) : (
+            <div>
+              <div className="hidden gap-2 md:flex">
+                <Button
+                  variant="link"
+                  className="px-4 py-2"
+                  onClick={() => router.push("/login")}
+                >
+                  Login
+                </Button>
+                <Button
+                  variant="default"
+                  className="px-4 py-2"
+                  onClick={() => router.push("/register")}
+                >
+                  Register
+                </Button>
+              </div>
+              <div className="flex md:hidden">
+                <Button variant="link">Login/Register</Button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <Separator />

@@ -28,11 +28,12 @@ export const loginService = async (body: Pick<User, 'email' | 'password'>) => {
     const token = sign({ id: user.id }, appConfig.jwtSecretKey, {
       expiresIn: '2h',
     });
+    console.log(token);
 
     return {
       message: 'Login success',
       data: user,
-      token: token,
+      token,
     };
   } catch (error) {
     throw error;

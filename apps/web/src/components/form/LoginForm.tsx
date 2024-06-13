@@ -28,7 +28,7 @@ const FormSchema = z.object({
 });
 
 const LoginForm = () => {
-  const { logout, handleLoginSuccess } = useGoogleAuth();
+  const { handleLoginSuccess } = useGoogleAuth();
   const { login } = useLogin();
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -64,7 +64,11 @@ const LoginForm = () => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your password" {...field} />
+                    <Input
+                      type="password"
+                      placeholder="Enter your password"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -82,9 +86,6 @@ const LoginForm = () => {
           console.log("Login Failed");
         }}
       />
-      <Button onClick={() => logout()} className="px-4 py-2">
-        Logout
-      </Button>
     </div>
   );
 };

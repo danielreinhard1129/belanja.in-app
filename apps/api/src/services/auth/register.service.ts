@@ -23,8 +23,8 @@ export const registerService = async (body: Omit<User, 'id'>) => {
       },
     });
 
-    const token = sign({ id: newUser.id }, appConfig.jwtSecretKey, {
-      expiresIn: '1h',
+    const token = sign({ id: newUser.id || user!.id }, appConfig.jwtSecretKey, {
+      expiresIn: '30m'
     });
 
     const link = NEXT_BASE_URL + `/verification?token=${token}`;
@@ -38,6 +38,7 @@ export const registerService = async (body: Omit<User, 'id'>) => {
 
     return {
       message: 'Register success, please check your email',
+      token,
     };
   } catch (error) {
     throw error;

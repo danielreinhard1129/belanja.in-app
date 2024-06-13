@@ -25,6 +25,15 @@ export class AuthRouter {
       '/login/google',
       this.authController.loginWithGoogleController,
     );
+    this.router.post(
+      '/send-change-password',
+      this.authController.sendChangePasswordController,
+    );
+    this.router.patch(
+      '/change-password',
+      verifyToken,
+      this.authController.changePasswordController,
+    );
   }
 
   public getRouter(): Router {

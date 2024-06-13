@@ -96,14 +96,15 @@ model User {
   updatedAt  DateTime @updatedAt
   addressId  Int?
   avatarUrl  String?
+  provider   String?
 
-  addresses            Address?               @relation(fields: [addressId], references: [id])
-  employee             Employee?
-  Order                Order[]
-  userDiscount         userDiscount[]
-  UserVoucher          UserVoucher[]
-  referrer             ReferralHistory[]      @relation(name: "referrer")
-  referred             ReferralHistory[]      @relation(name: "referred")
+  addresses    Address?          @relation(fields: [addressId], references: [id])
+  employee     Employee?
+  Order        Order[]
+  userDiscount userDiscount[]
+  UserVoucher  UserVoucher[]
+  referrer     ReferralHistory[] @relation(name: "referrer")
+  referred     ReferralHistory[] @relation(name: "referred")
 
   @@map("users")
 }

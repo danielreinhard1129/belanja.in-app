@@ -10,4 +10,6 @@ export interface User {
   updatedAt: Date;
   addressId: number;
   avatarUrl?: string;
+  provider?: string;
+  token?: string;
 }
