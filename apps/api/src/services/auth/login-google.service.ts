@@ -6,7 +6,7 @@ import { sign } from 'jsonwebtoken';
 
 export const loginWithGoogleService = async (body: Omit<User, 'id'>) => {
   try {
-    const { email, name } = body;
+    const { email, name, avatarUrl } = body;
 
     let user = await prisma.user.findFirst({
       where: { email },
@@ -17,9 +17,11 @@ export const loginWithGoogleService = async (body: Omit<User, 'id'>) => {
     if (!user) {
       newUser = await prisma.user.create({
         data: {
-          ...body,
+          email,
+          avatarUrl,
           name: name,
           isVerified: true,
+          provider: 'GOOGLE',
         },
       });
 
@@ -31,9 +33,13 @@ export const loginWithGoogleService = async (body: Omit<User, 'id'>) => {
       });
     }
 
-    const token = sign({ id: newUser ? Number(newUser.id) : undefined }, appConfig.jwtSecretKey, {
-      expiresIn: '2h',
-    });
+    const token = sign(
+      { id: newUser ? Number(newUser.id) : undefined },
+      appConfig.jwtSecretKey,
+      {
+        expiresIn: '2h',
+      },
+    );
 
     return {
       message: 'Success login by google',

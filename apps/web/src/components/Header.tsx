@@ -61,7 +61,7 @@ export const Header = () => {
             </Button>
           </div>
           {Boolean(id) ? (
-            <div>
+            <div className="flex items-center">
               {role === "USER" ? (
                 <Button
                   variant="link"
@@ -69,15 +69,12 @@ export const Header = () => {
                   onClick={() => router.push(`/user/${id}`)}
                 >
                   {Boolean(avatarUrl) ? (
-                    <div className="flex">
+                    <div className="flex gap-2 items-center">
                       <Avatar>
-                        <AvatarImage
-                          src="https://github.com/shadcn.png"
-                          alt="pfp"
-                        />
+                        <AvatarImage src={avatarUrl} alt="pfp" />
                         <AvatarFallback>{name.substring(0, 1)}</AvatarFallback>
                       </Avatar>
-                      {name}
+                      <p>{name}</p>
                     </div>
                   ) : (
                     <p>{name}</p>

@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Input } from "../ui/input";
 import useLogin from "@/hooks/api/auth/useLogin";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
   email: z.string({
@@ -30,6 +31,7 @@ const FormSchema = z.object({
 const LoginForm = () => {
   const { handleLoginSuccess } = useGoogleAuth();
   const { login } = useLogin();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -86,6 +88,9 @@ const LoginForm = () => {
           console.log("Login Failed");
         }}
       />
+      <Button variant="link" onClick={() => router.push("/forgot-password")}>
+        Forgot Password?
+      </Button>
     </div>
   );
 };

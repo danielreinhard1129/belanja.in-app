@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { notFound, useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
-import useChangePassword from "@/hooks/api/auth/useChangePassword";
+import useResetPassword from "@/hooks/api/auth/useResetPassword";
 
 const FormSchema = z
   .object({
@@ -35,9 +35,10 @@ const FormSchema = z
 
 type FormData = z.infer<typeof FormSchema>;
 
-const ChangePwUserForm = () => {
+const ResetPasswordForm = () => {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
+  const { isLoading, resetPassword } = useResetPassword();
 
   if (!token) {
     notFound();
@@ -51,10 +52,8 @@ const ChangePwUserForm = () => {
     },
   });
 
-  const { changePassword, isLoading } = useChangePassword();
-
   const onSubmit = (data: FormData) => {
-    changePassword(data.password, token);
+    resetPassword(data.password, token);
   };
 
   return (
@@ -100,11 +99,11 @@ const ChangePwUserForm = () => {
           disabled={isLoading}
         >
           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {isLoading ? "Verifying" : "Complete Registration"}
+          {isLoading ? "Verifying" : "Submit"}
         </Button>
       </form>
     </Form>
   );
 };
 
-export default ChangePwUserForm;
+export default ResetPasswordForm;

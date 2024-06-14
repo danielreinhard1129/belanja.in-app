@@ -34,6 +34,15 @@ export class AuthRouter {
       verifyToken,
       this.authController.changePasswordController,
     );
+    this.router.post(
+      '/forgot-password',
+      this.authController.forgotPasswordController,
+    );
+    this.router.patch(
+      '/reset-password',
+      verifyToken,
+      this.authController.resetPasswordController,
+    );
   }
 
   public getRouter(): Router {

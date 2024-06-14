@@ -1,24 +1,39 @@
 "use client";
 
-import { useState } from "react";
 import { googleLogout } from "@react-oauth/google";
 import { axiosInstance } from "@/lib/axios";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { loginAction, logoutAction } from "@/redux/slices/userSlice";
 
 interface User {
   name: string;
   email: string;
+  picture: string;
 }
 
 const useGoogleAuth = () => {
-  const [user, setUser] = useState<User | null>(null);
+  const dispatch = useDispatch();
   const router = useRouter();
 
-  const login = async (email: string, name: string) => {
+  const googleLogin = async (
+    email: string,
+    name: string,
+    avatarUrl: string,
+  ) => {
     try {
-      await axiosInstance.post("/auth/login/google", { email, name });
-      router.push("/");
+      const { data } = await axiosInstance.post("/auth/login/google", {
+        email,
+        name,
+        avatarUrl,
+      });
+
+      dispatch(loginAction({ user: data.data, token: data.token }));
+      localStorage.setItem("Authorization", `Bearer ${data.token}`);
+      if (data.data.role === "USER") {
+        router.push("/");
+      }
     } catch (error) {
       alert(error);
     }
@@ -26,15 +41,17 @@ const useGoogleAuth = () => {
 
   const handleLoginSuccess = (credentialResponse: any) => {
     const decoded = jwtDecode(credentialResponse.credential as string) as User;
-    login(decoded.email, decoded.name);
+    googleLogin(decoded.email, decoded.name, decoded.picture);
   };
 
   const logout = () => {
     googleLogout();
-    setUser(null);
+    localStorage.removeItem("token");
+    dispatch(logoutAction());
+    router.push("/");
   };
 
-  return { logout, handleLoginSuccess };
+  return { logout, handleLoginSuccess, googleLogin };
 };
 
 export default useGoogleAuth;
