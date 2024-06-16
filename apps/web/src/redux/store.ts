@@ -1,15 +1,15 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import userReducer from "./slices/userSlice";
-import storage from "redux-persist/lib/storage";
-import { persistStore, persistReducer } from "redux-persist";
+import { configureStore, combineReducers, Action, Dispatch } from '@reduxjs/toolkit';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import userReducer from './slices/userSlice';
 
 const fingerprintName =
-  process.env.NEXT_PUBLIC_FINGERPRINT_NAME || "default_key";
+  process.env.NEXT_PUBLIC_FINGERPRINT_NAME || 'default_key';
 
 const persistConfig = {
   key: fingerprintName,
   storage,
-  whitelist: ["user"],
+  whitelist: ['user'],
 };
 
 const rootReducer = combineReducers({
@@ -17,30 +17,20 @@ const rootReducer = combineReducers({
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
+
 export const makeStore = () => {
-  return configureStore({
+  const store = configureStore({
     reducer: persistedReducer,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         serializableCheck: false,
       }),
   });
+  const persistor = persistStore(store);
+  return { store, persistor };
 };
 
-export const store = configureStore({
-  reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false,
-    }),
-});
+export const { store, persistor } = makeStore();
 
-export const persistor = persistStore(store);
-
-export type AppStore = ReturnType<typeof makeStore>;
-// export type RootState = ReturnType<AppStore["getState"]>;
-// export type AppDispatch = AppStore["dispatch"];
-
-// export type AppStore = ReturnType<typeof store.dispatch>;
 export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = AppStore["dispatch"];
+export type AppDispatch = Dispatch<Action>;

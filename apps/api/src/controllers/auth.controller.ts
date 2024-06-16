@@ -8,6 +8,7 @@ import { NextFunction, Request, Response } from 'express';
 import { changePasswordService } from '@/services/auth/change-password.service';
 import { forgotPasswordService } from '@/services/auth/forgot-password.service';
 import { resetPasswordService } from '@/services/auth/reset-password.service';
+import { updateUserDetailsService } from '@/services/auth/update-user-details.service';
 
 export class AuthController {
   async registerController(req: Request, res: Response, next: NextFunction) {
@@ -121,6 +122,21 @@ export class AuthController {
       const userId = Number(req.body.user.id);
       const password = req.body.password;
       const result = await resetPasswordService(userId, password);
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updateUserDetailsController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const userId = Number(req.params.id);
+      const result = await updateUserDetailsService(req.body, userId);
 
       return res.status(200).send(result);
     } catch (error) {

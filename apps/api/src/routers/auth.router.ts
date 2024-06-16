@@ -43,6 +43,11 @@ export class AuthRouter {
       verifyToken,
       this.authController.resetPasswordController,
     );
+    this.router.patch(
+      '/update-user-details/:id',
+      // verifyToken,
+      this.authController.updateUserDetailsController,
+    );
   }
 
   public getRouter(): Router {
