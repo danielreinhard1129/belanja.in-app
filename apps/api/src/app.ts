@@ -9,7 +9,11 @@ import express, {
 import cors from 'cors';
 import { PORT } from './config';
 import { SampleRouter } from './routers/sample.router';
+
+import { OrderRouter } from './routers/order.router';
+
 import { AuthRouter } from './routers/auth.router';
+
 
 export default class App {
   private app: Express;
@@ -52,14 +56,22 @@ export default class App {
 
   private routes(): void {
     const sampleRouter = new SampleRouter();
+
+    const orderRouter = new OrderRouter();
+
     const authRouter = new AuthRouter();
+
 
     this.app.get('/api', (req: Request, res: Response) => {
       res.send(`Welcome to belanja.in API !`);
     });
 
     this.app.use('/samples', sampleRouter.getRouter());
+
+    this.app.use('/api/orders', orderRouter.getRouter());
+
     this.app.use('/api/auth', authRouter.getRouter());
+
   }
 
   public start(): void {
