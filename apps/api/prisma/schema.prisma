@@ -85,18 +85,20 @@ model PostalCode {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   name       String
-  email      String   @unique
+  email      String    @unique
   password   String?
   isVerified Boolean?
-  referral   String?  @unique
-  role       Role     @default(USER)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  referral   String?   @unique
+  role       Role      @default(USER)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
   addressId  Int?
   avatarUrl  String?
   provider   String?
+  gender     String?
+  birthDate  DateTime?
 
   addresses    Address?          @relation(fields: [addressId], references: [id])
   employee     Employee?

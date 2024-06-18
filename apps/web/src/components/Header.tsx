@@ -8,22 +8,27 @@ import Image from "next/image";
 import logo from "../../public/belanjainlogotransparent.svg";
 import { Separator } from "./ui/separator";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { useRouter } from "next/navigation";
 import { logoutAction } from "@/redux/slices/userSlice";
 import useGoogleAuth from "@/hooks/api/auth/useGoogleAuth";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export const Header = () => {
   const router = useRouter();
-  const { id, name, role, avatarUrl, provider } = useAppSelector(
+  const { id, name, avatarUrl, role, provider } = useAppSelector(
     (state) => state.user,
   );
   const dispatch = useAppDispatch();
   const { logout } = useGoogleAuth();
 
-  const userLogout = () => {
-    localStorage.removeItem("token");
-    dispatch(logoutAction());
-    router.push("/");
+  const userLogout = async () => {
+    try {
+      localStorage.removeItem("token");
+      await dispatch(logoutAction());
+      router.push("/");
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
   };
 
   return (
@@ -69,7 +74,7 @@ export const Header = () => {
                   onClick={() => router.push(`/user/${id}`)}
                 >
                   {Boolean(avatarUrl) ? (
-                    <div className="flex gap-2 items-center">
+                    <div className="flex items-center gap-2">
                       <Avatar>
                         <AvatarImage src={avatarUrl} alt="pfp" />
                         <AvatarFallback>{name.substring(0, 1)}</AvatarFallback>
@@ -77,7 +82,16 @@ export const Header = () => {
                       <p>{name}</p>
                     </div>
                   ) : (
-                    <p>{name}</p>
+                    <div className="flex items-center gap-2">
+                      <Avatar>
+                        <AvatarImage
+                          src="https://github.com/shadcn.png"
+                          alt="@shadcn"
+                        />
+                        <AvatarFallback>CN</AvatarFallback>
+                      </Avatar>
+                      <p>{name}</p>
+                    </div>
                   )}
                 </Button>
               ) : (

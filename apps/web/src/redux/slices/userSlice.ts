@@ -1,10 +1,7 @@
 import { User } from "@/types/user.type";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-const initialState: Omit<
-  User,
-  "createdAt" | "updatedAt" | "isVerified" | "password" | "referral"
-> = {
+const initialState: User = {
   id: 0,
   name: "",
   email: "",
@@ -12,6 +9,14 @@ const initialState: Omit<
   role: "",
   provider: "",
   token: "",
+  birthDate: new Date(),
+  gender: "",
+  password: "",
+  isVerified: false,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  referral: "",
+  avatarUrl: undefined,
 };
 
 export const userSlice = createSlice({
@@ -26,13 +31,19 @@ export const userSlice = createSlice({
       Object.assign(state, user);
       state.token = token;
     },
+    setUser: (state, action: PayloadAction<User>) => {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
     logoutAction: (state) => {
       Object.assign(state, initialState);
     },
   },
 });
 
-export const { loginAction, logoutAction } = userSlice.actions;
+export const { loginAction, logoutAction, setUser } = userSlice.actions;
 
 const userReducer = userSlice.reducer;
 export default userReducer;
