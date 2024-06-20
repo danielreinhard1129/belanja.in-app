@@ -1,15 +1,16 @@
 import prisma from '@/prisma';
 import { User } from '@prisma/client';
+import { join } from 'path';
+import fs from 'fs';
+
+const defaultDir = '../../../public/images';
 
 export const updateUserDetailsService = async (
-  body: Pick<User, 'email' | 'name' | 'gender' | 'birthDate'>,
   userId: number,
+  body: Partial<Pick<User, 'email' | 'name' | 'gender' | 'birthDate' | 'avatarUrl'>>,
+  file?: Express.Multer.File,
 ) => {
   try {
-    const { email, name, gender, birthDate } = body;
-
-    console.log('Incoming body:', body);
-
     const user = await prisma.user.findFirst({
       where: { id: userId },
     });
@@ -18,33 +19,43 @@ export const updateUserDetailsService = async (
       throw new Error('User not found');
     }
 
-    if (email !== user.email) {
-      const userEmail = await prisma.user.findFirst({
-        where: { email: { equals: email } },
-      });
-      if (userEmail) {
-        throw new Error('Email already in use');
-      }
-    }
+    // if (body.email && body.email !== user.email) {
+    //   const userEmail = await prisma.user.findFirst({
+    //     where: { email: { equals: body.email } },
+    //   });
+    //   if (userEmail) {
+    //     throw new Error('Email already in use');
+    //   }
+    // }
 
-    const formattedBirthDate = birthDate ? new Date(birthDate) : null;
+    let avatarUrl = user.avatarUrl;
+
+    if (file) {
+      avatarUrl = `/images/${file.filename}`;
+      const imagePath = join(__dirname, '../../../public' + user.avatarUrl);
+    }
 
     const userDetails = await prisma.user.update({
       where: { id: userId },
       data: {
-        email,
-        name,
-        gender,
-        birthDate: formattedBirthDate,
+        ...body,
+        birthDate: body.birthDate ? new Date(body.birthDate) : undefined,
+        avatarUrl: file ? avatarUrl : user.avatarUrl,
       },
     });
 
     return {
-      message: 'update user details success',
+      message: 'Update user details success',
       data: userDetails,
     };
   } catch (error) {
-    console.error(error);
+    if (file) {
+      const imagePath = join(__dirname, defaultDir, file.filename);
+
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
+      }
+    }
     throw error;
   }
 };

@@ -3,14 +3,14 @@
 import { Button } from "@/components/ui/button";
 import useSendChangePassword from "@/hooks/api/auth/useSendChangePassword";
 import { useAppSelector } from "@/redux/hooks";
+import { appConfig } from "@/utils/config";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const UserDetail = () => {
-  const { id, name, avatarUrl, email, gender, birthDate } = useAppSelector(
-    (state) => state.user,
-  );
+  const { id, name, avatarUrl, email, gender, birthDate, provider } =
+    useAppSelector((state) => state.user);
   const router = useRouter();
 
   const {
@@ -29,7 +29,6 @@ const UserDetail = () => {
   const handleEditProfile = async () => {
     setIsLoading(true);
     try {
-      // Perform any asynchronous operations here, if needed
       router.push(`/user/${id}/edit-profile`);
     } catch (error) {
       console.error("Error during profile edit:", error);
@@ -41,13 +40,25 @@ const UserDetail = () => {
   return (
     <div>
       {avatarUrl ? (
-        <Image
-          src={String(avatarUrl)}
-          alt="pfp"
-          width={200}
-          height={200}
-          className="rounded-full"
-        />
+        <div>
+          {provider === "GOOGLE" ? (
+            <Image
+              src={avatarUrl}
+              alt="pfp"
+              width={200}
+              height={200}
+              className="rounded-full"
+            />
+          ) : (
+            <Image
+              src={`${appConfig.baseUrl}/assets${avatarUrl}`}
+              alt="pfp"
+              width={200}
+              height={200}
+              className="rounded-full"
+            />
+          )}
+        </div>
       ) : (
         <p>No profile picture</p>
       )}

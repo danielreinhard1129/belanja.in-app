@@ -135,8 +135,9 @@ export class AuthController {
     next: NextFunction,
   ) {
     try {
+      const files = req.files as Express.Multer.File[];
       const userId = Number(req.params.id);
-      const result = await updateUserDetailsService(req.body, userId);
+      const result = await updateUserDetailsService(userId, req.body, files[0]);
 
       return res.status(200).send(result);
     } catch (error) {

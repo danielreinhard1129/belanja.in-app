@@ -41,6 +41,7 @@ export const Header = () => {
             height={34}
             className="cursor-pointer"
             draggable={false}
+            onClick={() => router.push("/")}
           />
         </div>
         <div className="flex items-center gap-2 md:gap-6">

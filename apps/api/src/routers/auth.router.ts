@@ -1,4 +1,5 @@
 import { AuthController } from '@/controllers/auth.controller';
+import { uploader } from '@/libs/uploader';
 import { verifyToken } from '@/middlewares/verifyToken';
 import { Router } from 'express';
 
@@ -45,7 +46,7 @@ export class AuthRouter {
     );
     this.router.patch(
       '/update-user-details/:id',
-      // verifyToken,
+      uploader('IMG', '/images').array('avatarUrl', 1),
       this.authController.updateUserDetailsController,
     );
   }
