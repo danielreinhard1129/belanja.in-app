@@ -11,6 +11,7 @@ import cors from 'cors';
 import { join } from 'path';
 import { PORT } from './config';
 import { SampleRouter } from './routers/sample.router';
+import { AuthRouter } from './routers/auth.router';
 
 import { OrderRouter } from './routers/order.router';
 
@@ -58,6 +59,7 @@ export default class App {
 
   private routes(): void {
     const sampleRouter = new SampleRouter();
+    const authRouter = new AuthRouter();
 
     const orderRouter = new OrderRouter();
 

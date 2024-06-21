@@ -41,4 +41,3 @@ dist
 
 package-lock.json
 apps/web/.env
-apps/web/.env
