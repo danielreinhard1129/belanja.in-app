@@ -5,11 +5,16 @@ import express, {
   Request,
   Response,
   NextFunction,
-  Router,
+  static as static_,
 } from 'express';
 import cors from 'cors';
+import { join } from 'path';
 import { PORT } from './config';
 import { SampleRouter } from './routers/sample.router';
+
+import { OrderRouter } from './routers/order.router';
+
+import { AuthRouter } from './routers/auth.router';
 
 export default class App {
   private app: Express;
@@ -25,6 +30,7 @@ export default class App {
     this.app.use(cors());
     this.app.use(json());
     this.app.use(urlencoded({ extended: true }));
+    this.app.use('/api/assets', static_(join(__dirname, '../public')));
   }
 
   private handleError(): void {
@@ -53,11 +59,19 @@ export default class App {
   private routes(): void {
     const sampleRouter = new SampleRouter();
 
-    this.app.get('/', (req: Request, res: Response) => {
-      res.send(`Hello, Purwadhika Student !`);
+    const orderRouter = new OrderRouter();
+
+    const authRouter = new AuthRouter();
+
+    this.app.get('/api', (req: Request, res: Response) => {
+      res.send(`Welcome to belanja.in API !`);
     });
 
     this.app.use('/samples', sampleRouter.getRouter());
+
+    this.app.use('/api/orders', orderRouter.getRouter());
+
+    this.app.use('/api/auth', authRouter.getRouter());
   }
 
   public start(): void {
