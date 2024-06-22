@@ -1,7 +1,6 @@
 import { getStocksByStoreAdminService } from '@/services/store-product/get-stockByStoreAdmin.service';
 import { getStocksByStoreService } from '@/services/store-product/get-stockByStore.service';
 import { getStocksService } from '@/services/store-product/get-stocks.service';
-import { getStocksByStoreAdminOrSuperAdminService } from '@/services/store-product/get-stocksByStoreAdminOrSuperAdmin.service';
 import { NextFunction, Request, Response } from 'express';
 export class StoreProductController {
   async getStocks(req: Request, res: Response, next: NextFunction) {
@@ -15,21 +14,6 @@ export class StoreProductController {
         storeId: (req.query.storeId as string) || undefined,
       };
       const result = await getStocksService(req.body.user, query);
-
-      return res.status(200).send(result);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async getStocksByStoreAdminOrSuperAdmin(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
-    try {
-      const id = req.params.id;
-      const result = await getStocksByStoreAdminOrSuperAdminService(Number(id));
 
       return res.status(200).send(result);
     } catch (error) {

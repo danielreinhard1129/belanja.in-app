@@ -1,4 +1,3 @@
-import { getStoresByEmployeeOrAdminService } from '@/services/store/get-storesByEmployeeOrAdmin.service';
 import { getStoresService } from '@/services/store/get-stores.service';
 import { createStoreService } from '@/services/store/create-store.service';
 import { NextFunction, Request, Response } from 'express';
@@ -23,21 +22,6 @@ export class StoreController {
         search: (req.query.search as string) || '',
       };
       const result = await getStoresService(query);
-
-      return res.status(200).send(result);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async getStoresByEmployeeOrAdmin(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
-    try {
-      const id = req.params.id;
-      const result = await getStoresByEmployeeOrAdminService(Number(id));
 
       return res.status(200).send(result);
     } catch (error) {
