@@ -83,7 +83,7 @@ export class ProductController {
 
   async deleteProduct(req: Request, res: Response, next: NextFunction) {
     try {
-      await deleteProductService(Number(req.params.id));
+      await deleteProductService(Number(req.params.id), req.body.user);
 
       return res.status(200).send({
         message: 'delete product success',
@@ -96,7 +96,7 @@ export class ProductController {
   async deleteManyProducts(req: Request, res: Response, next: NextFunction) {
     try {
       // const { productId } = req.body;
-      await deleteManyProductsService(req.body.productId);
+      await deleteManyProductsService(req.body.productId, req.body.user);
       return res.status(200).send({
         message: 'delete product success',
       });

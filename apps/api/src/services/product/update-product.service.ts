@@ -7,7 +7,7 @@ interface UpdateProductBody
   extends Partial<
     Omit<Product, 'id' | 'isDelete' | 'createdAt' | 'updatedAt'>
   > {
-  // userId?: number;
+  user: string;
   categories?: string;
 }
 
@@ -21,7 +21,7 @@ export const updateProductService = async (
 ) => {
   try {
     // tambahin userId jika redux sudah berhasil
-    const { name, description, price, weight, categories } = body;
+    const { name, description, price, weight, categories, user } = body;
 
     // Check if product exists
     const product = await prisma.product.findFirst({
@@ -32,22 +32,18 @@ export const updateProductService = async (
       throw new Error('product not found');
     }
 
-    if (!files) {
-      throw new Error('gak da');
-    }
-
     // Check if user exists and is admin
-    const user = await prisma.user.findUnique({
-      where: { id: 1 },
+    const checkUser = await prisma.user.findUnique({
+      where: {
+        id: Number(user),
+      },
     });
 
-    if (!user) {
-      throw new Error('User Not Found!');
+    if (!checkUser) {
+      throw new Error("Can't find your account");
     }
 
-    if (user.role !== 'SUPERADMIN') {
-      throw new Error('Unauthorized access');
-    }
+    if (checkUser.role !== 'SUPERADMIN') throw new Error('Unauthorized access');
 
     if (name) {
       const existingProduct = await prisma.product.findFirst({

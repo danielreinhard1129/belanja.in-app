@@ -22,8 +22,7 @@ export const createStoreService = async (body: CreateStore) => {
       throw new Error("Can't find your account");
     }
 
-    if (checkUser.role !== 'SUPERADMIN')
-      throw new Error("you do'nt have access");
+    if (checkUser.role !== 'SUPERADMIN') throw new Error('Unauthorized access');
 
     const existingName = await prisma.store.findFirst({
       where: {

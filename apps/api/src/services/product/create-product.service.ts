@@ -4,7 +4,7 @@ import fs from 'fs';
 
 interface CreateProductBody
   extends Omit<Product, 'id' | 'isDelete' | 'createdAt' | 'updatedAt'> {
-  // userId: number;
+  user: string;
   categories: string;
 }
 
@@ -13,27 +13,20 @@ export const createProductService = async (
   files: Express.Multer.File[],
 ) => {
   try {
-    // tambahin userId jika redux sudah berhasil
-    const { name, description, price, weight, categories } = body;
-
-    // Validasi price harus angka
-    if (isNaN(Number(price))) {
-      throw new Error('Price must be a valid number');
-    }
+    const { name, description, price, weight, categories, user } = body;
 
     // Check if user exists and is admin
-    const user = await prisma.user.findUnique({
-      where: { id: 1 },
+    const checkUser = await prisma.user.findUnique({
+      where: {
+        id: Number(user),
+      },
     });
 
-    if (!user) {
-      throw new Error('User Not Found!');
+    if (!checkUser) {
+      throw new Error("Can't find your account");
     }
 
-    if (user.role !== 'SUPERADMIN') {
-      throw new Error('Unauthorized access');
-    }
-
+    if (checkUser.role !== 'SUPERADMIN') throw new Error('Unauthorized access');
     // Check if product name is already used
     const existingName = await prisma.product.findUnique({
       where: { name },

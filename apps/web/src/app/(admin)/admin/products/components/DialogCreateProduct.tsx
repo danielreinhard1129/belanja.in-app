@@ -92,10 +92,10 @@ const DialogCreateProduct: React.FC<DialogCreateProductProps> = ({
     setImagePreviews([]);
   };
 
-  console.log(getValues("images"));
+  // console.log(getValues("images"));
 
   const onSubmit: SubmitHandler<TCreateProductSchema> = async (data) => {
-    console.log(data);
+    // console.log(data);
     await createProduct(data);
     refetch();
     handleReset();

@@ -109,8 +109,8 @@ const DialogEditProduct: React.FC<DialogEditProductProps> = ({
   const onSubmit: SubmitHandler<TEditProductSchema> = async (data) => {
     console.log(data);
     await updateProduct(data);
-    refetch();
     onOpenChange(false);
+    refetch();
   };
   const { categories } = useGetCategories();
   const categoryOptions = categories.map((category) => ({
