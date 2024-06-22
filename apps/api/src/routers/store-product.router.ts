@@ -19,10 +19,6 @@ export class StoreProductRouter {
       '/by-super-admin',
       this.storeProductController.getStocksBySuperAdmin,
     );
-    this.router.get(
-      '/:id',
-      this.storeProductController.getStocksByStoreAdminOrSuperAdmin,
-    );
   }
 
   getRouter(): Router {

@@ -1,8 +1,8 @@
 "use client";
 
-import BrowseByCategory from "./components/BrowseByCategory";
-import HeroCarousel from "./components/HeroCarousel";
-import TodaysPick from "./components/TodaysPick";
+import BrowseByCategory from "../components/BrowseByCategory";
+import HeroCarousel from "../components/HeroCarousel";
+import TodaysPick from "../components/TodaysPick";
 
 export default function Home() {
   return (
