@@ -12,7 +12,7 @@ import {
 type Option = {
   value: string;
   label: string;
-  disabled?: boolean; // Tambahkan properti disabled
+  disabled?: boolean;
 };
 
 type Props<T extends FieldValues> = {
@@ -42,10 +42,10 @@ export function FormSelectStock<T extends FieldValues>({
           <>
             <Select
               onValueChange={(value) => {
-                onFieldChange(value); // Memanggil onChange dari Controller
-                setValue(name, value as any); // Update value in form context
+                onFieldChange(value);
+                setValue(name, value as any);
                 if (onChange) {
-                  onChange(value); // Memanggil onChange dari props jika ada
+                  onChange(value);
                 }
               }}
               value={value}
@@ -70,7 +70,7 @@ export function FormSelectStock<T extends FieldValues>({
                       <SelectItem
                         key={option.value}
                         value={option.value}
-                        disabled={option.disabled} // Gunakan properti disabled
+                        disabled={option.disabled}
                       >
                         {option.label}
                       </SelectItem>
