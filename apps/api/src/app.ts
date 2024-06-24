@@ -18,6 +18,7 @@ import { ProductRouter } from './routers/product.router';
 import { StoreRouter } from './routers/store.router';
 import { StoreProductRouter } from './routers/store-product.router';
 import { CategoryRouter } from './routers/category.router';
+import { StockJournalRouter } from './routers/stock-journal.router';
 
 export default class App {
   private app: Express;
@@ -68,6 +69,7 @@ export default class App {
     const storeRouter = new StoreRouter();
     const storeProductRouter = new StoreProductRouter();
     const categoryRouter = new CategoryRouter();
+    const stockJournalRouter = new StockJournalRouter();
 
     this.app.get('/api', (req: Request, res: Response) => {
       res.send(`Welcome to belanja.in API !`);
@@ -81,6 +83,7 @@ export default class App {
     this.app.use('/api/store-products', storeProductRouter.getRouter());
     this.app.use('/api/products', productRouter.getRouter());
     this.app.use('/api/categories', categoryRouter.getRouter());
+    this.app.use('/api/stock-journals', stockJournalRouter.getRouter());
   }
 
   public start(): void {

@@ -12,6 +12,7 @@ import {
 type Option = {
   value: string;
   label: string;
+  disabled?: boolean;
 };
 
 type Props<T extends FieldValues> = {
@@ -55,7 +56,11 @@ export function FormSelect<T extends FieldValues>({
                   <SelectLabel>{label}</SelectLabel>
                   {datas && datas.length > 0 ? (
                     datas.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
+                      <SelectItem
+                        key={option.value}
+                        value={option.value}
+                        disabled={option.disabled}
+                      >
                         {option.label}
                       </SelectItem>
                     ))

@@ -1,7 +1,7 @@
 import { Product } from "./product.type";
 import { Store } from "./store.type";
 
-export interface StoreProduct {
+export interface TES {
   id: number;
   qty: number;
   createdAt: string;
@@ -10,13 +10,4 @@ export interface StoreProduct {
   productId: number;
   store: Store;
   product: Product;
-}
-
-export interface IFormStoreProduct {
-  storeId: string;
-  // fromStoreId?: string;
-  stocks: {
-    productId: string;
-    qty: number;
-  }[];
 }

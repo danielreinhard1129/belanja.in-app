@@ -4,32 +4,31 @@ import { useEffect, useState } from "react";
 import { Stock } from "@/types/stock.type";
 import { axiosInstance } from "@/lib/axios";
 import { useAppSelector } from "@/redux/hooks";
+import { StockJournal } from "@/types/stockJournal.type";
 
 interface IGetStocksQuery extends IPaginationQueries {
   search?: string;
   storeId?: string | undefined;
 }
 
-const useGetStockByRuleNew = (queries: IGetStocksQuery) => {
-  const [stocks, setStocks] = useState<Stock | null>(null);
+const useGetStockJournalsByStoreWithParams = (queries: IGetStocksQuery) => {
   const { token } = useAppSelector((state) => state.user);
-  const [metaStock, setMetaStock] = useState<IPaginationMeta | null>(null);
-  // const [metaStockJournal, setMetaStockJournal] =
-  //   useState<IPaginationMeta | null>(null);
+  const [stockJournals, setStockJournals] = useState<StockJournal[] | []>([]);
+  const [meta, setMeta] = useState<IPaginationMeta | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const getStockByRuleNew = async () => {
+  const getStockJournalsByStore = async () => {
     try {
-      const { data } = await axiosInstance.get<Stock>("/store-products", {
+      const { data } = await axiosInstance.get("/stock-journals/filter", {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         params: queries,
       });
-      setStocks(data);
-      setMetaStock(data.storeProducts.meta);
-      // setMetaStockJournal(data.stockJournals.meta);
+      // console.log(data);
+      setStockJournals(data.data);
+      setMeta(data.meta);
     } catch (error) {
       if (error instanceof AxiosError) {
         console.log(error);
@@ -40,21 +39,15 @@ const useGetStockByRuleNew = (queries: IGetStocksQuery) => {
   };
 
   useEffect(() => {
-    getStockByRuleNew();
-  }, [
-    queries?.page,
-    // queries?.stockJournalsPage,
-    queries?.search,
-    queries?.storeId,
-  ]);
+    getStockJournalsByStore();
+  }, [queries?.page, queries?.search, queries?.storeId]);
 
   return {
-    stocks,
+    stockJournals,
     isLoading,
-    metaStock,
-    // metaStockJournal,
-    refetch: getStockByRuleNew,
+    meta,
+    refetch: getStockJournalsByStore,
   };
 };
 
-export default useGetStockByRuleNew;
+export default useGetStockJournalsByStoreWithParams;

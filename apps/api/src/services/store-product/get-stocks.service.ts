@@ -4,9 +4,9 @@ import { Prisma } from '@prisma/client';
 interface QueryGetStocksService {
   take: number;
   page: number;
-  stockJournalsTake: number;
-  stockJournalsPage: number;
-  search: string;
+  // stockJournalsTake: number;
+  // stockJournalsPage: number;
+  search?: string;
   storeId: string | undefined;
 }
 
@@ -19,7 +19,7 @@ export const getStocksService = async (
   query: QueryGetStocksService,
 ) => {
   try {
-    const { search, take, page, stockJournalsTake, stockJournalsPage } = query;
+    const { search, take, page } = query;
     const storeId = query.storeId ? Number(query.storeId) : undefined;
 
     const user = await prisma.user.findFirst({
@@ -56,7 +56,7 @@ export const getStocksService = async (
     });
 
     const findFirstStore = findFirstStoreAdmin?.stores ?? null;
-    if (!findFirstStore) {
+    if (!isSuperAdmin && !findFirstStore) {
       throw new Error('You do not have any store');
     }
     if (!isSuperAdmin) {
@@ -122,49 +122,49 @@ export const getStocksService = async (
     });
 
     // Query for stockJournals
-    const stockJournalQuery: Prisma.StockJournalFindManyArgs = {
-      where: {
-        storeId: storeId,
-      },
-      include: {
-        JournalDetail: {
-          include: {
-            toStore: true,
-          },
-        },
-      },
-      skip: (stockJournalsPage - 1) * stockJournalsTake,
-      take: stockJournalsTake,
-    };
+    // const stockJournalQuery: Prisma.StockJournalFindManyArgs = {
+    //   where: {
+    //     storeId: storeId,
+    //   },
+    //   include: {
+    //     JournalDetail: {
+    //       include: {
+    //         toStore: true,
+    //       },
+    //     },
+    //   },
+    //   skip: (stockJournalsPage - 1) * stockJournalsTake,
+    //   take: stockJournalsTake,
+    // };
 
-    if (!isSuperAdmin) {
-      stockJournalQuery.where = {
-        ...stockJournalQuery.where,
-        storeId: {
-          in: userStoreIds,
-        },
-      };
-    }
+    // if (!isSuperAdmin) {
+    //   stockJournalQuery.where = {
+    //     ...stockJournalQuery.where,
+    //     storeId: {
+    //       in: userStoreIds,
+    //     },
+    //   };
+    // }
 
-    if (search) {
-      stockJournalQuery.where = {
-        ...stockJournalQuery.where,
-        JournalDetail: {
-          some: {
-            toStore: {
-              name: {
-                contains: search,
-              },
-            },
-          },
-        },
-      };
-    }
+    // if (search) {
+    //   stockJournalQuery.where = {
+    //     ...stockJournalQuery.where,
+    //     JournalDetail: {
+    //       some: {
+    //         toStore: {
+    //           name: {
+    //             contains: search,
+    //           },
+    //         },
+    //       },
+    //     },
+    //   };
+    // }
 
-    const stockJournals = await prisma.stockJournal.findMany(stockJournalQuery);
-    const stockJournalCount = await prisma.stockJournal.count({
-      where: stockJournalQuery.where,
-    });
+    // const stockJournals = await prisma.stockJournal.findMany(stockJournalQuery);
+    // const stockJournalCount = await prisma.stockJournal.count({
+    //   where: stockJournalQuery.where,
+    // });
 
     return {
       storeProducts: {
@@ -175,14 +175,14 @@ export const getStocksService = async (
           total: storeProductCount,
         },
       },
-      stockJournals: {
-        data: stockJournals,
-        meta: {
-          page: stockJournalsPage,
-          take: stockJournalsTake,
-          total: stockJournalCount,
-        },
-      },
+      // stockJournals: {
+      //   data: stockJournals,
+      //   meta: {
+      //     page: stockJournalsPage,
+      //     take: stockJournalsTake,
+      //     total: stockJournalCount,
+      //   },
+      // },
       stockSum: stockSum.map((sum) => ({
         storeId: sum.storeId,
         totalStock: sum._sum.qty || 0,
