@@ -9,6 +9,7 @@ import {
   Box,
   Briefcase,
   Home,
+  LogOut,
   Users,
   X,
 } from "lucide-react";
@@ -19,10 +20,23 @@ import {
   SheetHeader,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import useGoogleAuth from "@/hooks/api/auth/useGoogleAuth";
+import { useDispatch } from "react-redux";
+import { logoutAction } from "@/redux/slices/userSlice";
+import { useAppSelector } from "@/redux/hooks";
 
 const Navbar = () => {
+  const { provider } = useAppSelector((state) => state.user);
   const router = useRouter();
   const pathname = usePathname();
+  const dispatch = useDispatch();
+
+  const { logout } = useGoogleAuth();
+  const userLogout = async () => {
+    localStorage.removeItem("Authorization");
+    await dispatch(logoutAction());
+    router.push("/");
+  };
 
   const lists = [
     { name: "Home", url: "/admin", icon: <Home size={20} /> },
@@ -43,7 +57,7 @@ const Navbar = () => {
 
   return (
     <nav className="flex w-full flex-row items-center justify-between gap-4 border-b-2 px-5 py-6 md:h-screen md:max-w-[240px] md:flex-col md:justify-start md:border-b-0 md:border-r-2">
-      <div className="w-34 relative md:mb-10">
+      <div className="w-34 relative md:mb-10 md:hidden">
         <Image
           src={logo}
           alt="logo"
@@ -53,17 +67,39 @@ const Navbar = () => {
           onClick={() => router.push("/admin")}
         />
       </div>
-      <div className="hidden w-full gap-2 md:flex md:flex-col">
-        {lists.map((item) => (
+      <div className="hidden h-full w-full items-center justify-between gap-2 md:flex md:flex-col">
+        <div className="flex w-full flex-col items-center gap-2">
+          <div className="w-34 relative md:mb-10">
+            <Image
+              src={logo}
+              alt="logo"
+              height={34}
+              className="cursor-pointer"
+              draggable={false}
+              onClick={() => router.push("/admin")}
+            />
+          </div>
+          {lists.map((item) => (
+            <Button
+              variant="secondary"
+              className={`${baseClass} ${item.url === pathname ? "w-full justify-start px-4 py-3" : "w-full justify-start bg-white px-4 py-3 text-black/50"}`}
+              onClick={() => router.replace(item.url)}
+            >
+              {item.icon}
+              {item.name}
+            </Button>
+          ))}
+        </div>
+        <div className="hidden w-full md:flex">
           <Button
-            variant="secondary"
-            className={`${baseClass} ${item.url === pathname ? "w-full justify-start px-4 py-3" : "w-full justify-start bg-white px-4 py-3 text-black/50"}`}
-            onClick={() => router.replace(item.url)}
+            variant="link"
+            className="w-fit justify-start gap-4 px-4 py-3 text-red-500"
+            onClick={() => (provider === "GOOGLE" ? logout() : userLogout())}
           >
-            {item.icon}
-            {item.name}
+            <LogOut size={20} />
+            Logout
           </Button>
-        ))}
+        </div>
       </div>
       <div className="flex md:hidden">
         <Sheet>
@@ -86,7 +122,7 @@ const Navbar = () => {
                 </SheetClose>
               </div>
             </SheetHeader>
-            <div className="flex flex-col gap-4 px-4">
+            <div className="flex h-[80vh] flex-col gap-4 px-4">
               {lists.map((item) => (
                 <SheetClose>
                   <Button
@@ -99,6 +135,18 @@ const Navbar = () => {
                   </Button>
                 </SheetClose>
               ))}
+              <div className="relative h-full w-full">
+                <Button
+                  variant="link"
+                  className="absolute bottom-0 justify-start gap-4 px-4 py-3 text-red-500"
+                  onClick={() =>
+                    provider === "GOOGLE" ? logout() : userLogout()
+                  }
+                >
+                  <LogOut size={20} />
+                  Logout
+                </Button>
+              </div>
             </div>
           </SheetContent>
         </Sheet>

@@ -12,7 +12,13 @@ import useGoogleAuth from "@/hooks/api/auth/useGoogleAuth";
 import { useRouter } from "next/navigation";
 import { appConfig } from "@/utils/config";
 import defaultAvatar from "../../public/default-avatar.png";
-import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { useEffect, useState } from "react";
 
 export const Header = () => {
@@ -30,7 +36,7 @@ export const Header = () => {
   const [hideHeader, setHideHeader] = useState(false);
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const scrollThreshold = 100;
-  
+
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollTop =
@@ -54,7 +60,7 @@ export const Header = () => {
 
   return (
     <nav
-      className={`fixed left-0 right-0 top-0 z-20 w-full bg-inherit p-0 transition-transform duration-300 overflow-x-hidden ${hideHeader ? "-translate-y-full" : "translate-y-0"}`}
+      className={`fixed left-0 right-0 top-0 z-20 w-full overflow-x-hidden bg-inherit p-0 transition-transform duration-300 ${hideHeader ? "-translate-y-full" : "translate-y-0"}`}
     >
       <div className="container mx-auto flex h-20 items-center justify-between p-0 px-6 py-2">
         <div className="items-center">
@@ -82,6 +88,7 @@ export const Header = () => {
                         : `${appConfig.baseUrl}/assets${avatarUrl}`) as string
                     }
                     alt="avatar"
+                    className="object-cover"
                   />
                 </Avatar>
                 <div className="text-sm font-medium">{name}</div>
@@ -89,7 +96,7 @@ export const Header = () => {
               <div>
                 <Button
                   variant="link"
-                  className="hidden px-0 py-2 md:flex"
+                  className="hidden px-0 py-2 md:flex hover:underline text-red-500"
                   onClick={() =>
                     provider === "GOOGLE" ? logout() : userLogout()
                   }
@@ -153,7 +160,7 @@ export const Header = () => {
                       <div>Cart</div>
                       <Separator />
                       <div
-                        className="cursor-pointer"
+                        className="cursor-pointer text-red-500 hover:underline"
                         onClick={() =>
                           provider === "GOOGLE" ? logout() : userLogout()
                         }
