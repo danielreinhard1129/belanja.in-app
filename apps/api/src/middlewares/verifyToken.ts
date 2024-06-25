@@ -3,7 +3,7 @@ import { TokenExpiredError, verify } from 'jsonwebtoken';
 import { appConfig } from '../utils/config';
 import { User } from '@prisma/client';
 
-const secretKey = appConfig.jwtSecretKey!;
+const secretKey = appConfig.jwtSecretKey;
 
 interface PayloadToken extends Pick<User, 'id'> {}
 
@@ -35,7 +35,8 @@ export const verifyToken = (
         return res.status(401).send({ message: 'invalid token' });
       }
     }
-    req.body.user = payload as PayloadToken;
+    res.locals.user = payload as PayloadToken;
+    console.log(res.locals.user, payload)
     next();
   });
 };

@@ -89,7 +89,7 @@ model User {
   birthDate  DateTime?
 
   addresses    Address?          @relation(fields: [addressId], references: [id])
-  employee     Employee?
+  storeAdmin   StoreAdmin?
   Order        Order[]
   userDiscount userDiscount[]
   UserVoucher  UserVoucher[]
@@ -101,8 +101,8 @@ model User {
 
 enum Role {
   USER
-  EMPLOYEE
-  ADMIN
+  STOREADMIN
+  SUPERADMIN
 }
 
 model ReferralHistory {
@@ -116,86 +116,104 @@ model ReferralHistory {
   @@map("referral_histories")
 }
 
-model Employee {
+model StoreAdmin {
   id        Int      @id @default(autoincrement())
   userId    Int      @unique
   nip       Int
+  isDelete  Boolean?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id])
-  stores    Store[]
+  stores    Store?
 
-  @@map("employees")
+  @@map("store_admin")
 }
 
 model Store {
-  id         Int        @id @default(autoincrement())
-  name       String
-  lat        String
-  long       Int
-  isPrimary  Boolean
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  city       String
-  employeeId Int
-  employee   Employee   @relation(fields: [employeeId], references: [id])
-  stocks     Stock[]
-  discounts  Discount[]
-  Order      Order[]
-  Delivery   Delivery[]
+  id            Int             @id @default(autoincrement())
+  name          String
+  qty           Int             @default(0)
+  lat           String
+  long          String
+  isPrimary     Boolean         @default(false)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  city          String
+  storeAdminId  Int?            @unique
+  storeAdmin    StoreAdmin?     @relation(fields: [storeAdminId], references: [id])
+  storeProduct  StoreProduct[]
+  discounts     Discount[]
+  stockJournals StockJournal[]
+  JournalDetail JournalDetail[]
+  Order         Order[]
+  Delivery      Delivery[]
 
   @@map("stores")
 }
 
-model Stock {
-  id        Int            @id @default(autoincrement())
+model StoreProduct {
+  id        Int      @id @default(autoincrement())
   qty       Int
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
   storeId   Int
   productId Int
-  store     Store          @relation(fields: [storeId], references: [id])
-  product   Product        @relation(fields: [productId], references: [id])
-  fromStock StockJournal[] @relation(name: "fromStock")
-  toStock   StockJournal[] @relation(name: "toStock")
+  store     Store    @relation(fields: [storeId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  @@map("stocks")
+  @@map("store_products")
 }
 
 model StockJournal {
-  id          Int      @id @default(autoincrement())
-  changeQty   Int
-  createdAt   DateTime @default(now())
-  fromStockId Int
-  toStockId   Int
-  fromStock   Stock    @relation(fields: [fromStockId], references: [id], name: "fromStock")
-  toStock     Stock    @relation(fields: [toStockId], references: [id], name: "toStock")
+  id            Int             @id @default(autoincrement())
+  quantity      Int
+  type          String
+  productId     Int
+  storeId       Int
+  fromStoreId   Int?
+  toStoreId     Int?
+  product       Product         @relation(fields: [productId], references: [id])
+  store         Store           @relation(fields: [storeId], references: [id])
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  JournalDetail JournalDetail[]
 
   @@map("stock_journals")
 }
 
+model JournalDetail {
+  id             Int          @id @default(autoincrement())
+  stockJournalId Int
+  stockJournal   StockJournal @relation(fields: [stockJournalId], references: [id])
+  toStoreId      Int?
+  toStore        Store?       @relation(fields: [toStoreId], references: [id])
+
+  @@map("journal_detail")
+}
+
 model Product {
-  id          Int                    @id @default(autoincrement())
-  name        String
-  description String
-  price       Int
-  weight      Int
-  isDelete    Boolean?
-  createdAt   DateTime               @default(now())
-  updatedAt   DateTime               @updatedAt
-  stocks      Stock[]
-  categories  CategoriesOnProducts[]
-  images      ProductImage[]
-  discounts   Discount[]
-  OrderItems  OrderItems[]
-  Voucher     Voucher[]
+  id            Int                    @id @default(autoincrement())
+  name          String                 @unique
+  description   String
+  weight        Int
+  price         Int
+  isDelete      Boolean?               @default(false)
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+  storeProduct  StoreProduct[]
+  categories    CategoriesOnProducts[]
+  images        ProductImage[]
+  discounts     Discount[]
+  stockJournals StockJournal[]
+  Voucher       Voucher[]
+  OrderItems    OrderItems[]
 
   @@map("products")
 }
 
 model ProductImage {
   id        Int     @id @default(autoincrement())
-  image     String
+  images    String
   productId Int
   product   Product @relation(fields: [productId], references: [id])
 
@@ -205,6 +223,7 @@ model ProductImage {
 model Category {
   id       Int                    @id @default(autoincrement())
   name     String                 @unique
+  isDelete Boolean?               @default(false)
   products CategoriesOnProducts[]
 
   @@map("categories")

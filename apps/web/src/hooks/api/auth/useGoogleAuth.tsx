@@ -1,57 +1,50 @@
 "use client";
 
-import { googleLogout } from "@react-oauth/google";
+import { googleLogout, useGoogleLogin } from "@react-oauth/google";
 import { axiosInstance } from "@/lib/axios";
-import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { loginAction, logoutAction } from "@/redux/slices/userSlice";
-
-interface User {
-  name: string;
-  email: string;
-  picture: string;
-}
+import { toast } from "sonner";
+import { AxiosError } from "axios";
+import { useState } from "react";
 
 const useGoogleAuth = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const googleLogin = async (
-    email: string,
-    name: string,
-    avatarUrl: string,
-  ) => {
-    try {
-      const { data } = await axiosInstance.post("/auth/login/google", {
-        email,
-        name,
-        avatarUrl,
-      });
+  const handleLoginByGoogle = useGoogleLogin({
+    onSuccess: async ({ code }) => {
+      try {
+        setIsLoading(true);
+        const { data } = await axiosInstance.post("/auth/login/google", {
+          code,
+        });
 
-      dispatch(loginAction({ user: data.data, token: data.token }));
-      localStorage.setItem("Authorization", `Bearer ${data.token}`);
-      if (data.data.role === "USER") {
-        router.push("/");
+        localStorage.setItem("Authorization", `Bearer ${data.token}`);
+        dispatch(loginAction({ user: data.data, token: data.token }));
+        toast.success(data.message);
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          toast.error(error.response?.data);
+        }
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      alert(error);
-    }
-  };
-
-  const handleLoginSuccess = (credentialResponse: any) => {
-    const decoded = jwtDecode(credentialResponse.credential as string) as User;
-    googleLogin(decoded.email, decoded.name, decoded.picture);
-  };
+    },
+    flow: "auth-code",
+    redirect_uri: "http://localhost:3000/",
+  });
 
   const logout = () => {
     googleLogout();
-    localStorage.removeItem("token");
+    localStorage.removeItem("Authorization");
     dispatch(logoutAction());
     router.push("/");
   };
 
-  return { logout, handleLoginSuccess, googleLogin };
+  return { logout, handleLoginByGoogle, isLoading };
 };
 
 export default useGoogleAuth;

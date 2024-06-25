@@ -4,6 +4,7 @@ import { axiosInstance } from "@/lib/axios";
 import { User } from "@/types/user.type";
 import { AxiosError } from "axios";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface ISendChangePasswordResponse {
   message: string;
@@ -22,13 +23,13 @@ const useSendChangePassword = () => {
         "/auth/send-change-password",
         { user: userId },
       );
-      console.log(data);
+      toast.success(`${data.message}`);
       setOnSuccess(true);
     } catch (error) {
       if (error instanceof AxiosError) {
-        console.log(error?.response?.data);
+        toast.error(error?.response?.data);
       }
-      setOnSuccess(false)
+      setOnSuccess(false);
     } finally {
       setIsLoading(false);
     }

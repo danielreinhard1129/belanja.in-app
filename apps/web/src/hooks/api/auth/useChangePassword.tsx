@@ -5,6 +5,7 @@ import { AxiosError } from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface IChangePasswordResponse {
   message: string;
@@ -33,13 +34,13 @@ const useChangePassword = () => {
         },
       );
 
-      console.log(data.message);
+      toast.success(data.message)
       const decode = jwtDecode<DecodedToken>(token);
 
       router.replace(`/user/${decode.id}`);
     } catch (error) {
       if (error instanceof AxiosError) {
-        console.log(error?.response?.data);
+        toast.error(error?.response?.data);
       }
     } finally {
       setIsLoading(false);

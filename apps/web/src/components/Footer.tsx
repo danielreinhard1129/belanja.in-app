@@ -9,7 +9,7 @@ export const Footer = () => {
   return (
     <div>
       <Separator />
-      <div className="container mx-auto grid grid-cols-2 justify-between px-4 py-10 md:flex md:px-[120px] md:py-20">
+      <div className="container mx-auto grid grid-cols-2 justify-between px-4 py-10 md:flex md:py-20">
         <div className="col-span-2 mb-10 grid gap-6 md:mb-0">
           <Image src={logo} alt="logo" draggable={false} />
           <p className="max-w-[296px] text-sm text-[#7C7C7C]">
@@ -106,11 +106,11 @@ export const Footer = () => {
         </div>
       </div>
       <Separator />
-      <div className="container mx-auto flex justify-between px-4 py-4 md:px-[120px]">
-        <p className="text-sm text-[#7C7C7C]">
+      <div className="container mx-auto flex flex-col gap-2 md:flex-row justify-between px-4 py-4 md:px-4">
+        <p className="text-xs text-[#7C7C7C]">
           © belanja.in 2024 market/supermarket
         </p>
-        <p className="text-sm text-[#7C7C7C]">
+        <p className="text-xs text-[#7C7C7C]">
           Reserved by CHIBAI (China Banyak Ilmu) Co. Ltd.
         </p>
       </div>

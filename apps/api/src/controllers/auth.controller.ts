@@ -49,7 +49,8 @@ export class AuthController {
     next: NextFunction,
   ) {
     try {
-      const result = await loginWithGoogleService(req.body);
+      const { code } = req.body;
+      const result = await loginWithGoogleService(code);
 
       return res.status(200).send(result);
     } catch (error) {
