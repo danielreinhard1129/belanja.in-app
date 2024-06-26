@@ -14,7 +14,11 @@ export class StoreProductRouter {
 
   private initializeRoutes(): void {
     this.router.get('/', verifyToken, this.storeProductController.getStocks);
-    this.router.get('/by-store', this.storeProductController.getStocksByStore);
+    this.router.post(
+      '/mutation',
+      this.storeProductController.createStoreProductMutation,
+    );
+    this.router.get('/:id', this.storeProductController.getProductsByStore);
     this.router.get(
       '/by-super-admin',
       this.storeProductController.getStocksBySuperAdmin,

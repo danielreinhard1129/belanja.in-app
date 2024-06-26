@@ -161,6 +161,7 @@ model StoreProduct {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([storeId, productId])
   @@map("store_products")
 }
 
@@ -168,6 +169,7 @@ model StockJournal {
   id            Int             @id @default(autoincrement())
   quantity      Int
   type          String
+  status        String
   productId     Int
   storeId       Int
   fromStoreId   Int?
@@ -179,6 +181,18 @@ model StockJournal {
   JournalDetail JournalDetail[]
 
   @@map("stock_journals")
+}
+
+enum JournalType {
+  MUTATION
+  INCREASE
+  DECREASE
+}
+
+enum JournalStatus {
+  WAITING_ADMIN_CONFIRMATION
+  SUCCESS
+  CANCELLED
 }
 
 model JournalDetail {
