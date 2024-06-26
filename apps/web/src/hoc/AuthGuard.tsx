@@ -1,16 +1,14 @@
 "use client";
 
-import { useToast } from "@/components/ui/use-toast";
 import { useAppSelector } from "@/redux/hooks";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function AuthGuard(Component: any) {
   return function IsAuth(props: any) {
-    const { toast } = useToast();
     const [isLoading, setIsLoading] = useState(true);
 
-    const { id, role } = useAppSelector((state) => state.user);
+    const { id } = useAppSelector((state: any) => state.user);
 
     useEffect(() => {
       setTimeout(() => {

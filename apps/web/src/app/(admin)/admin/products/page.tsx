@@ -6,7 +6,7 @@ import { useAppSelector } from "@/redux/hooks";
 
 const Product = () => {
   const { role } = useAppSelector((state) => state.user);
-  return <main>{role === "SUPERADMIN" ? <SuperAdmin /> : <StoreAdmin />}</main>;
+  return <main className="h-screen py-20">{role === "SUPERADMIN" ? <SuperAdmin /> : <StoreAdmin />}</main>;
 };
 
 export default Product;

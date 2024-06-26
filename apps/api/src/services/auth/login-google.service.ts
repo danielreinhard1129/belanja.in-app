@@ -1,25 +1,42 @@
+import { getTokens } from '@/libs/getTokens';
+import { getUserInfo } from '@/libs/getUserInfo';
 import { transporter } from '@/libs/nodemailer';
 import prisma from '@/prisma';
 import { appConfig } from '@/utils/config';
-import { User } from '@prisma/client';
 import { sign } from 'jsonwebtoken';
 
-export const loginWithGoogleService = async (body: Omit<User, 'id'>) => {
+export const loginWithGoogleService = async (code: string) => {
   try {
-    const { email, name, avatarUrl } = body;
+    const tokens = await getTokens(code);
+
+    if (!tokens) {
+      return {
+        status: 400,
+        message: 'Failed to get tokens from google',
+      };
+    }
+
+    const userInfo = await getUserInfo(tokens.access_token!);
+
+    if (!userInfo) {
+      return {
+        status: 400,
+        message: 'Failed to get user info from google',
+      };
+    }
 
     let user = await prisma.user.findFirst({
-      where: { email },
+      where: { email: userInfo.email },
     });
 
-    let newUser: User | undefined;
+    let newUser;
 
     if (!user) {
       newUser = await prisma.user.create({
         data: {
-          email,
-          avatarUrl,
-          name: name,
+          email: userInfo.email,
+          avatarUrl: userInfo.picture,
+          name: userInfo.name,
           isVerified: true,
           provider: 'GOOGLE',
         },
@@ -27,7 +44,7 @@ export const loginWithGoogleService = async (body: Omit<User, 'id'>) => {
 
       await transporter.sendMail({
         from: 'Admin',
-        to: email,
+        to: userInfo.email,
         subject: 'Welcome to belanja.in',
         html: `<p>Welcome to belanja.in</p>`,
       });

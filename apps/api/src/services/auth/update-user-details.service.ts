@@ -45,7 +45,7 @@ export const updateUserDetailsService = async (
     });
 
     return {
-      message: 'Update user details success',
+      message: 'Successfully update profile!',
       data: userDetails,
     };
   } catch (error) {

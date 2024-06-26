@@ -50,17 +50,23 @@ const HeroCarousel = () => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <Carousel plugins={[plugin.current]} setApi={setApi}>
+      <Carousel
+        plugins={[plugin.current]}
+        setApi={setApi}
+        className="h-48 md:h-96"
+      >
         <CarouselContent className="flex">
           {images.map((image, index) => (
             <CarouselItem key={index} className="flex-shrink-0">
               <Card className="rounded-none border-none shadow-none md:rounded-sm">
-                <CardContent className="relative flex h-[173px] w-screen items-center justify-center md:h-[340px] md:w-[1400px]">
+                <CardContent className="relative flex h-48 w-full items-center justify-center md:h-96">
+                  <div className="z-20 text-white">DISCOVER MORE</div>
                   <Image
                     src={image}
                     alt={`Slide ${index + 1}`}
-                    layout="fill"
-                    objectFit="cover"
+                    width={1400}
+                    height={1000}
+                    className="object-cover absolute"
                   />
                 </CardContent>
               </Card>

@@ -1,9 +1,11 @@
 import { axiosInstance } from "@/lib/axios";
 import { AxiosError } from "axios";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface IForgotPasswordResponse {
   message: string;
+  email: string;
 }
 
 const useForgotPassword = () => {
@@ -16,11 +18,10 @@ const useForgotPassword = () => {
         "/auth/forgot-password",
         email,
       );
-
-      console.log(data.message);
+      toast.success(`Email successfully sent to ${data.email}!`);
     } catch (error) {
       if (error instanceof AxiosError) {
-        console.log(error?.response?.data);
+        toast.error(`Error: ${error.response?.data}!`);
       }
     } finally {
       setIsLoading(false);

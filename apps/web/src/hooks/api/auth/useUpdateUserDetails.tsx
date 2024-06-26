@@ -8,6 +8,7 @@ import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FileWithPath } from "react-dropzone";
+import { toast } from "sonner";
 
 interface UpdateUserForm {
   name: string;
@@ -46,17 +47,14 @@ const useUpdateUserDetails = (userId: number) => {
         userUpdateForm,
       );
 
-      if (response.status !== 200) {
-        throw new Error("Failed to update user details");
-      }
-
       const updatedUser: User = {
         ...currentUser,
-        ...response.data,
-        updatedAt: new Date(),
+        ...response.data.data,
       };
 
       dispatch(setUser(updatedUser));
+
+      toast.success(`${response.data.message}`)
 
       router.push(`/user/${userId}`);
     } catch (error) {

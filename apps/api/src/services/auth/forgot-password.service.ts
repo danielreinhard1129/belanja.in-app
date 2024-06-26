@@ -11,7 +11,7 @@ export const forgotPasswordService = async (body: Pick<User, 'email'>) => {
     const user = await prisma.user.findFirst({ where: { email } });
 
     if (!user) {
-      throw new Error('invalid email address');
+      throw new Error('Invalid email address');
     }
 
     const token = sign({ id: user.id }, appConfig.jwtSecretKey, {
@@ -29,6 +29,7 @@ export const forgotPasswordService = async (body: Pick<User, 'email'>) => {
 
     return {
       message: `email to reset password has been sent to ${email}`,
+      email,
     };
   } catch (error) {
     throw error;

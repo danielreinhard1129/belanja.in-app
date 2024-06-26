@@ -100,7 +100,7 @@ const SuperAdmin: React.FC = () => {
   const take = meta?.take || 10;
 
   return (
-    <main className="container mx-auto my-28 mb-10 max-w-4xl border-2 py-5 shadow-xl">
+    <main className="container mx-auto mb-10 max-w-4xl border-2 shadow-xl">
       <div className="my-4 flex justify-between">
         <div className="flex gap-4">
           <SearchInput search={search} setSearch={setSearch} />

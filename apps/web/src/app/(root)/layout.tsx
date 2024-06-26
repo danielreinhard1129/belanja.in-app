@@ -1,19 +1,20 @@
-import { FC, ReactNode } from "react";
-import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
+import { Card } from "@/components/ui/card";
+import { FC, ReactNode } from "react";
 
-interface RootLayoutProps {
+interface AuthLayoutProps {
   children: ReactNode;
 }
 
-const Layout: FC<RootLayoutProps> = ({ children }) => {
+const AuthLayout: FC<AuthLayoutProps> = ({ children }) => {
   return (
-    <div>
+    <div className="absolute left-0 right-0 z-50 h-screen w-full bg-white">
       <Header />
-      {children}
+      <Card className="border-none shadow-none">{children}</Card>
       <Footer />
     </div>
   );
 };
 
-export default Layout;
+export default AuthLayout;
