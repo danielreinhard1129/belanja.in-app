@@ -1,45 +1,14 @@
 import prisma from '@/prisma';
-import { PaginationQueryParams } from '@/types/pagination.type';
 
-interface GetProductsByParams extends PaginationQueryParams {
-  search?: string;
-}
-
-export const getStoresService = async (query: GetProductsByParams) => {
-  const { take, page, search } = query;
-
-  const where: { name?: { contains: string } } = {};
-
-  if (search) {
-    where.name = {
-      contains: search,
-    };
-  }
-
+export const getStoresService = async () => {
   try {
-    const stores = await prisma.store.findMany({
-      where,
-      include: {
-        storeAdmin: {
-          include: {
-            user: true,
-          },
-        },
-      },
-      skip: (page - 1) * take,
-      take: take,
-    });
+    const stores = await prisma.store.findMany();
 
-    if (!stores.length) {
-      throw new Error('No stores found');
+    if (!stores) {
+      throw new Error('stores not found');
     }
 
-    const count = await prisma.store.count({ where });
-
-    return {
-      data: stores,
-      meta: { page, take, total: count },
-    };
+    return stores;
   } catch (error) {
     throw error;
   }

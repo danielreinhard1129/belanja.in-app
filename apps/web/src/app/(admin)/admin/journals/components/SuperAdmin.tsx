@@ -54,7 +54,6 @@ const SuperAdmin = () => {
     });
 
   useEffect(() => {
-    // Reset page to 1 whenever storeId changes
     setPage(1);
   }, [selectedStoreId]);
 
