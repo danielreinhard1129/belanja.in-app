@@ -10,25 +10,47 @@ import {
 } from "@/components/ui/table";
 import { Stock } from "@/types/stock.type";
 import Pagination from "@/components/Pagination";
+import { Input } from "@/components/ui/input";
+import PopoverStockRequest from "./PopoverStockRequest";
 
 interface StoreAdminProps {
   stocks: Stock;
   stockPage: number;
   handleChangePaginateStock: ({ selected }: { selected: number }) => void;
+  search: string;
+  refetch: () => void;
+  setSearch: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const StoreAdmin: React.FC<StoreAdminProps> = ({
   stocks,
   stockPage,
   handleChangePaginateStock,
+  search,
+  refetch,
+  setSearch,
 }) => {
   const filteredStocks = stocks?.storeProducts?.data;
+  const storeId = stocks?.storeProducts?.data[0]?.store.id;
+  // console.log(storeId);
+  // console.log(filteredStocks);
+
   return (
     <main className="mx-auto my-10 max-w-4xl">
       <h3 className="text-xl font-bold">Store Inventory</h3>
-      <div className="my-8 mb-10 border-2 p-5 shadow-xl">
+      <div className="mt-4 flex items-center justify-between">
+        <Input
+          type="text"
+          placeholder="Search"
+          name="search"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-[300px]"
+        />
+        <PopoverStockRequest refetch={refetch} storeId={storeId} />
+      </div>
+      <div className="my-4 mb-10 border-2 p-5 shadow-xl">
         <Table>
-          <TableCaption>A list of your stock</TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead className="w-[100px]">No</TableHead>
@@ -59,7 +81,7 @@ const StoreAdmin: React.FC<StoreAdminProps> = ({
         </Table>
         <div className="flex justify-end">
           <div className="mr-10 mt-2 flex gap-4">
-            <p>Total Quantity Store: </p>
+            <p>Total Quantity Products: </p>
             <p className="font-bold">{stocks?.stockSum[0]?.totalStock}</p>
           </div>
         </div>

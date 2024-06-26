@@ -1,4 +1,5 @@
 import Pagination from "@/components/Pagination";
+import { Bell } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -12,6 +13,13 @@ import React from "react";
 import { AddStockModal } from "./AddStockModal";
 import { Input } from "@/components/ui/input";
 import PopoverStockMenu from "./PopoverStockMenu";
+import DialogStockActionSuperAdmin from "./DialogStockActionSuperAdmin";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import NotificationIcon from "./NotificationStockSuperAdmin";
 
 interface StoreInventoryTableProps {
   storeId: number;
@@ -46,11 +54,12 @@ const StoreInventoryTable: React.FC<StoreInventoryTableProps> = ({
           onChange={(e) => setSearch(e.target.value)}
           className="w-[300px]"
         />
-        <PopoverStockMenu refetch={refetch} storeId={storeId} />
+        <div className="flex justify-between gap-4">
+          <DialogStockActionSuperAdmin refetch={refetch} storeId={storeId} />
+        </div>
       </div>
       <div className="my-4 mb-10 border-2 p-5 shadow-xl">
         <Table>
-          <TableCaption>A list of your store.</TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead className="w-[100px]">No</TableHead>
@@ -81,7 +90,7 @@ const StoreInventoryTable: React.FC<StoreInventoryTableProps> = ({
         </Table>
         <div className="flex justify-end">
           <div className="mr-10 mt-2 flex gap-4">
-            <p>Total Quantity Store: </p>
+            <p>Total Quantity Products: </p>
             <p className="font-bold">{stocks?.stockSum[0]?.totalStock}</p>
           </div>
         </div>

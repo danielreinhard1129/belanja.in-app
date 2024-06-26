@@ -38,7 +38,7 @@ const useCreateStockMutation = () => {
       console.log(error);
       if (error instanceof AxiosError) {
         toast({
-          description: error?.response?.data,
+          description: error?.response?.data?.message || error?.response?.data,
         });
       }
     } finally {

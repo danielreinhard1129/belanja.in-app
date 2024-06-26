@@ -14,8 +14,6 @@ const useGetStockByRuleNew = (queries: IGetStocksQuery) => {
   const [stocks, setStocks] = useState<Stock | null>(null);
   const { token } = useAppSelector((state) => state.user);
   const [metaStock, setMetaStock] = useState<IPaginationMeta | null>(null);
-  // const [metaStockJournal, setMetaStockJournal] =
-  //   useState<IPaginationMeta | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const getStockByRuleNew = async () => {
@@ -29,7 +27,6 @@ const useGetStockByRuleNew = (queries: IGetStocksQuery) => {
       });
       setStocks(data);
       setMetaStock(data.storeProducts.meta);
-      // setMetaStockJournal(data.stockJournals.meta);
     } catch (error) {
       if (error instanceof AxiosError) {
         console.log(error);
@@ -41,12 +38,7 @@ const useGetStockByRuleNew = (queries: IGetStocksQuery) => {
 
   useEffect(() => {
     getStockByRuleNew();
-  }, [
-    queries?.page,
-    // queries?.stockJournalsPage,
-    queries?.search,
-    queries?.storeId,
-  ]);
+  }, [queries?.page, queries?.search, queries?.storeId]);
 
   return {
     stocks,

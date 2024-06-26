@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Eye } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -6,6 +7,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import useGetProduct from "@/hooks/api/product/useGetProduct";
 import React from "react";
@@ -23,6 +25,11 @@ const DialogDetailProduct: React.FC<DialogDetailProductProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogTrigger asChild>
+        <div className="flex cursor-pointer items-center gap-2">
+          <Eye size={18} /> View Detail
+        </div>
+      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Detail Product</DialogTitle>

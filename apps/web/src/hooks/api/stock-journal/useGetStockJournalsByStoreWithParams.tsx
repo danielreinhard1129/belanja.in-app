@@ -1,13 +1,13 @@
 import { IPaginationMeta, IPaginationQueries } from "@/types/pagination.type";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
-import { Stock } from "@/types/stock.type";
 import { axiosInstance } from "@/lib/axios";
 import { useAppSelector } from "@/redux/hooks";
 import { StockJournal } from "@/types/stockJournal.type";
 
 interface IGetStocksQuery extends IPaginationQueries {
   search?: string;
+  status?: string;
   storeId?: string | undefined;
 }
 
@@ -33,6 +33,7 @@ const useGetStockJournalsByStoreWithParams = (queries: IGetStocksQuery) => {
       if (error instanceof AxiosError) {
         console.log(error);
       }
+      setStockJournals([]);
     } finally {
       setIsLoading(false);
     }
@@ -40,7 +41,7 @@ const useGetStockJournalsByStoreWithParams = (queries: IGetStocksQuery) => {
 
   useEffect(() => {
     getStockJournalsByStore();
-  }, [queries?.page, queries?.search, queries?.storeId]);
+  }, [queries?.page, queries?.search, queries?.storeId, queries?.status]);
 
   return {
     stockJournals,

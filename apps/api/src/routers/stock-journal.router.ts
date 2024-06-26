@@ -21,7 +21,22 @@ export class StockJournalRouter {
     this.router.get(
       '/',
       verifyToken,
-      this.stockJournalController.getStockJournalByStore,
+      this.stockJournalController.getStockJournalByStoreAdmin,
+    );
+    this.router.get(
+      '/super-admin',
+      verifyToken,
+      this.stockJournalController.getStockJournalsByStoreSuperAdmin,
+    );
+    this.router.get(
+      '/super-admin/notifications',
+      verifyToken,
+      this.stockJournalController.getStockJournalsSuperAdminNotifications,
+    );
+    this.router.post(
+      '/super-admin/update-notifications',
+      verifyToken,
+      this.stockJournalController.updateStockJournalsSuperAdminNotifications,
     );
   }
 

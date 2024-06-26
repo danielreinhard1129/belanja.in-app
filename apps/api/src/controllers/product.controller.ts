@@ -95,7 +95,6 @@ export class ProductController {
 
   async deleteManyProducts(req: Request, res: Response, next: NextFunction) {
     try {
-      // const { productId } = req.body;
       await deleteManyProductsService(req.body.productId, req.body.user);
       return res.status(200).send({
         message: 'delete product success',
