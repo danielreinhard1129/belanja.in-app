@@ -169,6 +169,7 @@ model StockJournal {
   id            Int             @id @default(autoincrement())
   quantity      Int
   type          String
+  isRead        Boolean?        @default(false)
   status        String
   productId     Int
   storeId       Int
