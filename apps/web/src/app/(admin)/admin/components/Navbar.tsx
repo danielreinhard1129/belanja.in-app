@@ -84,8 +84,9 @@ const Navbar = () => {
               onClick={() => router.push("/admin")}
             />
           </div>
-          {lists.map((item) => (
+          {lists.map((item, index) => (
             <Button
+              key={index}
               variant="secondary"
               className={`${baseClass} ${item.url === pathname ? "w-full justify-start px-4 py-3" : "w-full justify-start bg-white px-4 py-3 text-black/50"}`}
               onClick={() => router.replace(item.url)}
@@ -95,8 +96,8 @@ const Navbar = () => {
             </Button>
           ))}
         </div>
-        <div className="hidden w-full md:flex md:flex-col gap-8">
-          <div className="flex px-4 items-center justify-between">
+        <div className="hidden w-full gap-8 md:flex md:flex-col">
+          <div className="flex items-center justify-between px-4">
             <div
               className="flex cursor-pointer items-center gap-4"
               onClick={() => router.push(`/user/${id}`)}
@@ -184,9 +185,10 @@ const Navbar = () => {
                 <ChevronRight size={20} />
               </div>
               <Separator />
-              {lists.map((item) => (
+              {lists.map((item, index) => (
                 <SheetClose>
                   <Button
+                    key={index}
                     variant="secondary"
                     className={`${baseClass} ${item.url === pathname ? "w-full justify-start px-4 py-3" : "w-full justify-start bg-white px-4 py-3 text-black/50"}`}
                     onClick={() => router.replace(item.url)}

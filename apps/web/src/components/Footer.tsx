@@ -5,13 +5,6 @@ import { Button } from "./ui/button";
 import twitter from "../../public/twitter-icon.svg";
 import linkedin from "../../public/linkedin-square-icon.svg";
 
-import Image from "next/image";
-import { Separator } from "./ui/separator";
-import logo from "../../public/belanjainlogotransparent.svg";
-import { Button } from "./ui/button";
-import twitter from "../../public/twitter-icon.svg";
-import linkedin from "../../public/linkedin-square-icon.svg";
-
 export const Footer = () => {
   return (
     <div>

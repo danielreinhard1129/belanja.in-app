@@ -61,7 +61,7 @@ const ForgotPasswordForm: FC = () => {
         <BackToHome />
         <h1 className="px-4 text-2xl font-semibold">Forgot password?</h1>
         <p className="px-4 pb-10 text-sm md:text-base">
-          No worries, we'll send you an email for reset instruction
+          No worries, we&apos;ll send you an email for reset instruction
         </p>
         <Form {...form}>
           <form

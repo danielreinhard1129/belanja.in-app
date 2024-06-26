@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { useState } from "react";
+import Image from "next/image";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 5;
 const ACCEPTED_IMAGE_MIME_TYPES = [
@@ -41,16 +42,13 @@ const FormSchema = z.object({
       message: "Username must be at least 2 characters.",
     })
     .optional(),
-  email: z
-    .string()
-    .email({ message: "Invalid email address" })
-    .optional(),
+  email: z.string().email({ message: "Invalid email address" }).optional(),
   gender: z.string().optional(),
   birthDate: z.date().optional(),
   avatarUrl: z
     .any()
     .refine(
-      (files) => !files || (files?.[0]?.size <= MAX_FILE_SIZE),
+      (files) => !files || files?.[0]?.size <= MAX_FILE_SIZE,
       `Max image size is 5MB.`,
     )
     .refine(
@@ -91,7 +89,13 @@ const UpdateUserDetailsForm = ({ params }: { params: { id: string } }) => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         {selectedImage ? (
           <div className="md:max-w-[200px]">
-            <img src={URL.createObjectURL(selectedImage)} alt="Selected" />
+            <Image
+              src={URL.createObjectURL(selectedImage)}
+              alt="Selected"
+              width={200}
+              height={200}
+              className="object-cover"
+            />
           </div>
         ) : (
           <div className="inline-flex items-center justify-between">

@@ -1,5 +1,4 @@
 import { getStocksByStoreAdminService } from '@/services/store-product/get-stockByStoreAdmin.service';
-import { getStocksByStoreService } from '@/services/store-product/get-stockByStore.service';
 import { getStocksService } from '@/services/store-product/get-stocks.service';
 import { NextFunction, Request, Response } from 'express';
 import { getProductsByStoreService } from '@/services/store-product/get-productsByStore.service';
@@ -16,7 +15,7 @@ export class StoreProductController {
         search: (req.query.search as string) || '',
         storeId: (req.query.storeId as string) || undefined,
       };
-      const result = await getStocksService(req.body.user, query);
+      const result = await getStocksService(res.locals.user, query);
 
       return res.status(200).send(result);
     } catch (error) {
@@ -35,11 +34,9 @@ export class StoreProductController {
     }
   }
 
-  async getStocksByStore(req: Request, res: Response, next: NextFunction) {
-    const storeId = req.query.storeId;
-
+  async getProductsByStore(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await getStocksByStoreService(Number(storeId));
+      const result = await getProductsByStoreService(Number(req.params.id));
       res.status(200).send(result);
     } catch (error) {
       next(error);
