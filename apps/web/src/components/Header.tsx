@@ -12,29 +12,23 @@ import useGoogleAuth from "@/hooks/api/auth/useGoogleAuth";
 import { useRouter } from "next/navigation";
 import { appConfig } from "@/utils/config";
 import defaultAvatar from "../../public/default-avatar.png";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetHeader,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet"; // prettier-ignore
 import { useEffect, useState } from "react";
+import Logo from "./Logo";
 
 export const Header = () => {
   const router = useRouter();
-  const { id, name, avatarUrl, provider, email } = useAppSelector(
-    (state) => state.user,
-  );
+  const { id, name, avatarUrl, provider, email } = useAppSelector((state) => state.user); // prettier-ignore
   const dispatch = useAppDispatch();
+  const [hideHeader, setHideHeader] = useState(false);
+  const [lastScrollTop, setLastScrollTop] = useState(0);
+
   const { logout } = useGoogleAuth();
   const userLogout = async () => {
     localStorage.removeItem("Authorization");
     await dispatch(logoutAction());
     router.push("/");
   };
-  const [hideHeader, setHideHeader] = useState(false);
-  const [lastScrollTop, setLastScrollTop] = useState(0);
   const scrollThreshold = 100;
 
   useEffect(() => {
@@ -49,9 +43,9 @@ export const Header = () => {
       } else {
         setHideHeader(false);
       }
-
       setLastScrollTop(currentScrollTop <= 0 ? 0 : currentScrollTop);
     };
+
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -63,16 +57,7 @@ export const Header = () => {
       className={`fixed left-0 right-0 top-0 z-20 w-full overflow-x-hidden bg-inherit p-0 transition-transform duration-300 ${hideHeader ? "-translate-y-full" : "translate-y-0"}`}
     >
       <div className="container mx-auto flex h-20 items-center justify-between p-0 px-6 py-2">
-        <div className="items-center">
-          <Image
-            src={logo}
-            alt="logo"
-            height={34}
-            className="cursor-pointer"
-            draggable={false}
-            onClick={() => router.push("/")}
-          />
-        </div>
+        <Logo />
         <div className="flex items-center gap-2 md:gap-6">
           {Boolean(id) ? (
             <div className="flex items-center gap-10">
@@ -96,7 +81,7 @@ export const Header = () => {
               <div>
                 <Button
                   variant="link"
-                  className="hidden px-0 py-2 md:flex hover:underline text-red-500"
+                  className="hidden px-0 py-2 text-red-500 hover:underline md:flex"
                   onClick={() =>
                     provider === "GOOGLE" ? logout() : userLogout()
                   }
@@ -198,7 +183,6 @@ export const Header = () => {
           )}
         </div>
       </div>
-      <Separator />
     </nav>
   );
 };

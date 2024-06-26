@@ -8,6 +8,7 @@ import {
   BookMarked,
   Box,
   Briefcase,
+  ChevronRight,
   Home,
   LogOut,
   Users,
@@ -24,9 +25,13 @@ import useGoogleAuth from "@/hooks/api/auth/useGoogleAuth";
 import { useDispatch } from "react-redux";
 import { logoutAction } from "@/redux/slices/userSlice";
 import { useAppSelector } from "@/redux/hooks";
+import { appConfig } from "@/utils/config";
+import { Separator } from "@/components/ui/separator";
 
 const Navbar = () => {
-  const { provider } = useAppSelector((state) => state.user);
+  const { provider, id, name, email, avatarUrl } = useAppSelector(
+    (state) => state.user,
+  );
   const router = useRouter();
   const pathname = usePathname();
   const dispatch = useDispatch();
@@ -90,7 +95,34 @@ const Navbar = () => {
             </Button>
           ))}
         </div>
-        <div className="hidden w-full md:flex">
+        <div className="hidden w-full md:flex md:flex-col gap-8">
+          <div className="flex px-4 items-center justify-between">
+            <div
+              className="flex cursor-pointer items-center gap-4"
+              onClick={() => router.push(`/user/${id}`)}
+            >
+              <div className="relative h-8 w-8 overflow-hidden rounded-full">
+                <Image
+                  src={
+                    (provider === "GOOGLE"
+                      ? avatarUrl
+                      : `${appConfig.baseUrl}/assets${avatarUrl}`) as string
+                  }
+                  alt="pfp"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div>
+                <div className="line-clamp-1 max-w-full text-sm font-medium">
+                  {name}
+                </div>
+                <div className="line-clamp-1 max-w-full text-xs text-black/50">
+                  {email}
+                </div>
+              </div>
+            </div>
+          </div>
           <Button
             variant="link"
             className="w-fit justify-start gap-4 px-4 py-3 text-red-500"
@@ -123,6 +155,35 @@ const Navbar = () => {
               </div>
             </SheetHeader>
             <div className="flex h-[80vh] flex-col gap-4 px-4">
+              <div className="mt-6 flex items-center justify-between">
+                <div
+                  className="flex cursor-pointer items-center gap-4"
+                  onClick={() => router.push(`/user/${id}`)}
+                >
+                  <div className="relative h-12 w-12 overflow-hidden rounded-full">
+                    <Image
+                      src={
+                        (provider === "GOOGLE"
+                          ? avatarUrl
+                          : `${appConfig.baseUrl}/assets${avatarUrl}`) as string
+                      }
+                      alt="pfp"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div>
+                    <div className="line-clamp-1 max-w-full font-medium">
+                      {name}
+                    </div>
+                    <div className="line-clamp-1 max-w-full text-xs text-black/50">
+                      {email}
+                    </div>
+                  </div>
+                </div>
+                <ChevronRight size={20} />
+              </div>
+              <Separator />
               {lists.map((item) => (
                 <SheetClose>
                   <Button
