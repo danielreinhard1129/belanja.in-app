@@ -2,14 +2,17 @@ import { getStocksByStoreAdminService } from '@/services/store-product/get-stock
 import { getStocksByStoreService } from '@/services/store-product/get-stockByStore.service';
 import { getStocksService } from '@/services/store-product/get-stocks.service';
 import { NextFunction, Request, Response } from 'express';
+import { getProductsByStoreService } from '@/services/store-product/get-productsByStore.service';
+import { createStockProductMutationService } from '@/services/store-product/create-stockProductMutation.service';
+import { createRequestStockProductMutationService } from '@/services/store-product/create-requestStockMutation.service';
+import { confirmStockProductMutationService } from '@/services/store-product/confirm-stockProductMutation.service';
+import { rejectStockProductMutationService } from '@/services/store-product/reject-stockProductMutation.service';
 export class StoreProductController {
   async getStocks(req: Request, res: Response, next: NextFunction) {
     try {
       const query = {
         take: Number(req.query.take as string) || 5,
         page: Number(req.query.page as string) || 1,
-        stockJournalsPage: Number(req.query.stockJournalsPage as string) || 5,
-        stockJournalsTake: Number(req.query.stockJournalsTake as string) || 1,
         search: (req.query.search as string) || '',
         storeId: (req.query.storeId as string) || undefined,
       };
@@ -38,6 +41,66 @@ export class StoreProductController {
     try {
       const result = await getStocksByStoreService(Number(storeId));
       res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async createStoreProductMutation(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const result = await createStockProductMutationService(req.body);
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async createRequestStoreProductMutation(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const result = await createRequestStockProductMutationService(req.body);
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async confirmStockProductMutation(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const result = await confirmStockProductMutationService(
+        Number(req.params.id),
+        res.locals.user,
+      );
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async rejectStockProductMutation(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const result = await rejectStockProductMutationService(
+        Number(req.params.id),
+        res.locals.user,
+      );
+
+      return res.status(200).send(result);
     } catch (error) {
       next(error);
     }

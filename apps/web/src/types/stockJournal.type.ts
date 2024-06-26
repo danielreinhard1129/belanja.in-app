@@ -13,6 +13,7 @@ export interface StockJournal {
   fromStoreId: number | null;
   toStoreId: number | null;
   createdAt: string;
+  updatedAt: string;
   JournalDetail: JournalDetail[];
 }
 

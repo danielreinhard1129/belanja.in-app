@@ -1,22 +1,22 @@
 import { IPaginationMeta, IPaginationQueries } from "@/types/pagination.type";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
-import { Stock } from "@/types/stock.type";
 import { axiosInstance } from "@/lib/axios";
 import { useAppSelector } from "@/redux/hooks";
 import { StockJournal } from "@/types/stockJournal.type";
 
 interface IGetStocksQuery extends IPaginationQueries {
   search?: string;
+  status?: string;
 }
 
-const useGetStockJournalByStore = (queries: IGetStocksQuery) => {
+const useGetStockJournalByStoreAdmin = (queries: IGetStocksQuery) => {
   const { token } = useAppSelector((state) => state.user);
   const [stockJournals, setStockJournals] = useState<StockJournal[] | []>([]);
   const [meta, setMeta] = useState<IPaginationMeta | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const getStockJournalByStore = async () => {
+  const getStockJournalByStoreAdmin = async () => {
     try {
       const { data } = await axiosInstance.get("/stock-journals", {
         headers: {
@@ -31,21 +31,22 @@ const useGetStockJournalByStore = (queries: IGetStocksQuery) => {
       if (error instanceof AxiosError) {
         console.log(error);
       }
+      setStockJournals([]);
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    getStockJournalByStore();
-  }, [queries?.page, queries?.search]);
+    getStockJournalByStoreAdmin();
+  }, [queries?.page, queries?.search, queries?.status]);
 
   return {
     stockJournals,
     isLoading,
     meta,
-    refetch: getStockJournalByStore,
+    refetch: getStockJournalByStoreAdmin,
   };
 };
 
-export default useGetStockJournalByStore;
+export default useGetStockJournalByStoreAdmin;

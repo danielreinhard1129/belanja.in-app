@@ -1,8 +1,9 @@
 import prisma from '@/prisma';
 import { PaginationQueryParams } from '@/types/pagination.type';
 
-interface GetStockJournalByParams extends PaginationQueryParams {
+interface GetStockJournalsByParams extends PaginationQueryParams {
   search?: string;
+  status?: string;
   storeId?: string;
 }
 
@@ -12,9 +13,9 @@ interface UserToken {
 
 export const getStockJournalsByStoreWithParamsService = async (
   userToken: UserToken,
-  query: GetStockJournalByParams,
+  query: GetStockJournalsByParams,
 ) => {
-  const { take, page, storeId } = query;
+  const { take, page, storeId, status, search } = query;
   const userId = Number(userToken.id);
 
   const user = await prisma.user.findFirst({
@@ -35,24 +36,24 @@ export const getStockJournalsByStoreWithParamsService = async (
   }
 
   if (user.role === 'USER' || user.role === 'STOREADMIN') {
-    throw new Error(`You do not have access`);
+    throw new Error('You do not have access');
   }
 
-  let where = {}; // Deklarasikan where sebagai objek kosong
+  let where: any = {}; // Deklarasikan where sebagai objek kosong
 
-  // Jika storeId tidak didefinisikan, tampilkan semua data
-  if (storeId) {
+  // Tambahkan filter berdasarkan status jika status didefinisikan dan tidak bernilai 'all'
+  if (status && status !== 'all') {
+    where.status = status;
+  }
+
+  // Jika storeId didefinisikan, tambahkan filter berdasarkan storeId
+  if (storeId && storeId !== '') {
     where = {
+      ...where,
       OR: [
-        {
-          storeId: Number(storeId),
-        },
-        {
-          toStoreId: Number(storeId),
-        },
-        {
-          fromStoreId: Number(storeId),
-        },
+        { storeId: Number(storeId) },
+        { toStoreId: Number(storeId) },
+        { fromStoreId: Number(storeId) },
         {
           JournalDetail: {
             some: {
@@ -73,6 +74,18 @@ export const getStockJournalsByStoreWithParamsService = async (
     };
   }
 
+  // Tambahkan filter berdasarkan search jika didefinisikan
+  if (search && search !== '') {
+    where = {
+      ...where,
+      product: {
+        name: {
+          contains: search,
+        },
+      },
+    };
+  }
+
   try {
     const stockJournal = await prisma.stockJournal.findMany({
       where,
@@ -80,18 +93,6 @@ export const getStockJournalsByStoreWithParamsService = async (
         product: true,
         store: true,
         JournalDetail: {
-          where: {
-            OR: [
-              {
-                toStoreId: Number(storeId),
-              },
-              {
-                stockJournal: {
-                  fromStoreId: Number(storeId),
-                },
-              },
-            ],
-          },
           include: {
             toStore: true,
           },
@@ -100,10 +101,6 @@ export const getStockJournalsByStoreWithParamsService = async (
       skip: (page - 1) * take,
       take,
     });
-
-    if (!stockJournal.length) {
-      throw new Error('No stockJournal found');
-    }
 
     const count = await prisma.stockJournal.count({ where });
 

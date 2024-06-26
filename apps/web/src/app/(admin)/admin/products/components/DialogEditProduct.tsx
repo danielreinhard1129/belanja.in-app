@@ -7,13 +7,14 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import useGetCategories from "@/hooks/api/category/useGetCategories";
 import useGetProduct from "@/hooks/api/product/useGetProduct";
 import useUpdateProduct from "@/hooks/api/product/useUpdateProduct";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, Pencil } from "lucide-react";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 import {
@@ -119,6 +120,12 @@ const DialogEditProduct: React.FC<DialogEditProductProps> = ({
   }));
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogTrigger asChild>
+        <div className="flex cursor-pointer items-center gap-2">
+          <Pencil size={18} />
+          Edit
+        </div>
+      </DialogTrigger>
       <DialogContent>
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>

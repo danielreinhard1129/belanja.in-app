@@ -7,8 +7,9 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Loader2 } from "lucide-react";
+import { Loader2, Trash2 } from "lucide-react";
 import React from "react";
 
 interface DeleteAlertDialogProps {
@@ -28,6 +29,12 @@ const DeleteAlertDialog: React.FC<DeleteAlertDialogProps> = ({
 }) => {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogTrigger>
+        <div className="mt-1 flex cursor-pointer items-center gap-2">
+          <Trash2 size={16} />
+          Delete
+        </div>
+      </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>

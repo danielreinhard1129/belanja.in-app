@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Settings2 } from "lucide-react";
 import {
@@ -6,7 +7,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { MoreVertical } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import DialogStockMutation from "./DialogStockMutation";
 
 interface PopoverStockMenuProps {
@@ -19,7 +20,7 @@ const PopoverStockMenu: React.FC<PopoverStockMenuProps> = ({
   refetch,
 }) => {
   const [isDialogMutationStock, setIsDialogMutationStock] =
-    React.useState(false);
+    useState<boolean>(false);
   return (
     <Popover>
       <PopoverTrigger>
@@ -28,8 +29,13 @@ const PopoverStockMenu: React.FC<PopoverStockMenuProps> = ({
           <span>Stock</span>
         </div>
       </PopoverTrigger>
-      <PopoverContent className="w-32">
-        <DialogStockMutation storeId={storeId} refetch={refetch} />
+      <PopoverContent className="w-32 text-xs">
+        <DialogStockMutation
+          storeId={storeId}
+          refetch={refetch}
+          open={isDialogMutationStock}
+          onOpenChange={setIsDialogMutationStock}
+        />
       </PopoverContent>
     </Popover>
   );

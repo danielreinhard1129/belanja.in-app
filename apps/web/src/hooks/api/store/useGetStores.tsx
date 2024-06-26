@@ -16,11 +16,8 @@ const useGetStores = (queries: IGetEventsQuery) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const getStores = async () => {
     try {
-      const { data } = await axiosInstance.get<Store[]>("/stores", {
-        params: queries,
-      });
-      setData(data.data);
-      setMeta(data.meta);
+      const { data } = await axiosInstance.get<Store[]>("/stores");
+      setStores(data);
     } catch (error) {
       if (error instanceof AxiosError) {
         console.error("Error fetching stores:", error.message);
