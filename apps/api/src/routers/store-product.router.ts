@@ -14,9 +14,23 @@ export class StoreProductRouter {
 
   private initializeRoutes(): void {
     this.router.get('/', verifyToken, this.storeProductController.getStocks);
+    // this.router.post(
+    //   '/mutation',
+    //   this.storeProductController.createStoreProductMutation,
+    // );
     this.router.post(
-      '/mutation',
-      this.storeProductController.createStoreProductMutation,
+      '/request-mutation',
+      this.storeProductController.createRequestStoreProductMutation,
+    );
+    this.router.post(
+      '/confirm/:id',
+      verifyToken,
+      this.storeProductController.confirmStockProductMutation,
+    );
+    this.router.post(
+      '/reject/:id',
+      verifyToken,
+      this.storeProductController.rejectStockProductMutation,
     );
     this.router.get('/:id', this.storeProductController.getProductsByStore);
     this.router.get(

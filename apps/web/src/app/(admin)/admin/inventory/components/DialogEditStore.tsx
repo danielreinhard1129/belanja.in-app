@@ -72,8 +72,8 @@ export function DialogEditStore({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <div className="flex cursor-pointer gap-2">
-          <Pencil size={20} />
+        <div className="flex cursor-pointer items-center gap-2">
+          <Pencil size={16} />
           Edit
         </div>
       </DialogTrigger>

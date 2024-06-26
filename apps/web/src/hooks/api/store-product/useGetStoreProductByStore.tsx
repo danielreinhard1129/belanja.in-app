@@ -45,7 +45,6 @@ const useGetProductsByStore = (id: number) => {
       const { data } = await axiosInstance.get<Product[]>(
         `/store-products/${id}`,
       );
-      console.log(data);
       setProducts(data);
     } catch (error) {
       if (error instanceof AxiosError) {

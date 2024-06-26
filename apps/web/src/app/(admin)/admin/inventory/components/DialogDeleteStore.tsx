@@ -30,8 +30,8 @@ const DialogDeleteStore: React.FC<DeleteAlertDialogProps> = ({
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogTrigger>
-        <div className="flex gap-2">
-          <Trash2 size={20} />
+        <div className="mt-1 flex cursor-pointer items-center gap-2">
+          <Trash2 size={16} />
           Delete
         </div>
       </AlertDialogTrigger>

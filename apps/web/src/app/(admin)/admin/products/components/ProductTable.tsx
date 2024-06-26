@@ -18,7 +18,7 @@ import { ImageIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
-import DropdownAction from "./DropdownAction";
+import PopoverProductMenu from "./PopoverProductMenu";
 import DialogSettingsCategory from "./DialogSettingsCategory";
 
 interface ProductTableProps {
@@ -128,7 +128,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
               </TableCell>
               <TableCell>{product.price}</TableCell>
               <TableCell>
-                <DropdownAction
+                <PopoverProductMenu
                   productId={product.id}
                   isDeleting={isDeleting}
                   handleDelete={handleDelete}

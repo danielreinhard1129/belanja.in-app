@@ -1,3 +1,5 @@
+"use client";
+
 import { FormInput } from "@/components/FormInput";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,10 +34,13 @@ const DialogSettingsCategory: React.FC<DialogSettingsCategoryProps> = ({
 }) => {
   const { createCategory, isLoading: isCreating } = useCreateCategory();
   const { updateCategory, isLoading: isUpdating } = useUpdateCategory();
-  const { deleteCategory, isLoading: isDeleting } = useDeleteCategory();
+  const { deleteCategory } = useDeleteCategory();
   const { categories } = useGetCategories();
   const [editingCategory, setEditingCategory] =
     useState<SchemaCreateCategory | null>(null);
+  const [deletingCategoryId, setDeletingCategoryId] = useState<number | null>(
+    null,
+  );
 
   const methods = useForm<SchemaCreateCategory>({
     mode: "all",
@@ -62,8 +67,13 @@ const DialogSettingsCategory: React.FC<DialogSettingsCategoryProps> = ({
   };
 
   const handleDelete = async (categoryId: number) => {
-    await deleteCategory(categoryId);
-    refetch();
+    setDeletingCategoryId(categoryId);
+    try {
+      await deleteCategory(categoryId);
+      refetch();
+    } finally {
+      setDeletingCategoryId(null);
+    }
   };
 
   return (
@@ -138,12 +148,12 @@ const DialogSettingsCategory: React.FC<DialogSettingsCategoryProps> = ({
                     <Edit size={16} />
                   </Button>
                   <Button
-                    disabled={isDeleting}
+                    disabled={deletingCategoryId === category.id}
                     onClick={() => handleDelete(category.id)}
                     className="px-4 py-2"
                     variant="destructive"
                   >
-                    {isDeleting ? (
+                    {deletingCategoryId === category.id ? (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     ) : (
                       <Trash size={16} />

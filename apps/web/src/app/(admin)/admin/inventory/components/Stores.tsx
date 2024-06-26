@@ -13,6 +13,8 @@ import { AddStoreModal } from "./AddStoreModal";
 import useDeleteStore from "@/hooks/api/store/useDeleteStore";
 import PopoverStoreMenu from "./PopoverStoreMenu";
 import useGetStoresByParams from "@/hooks/api/store/useGetStoresByParams";
+import NotificationIcon from "./NotificationStockSuperAdmin";
+import SearchInput from "./Search";
 
 interface StoresProps {
   activeStoreId: string;
@@ -21,6 +23,9 @@ interface StoresProps {
 
 const Stores: React.FC<StoresProps> = ({ onStoreClick, activeStoreId }) => {
   const { deleteStore, isLoading: isDeleting } = useDeleteStore();
+  const [activePopoverStoreId, setActivePopoverStoreId] = useState<
+    number | null
+  >(null);
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState<string>("");
   const {
@@ -51,18 +56,28 @@ const Stores: React.FC<StoresProps> = ({ onStoreClick, activeStoreId }) => {
   }
 
   // console.log(stores);
+  const handleCardClick = (storeId: number) => {
+    onStoreClick(storeId);
+    setActivePopoverStoreId(storeId);
+  };
 
   return (
     <div>
-      <div className="mb-6">
-        <div className="flex justify-between">
-          <h2 className="mb-4 text-2xl font-bold">Inventory</h2>
-          <AddStoreModal refetch={refetch} />
+      <h2 className="text-2xl font-bold">Inventory</h2>
+      <div className="my-4">
+        <div className="flex items-center justify-between">
+          <div className="w-[300px]">
+            <SearchInput search={search} setSearch={setSearch} />
+          </div>
+          <div className="flex items-center justify-between gap-4">
+            <NotificationIcon />
+            <AddStoreModal refetch={refetch} />
+          </div>
         </div>
       </div>
-      <div className="mx-1 flex gap-5">
+      <div className="flex gap-5">
         {stores.map((store, i) => (
-          <div key={i} onClick={() => onStoreClick(store.id)}>
+          <div key={i} onClick={() => handleCardClick(store.id)}>
             <Card
               className={`h-36 w-48 cursor-pointer rounded-lg border p-4 transition duration-300 hover:shadow-md hover:shadow-orange-500 ${
                 store.id === Number(activeStoreId)
@@ -75,13 +90,17 @@ const Stores: React.FC<StoresProps> = ({ onStoreClick, activeStoreId }) => {
               <CardHeader>
                 <CardTitle>
                   <div className="flex justify-between">
-                    <div>{store.name}</div>
-                    <PopoverStoreMenu
-                      refetch={refetch}
-                      storeId={Number(store.id)}
-                      handleDelete={handleDelete}
-                      isDeleting={isDeleting}
-                    />
+                    <div className="w-32 truncate text-lg" title={store.name}>
+                      {store.name}
+                    </div>
+                    {activePopoverStoreId === store.id && (
+                      <PopoverStoreMenu
+                        refetch={refetch}
+                        storeId={Number(store.id)}
+                        handleDelete={handleDelete}
+                        isDeleting={isDeleting}
+                      />
+                    )}
                   </div>
                 </CardTitle>
                 <CardDescription className="text-sm">
@@ -102,6 +121,7 @@ const Stores: React.FC<StoresProps> = ({ onStoreClick, activeStoreId }) => {
           </div>
         ))}
       </div>
+
       <div className="mx-auto mt-8 w-fit">
         <Pagination
           total={total}

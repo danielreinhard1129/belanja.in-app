@@ -10,7 +10,6 @@ const useGetStores = () => {
   const getStores = async () => {
     try {
       const { data } = await axiosInstance.get<Store[]>("/stores");
-      console.log(data);
       setStores(data);
     } catch (error) {
       if (error instanceof AxiosError) {

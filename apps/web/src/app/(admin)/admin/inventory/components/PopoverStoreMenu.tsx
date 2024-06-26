@@ -5,8 +5,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import DialogDeleteStore from "./DialogDeleteStore";
-import { MoreVertical } from "lucide-react";
+import { Eye, MoreVertical, View } from "lucide-react";
 import { DialogEditStore } from "./DialogEditStore";
+import Link from "next/link";
 
 interface PopoverMenuProps {
   storeId: number;
@@ -28,8 +29,14 @@ const PopoverStoreMenu: React.FC<PopoverMenuProps> = ({
       <PopoverTrigger>
         <MoreVertical className="h-4 w-4" />
       </PopoverTrigger>
-      <PopoverContent className="w-32">
+      <PopoverContent className="w-32 text-xs">
         <div>
+          <DialogEditStore
+            refetch={refetch}
+            storeId={storeId}
+            open={isDialogEditStore}
+            onOpenChange={setIsDialogEditStore}
+          />
           <DialogDeleteStore
             storeId={storeId}
             isDeleting={isDeleting}
@@ -37,12 +44,11 @@ const PopoverStoreMenu: React.FC<PopoverMenuProps> = ({
             open={isDialogDeleteStore}
             onOpenChange={setIsDialogDeleteStore}
           />
-          <DialogEditStore
-            refetch={refetch}
-            storeId={storeId}
-            open={isDialogEditStore}
-            onOpenChange={setIsDialogEditStore}
-          />
+          <Link href={`/admin/inventory/${storeId}`}>
+            <div className="flex cursor-pointer items-center gap-2">
+              <Eye size={16} /> View Detail
+            </div>
+          </Link>
         </div>
       </PopoverContent>
     </Popover>

@@ -20,3 +20,13 @@ export interface IFormStoreProduct {
     qty: number;
   }[];
 }
+
+export interface IFormRequestStoreProduct {
+  storeId: string;
+  // fromStoreId?: string;
+  type: string;
+  stocks: {
+    productId: string;
+    qty: number;
+  }[];
+}
