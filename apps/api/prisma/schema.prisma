@@ -23,8 +23,8 @@ model Sample {
 model Address {
   id            Int     @id @default(autoincrement())
   addressLine   String
-  lat           String
-  long          String
+  lat           Float
+  long          Float
   isPrimary     Boolean @default(true)
   provinceId    Int
   cityId        Int
@@ -137,8 +137,8 @@ model Store {
   id            Int             @id @default(autoincrement())
   name          String
   qty           Int             @default(0)
-  lat           String
-  long          String
+  lat           Float
+  long          Float
   isPrimary     Boolean         @default(false)
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
