@@ -9,8 +9,6 @@ export interface Discount {
   discountType: string;
   discountvalue: number;
   minPurchase: number;
-  startDate: string;
-  endDate: string;
   storeId: number;
   store: Store;
   productId: number;
@@ -29,4 +27,13 @@ export interface UserDiscount {
   discount: Discount;
   Order: [];
   OrderItems: [];
+}
+
+export interface IFormDiscount {
+  title: string;
+  desc: string;
+  discountType: string;
+  discountvalue: number;
+  minPurchase: number;
+  productId: number;
 }
