@@ -29,13 +29,14 @@ model Address {
   provinceId    Int
   cityId        Int
   subdistrictId Int
+  userId        Int
 
   provinces    Province    @relation(fields: [provinceId], references: [id])
   cities       City        @relation(fields: [cityId], references: [id])
   subdistricts Subdistrict @relation(fields: [subdistrictId], references: [id])
 
-  User     User[]
   Delivery Delivery[]
+  User     User       @relation(fields: [userId], references: [id])
 
   @@map("addresses")
 }
@@ -49,6 +50,8 @@ model City {
   subdistricts Subdistrict[]
 
   addresses Address[]
+  Store     Store[]
+  storeId   Int?
 
   @@map("cities")
 }
@@ -89,7 +92,7 @@ model User {
   gender     String?
   birthDate  DateTime?
 
-  addresses    Address?          @relation(fields: [addressId], references: [id])
+  addresses    Address[]
   storeAdmin   StoreAdmin?
   Order        Order[]
   userDiscount userDiscount[]
@@ -139,7 +142,7 @@ model Store {
   isPrimary     Boolean         @default(false)
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
-  city          String
+  cityId        Int
   storeAdminId  Int?            @unique
   storeAdmin    StoreAdmin?     @relation(fields: [storeAdminId], references: [id])
   storeProduct  StoreProduct[]
@@ -148,6 +151,7 @@ model Store {
   JournalDetail JournalDetail[]
   Order         Order[]
   Delivery      Delivery[]
+  City          City            @relation(fields: [cityId], references: [id])
 
   @@map("stores")
 }
