@@ -18,6 +18,7 @@ export class OrderController {
         sortOrder: (req.query.sortOrder as string) || 'desc',
         search: (req.query.search as string) || '',
         status: req.query.status as OrderStatus,
+        category: (req.query.category as string) || '',
       };
       const result = await getOrdersByUserId(query);
 

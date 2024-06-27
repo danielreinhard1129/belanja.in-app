@@ -362,14 +362,14 @@ model Order {
   @@map("orders")
 }
 
-enum OrderStatus {
-  WAITING_FOR_PAYMENT
-  WAITING_ADMIN_CONFIRMATION
-  ORDER_PROCESSED
-  ORDER_SHIPPED
-  ORDER_RECEIVED
-  ORDER_CANCELLED
-}
+ enum OrderStatus {
+    WAITING_FOR_PAYMENT @map("WAITING_FOR_PAYMENT")
+    WAITING_ADMIN_CONFIRMATION @map("WAITING_ADMIN_CONFIRMATION")
+    ORDER_PROCESSED @map("ORDER_PROCESSED")
+    ORDER_SHIPPED @map("ORDER_SHIPPED")
+    ORDER_RECEIVED @map("ORDER_RECEIVED")
+    ORDER_CANCELLED @map("ORDER_CANCELLED")
+  }
 
 model OrderItems {
   id            Int  @id @default(autoincrement())
