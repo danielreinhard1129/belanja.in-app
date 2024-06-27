@@ -5,12 +5,23 @@ import express, {
   Request,
   Response,
   NextFunction,
-  Router,
+  static as static_,
 } from 'express';
 import cors from 'cors';
+import { join } from 'path';
 import { PORT } from './config';
-import { SampleRouter } from './routers/sample.router';
+import { AuthRouter } from './routers/auth.router';
 import { OrderRouter } from './routers/order.router';
+import { StoreAdminRouter } from './routers/store-admin.router';
+import { ProductRouter } from './routers/product.router';
+import { StoreRouter } from './routers/store.router';
+import { StoreProductRouter } from './routers/store-product.router';
+import { CategoryRouter } from './routers/category.router';
+import { StockJournalRouter } from './routers/stock-journal.router';
+import { UserRouter } from './routers/user.router';
+import { DiscountRouter } from './routers/discount.router';
+import { VoucherRouter } from './routers/voucher.router';
+import { AddressRouter } from './routers/address.router';
 
 export default class App {
   private app: Express;
@@ -26,6 +37,7 @@ export default class App {
     this.app.use(cors());
     this.app.use(json());
     this.app.use(urlencoded({ extended: true }));
+    this.app.use('/api/assets', static_(join(__dirname, '../public')));
   }
 
   private handleError(): void {
@@ -43,7 +55,9 @@ export default class App {
       (err: Error, req: Request, res: Response, next: NextFunction) => {
         if (req.path.includes('/api/')) {
           console.error('Error : ', err.stack);
-          res.status(500).send('Error !');
+          res
+            .status(500)
+            .send(err.stack?.split('\n')[0].replace('Error: ', ''));
         } else {
           next();
         }
@@ -52,15 +66,35 @@ export default class App {
   }
 
   private routes(): void {
-    const sampleRouter = new SampleRouter();
     const orderRouter = new OrderRouter();
+    const authRouter = new AuthRouter();
+    const storeAdminRouter = new StoreAdminRouter();
+    const productRouter = new ProductRouter();
+    const storeRouter = new StoreRouter();
+    const storeProductRouter = new StoreProductRouter();
+    const categoryRouter = new CategoryRouter();
+    const stockJournalRouter = new StockJournalRouter();
+    const userRouter = new UserRouter();
+    const discountRouter = new DiscountRouter();
+    const voucherRouter = new VoucherRouter();
+    const addressRouter = new AddressRouter()
 
-    this.app.get('/', (req: Request, res: Response) => {
-      res.send(`Hello, Purwadhika Student !`);
+    this.app.get('/api', (req: Request, res: Response) => {
+      res.send(`Welcome to belanja.in API !`);
     });
 
-    this.app.use('/samples', sampleRouter.getRouter());
     this.app.use('/api/orders', orderRouter.getRouter());
+    this.app.use('/api/auth', authRouter.getRouter());
+    this.app.use('/api/stores', storeRouter.getRouter());
+    this.app.use('/api/store-admins', storeAdminRouter.getRouter());
+    this.app.use('/api/store-products', storeProductRouter.getRouter());
+    this.app.use('/api/products', productRouter.getRouter());
+    this.app.use('/api/categories', categoryRouter.getRouter());
+    this.app.use('/api/stock-journals', stockJournalRouter.getRouter());
+    this.app.use('/api/users', userRouter.getRouter());
+    this.app.use('/api/discounts', discountRouter.getRouter());
+    this.app.use('/api/vouchers', voucherRouter.getRouter());
+    this.app.use('/api/address', addressRouter.getRouter())
   }
 
   public start(): void {

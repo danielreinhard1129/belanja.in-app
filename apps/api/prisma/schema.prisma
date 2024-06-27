@@ -21,83 +21,79 @@ model Sample {
 }
 
 model Address {
-  id           Int     @id @default(autoincrement())
-  addressLine  String
-  lat          String
-  long         String
-  isPrimary    Boolean @default(true)
-  provinceId   Int
-  cityId       Int
-  districtId   Int
-  postalCodeId Int
+  id            Int     @id @default(autoincrement())
+  addressLine   String
+  lat           Float
+  long          Float
+  isPrimary     Boolean @default(true)
+  provinceId    Int
+  cityId        Int
+  subdistrictId Int
+  userId        Int
 
-  provinces  Province   @relation(fields: [provinceId], references: [id])
-  cities     City       @relation(fields: [cityId], references: [id])
-  districts  District   @relation(fields: [districtId], references: [id])
-  postalCode PostalCode @relation(fields: [postalCodeId], references: [id])
+  provinces    Province    @relation(fields: [provinceId], references: [id])
+  cities       City        @relation(fields: [cityId], references: [id])
+  subdistricts Subdistrict @relation(fields: [subdistrictId], references: [id])
 
-  User     User[]
   Delivery Delivery[]
+  User     User       @relation(fields: [userId], references: [id])
 
   @@map("addresses")
 }
 
-model Province {
-  id      Int       @id @default(autoincrement())
-  title   String
-  city    City[]
-  Address Address[]
-
-  @@map("provinces")
-}
-
 model City {
-  id    Int    @id @default(autoincrement())
-  title String
+  id           Int           @id
+  provinceId   Int?
+  citName      String?       @db.VarChar(255)
+  postal_code  String?       @db.Char(5)
+  province     Province?     @relation(fields: [provinceId], references: [id])
+  subdistricts Subdistrict[]
 
-  provinceId Int
-
-  province Province   @relation(fields: [provinceId], references: [id])
-  district District[]
-  Address  Address[]
+  addresses Address[]
+  Store     Store[]
+  storeId   Int?
 
   @@map("cities")
 }
 
-model District {
-  id     Int    @id @default(autoincrement())
-  title  String
-  cityId Int
+model Province {
+  id           Int       @id
+  provinceName String?   @db.VarChar(255)
+  cities       City[]
+  addresses    Address[]
 
-  city    City      @relation(fields: [cityId], references: [id])
-  Address Address[]
-
-  @@map("districts")
+  @@map("provinces")
 }
 
-model PostalCode {
-  id         Int @id @default(autoincrement())
-  postalCode Int
+model Subdistrict {
+  id              Int       @id
+  cityId          Int?
+  subdistrictName String?   @db.VarChar(255)
+  city            City?     @relation(fields: [cityId], references: [id])
+  Address         Address[]
 
-  Address Address[]
-
-  @@map("postalCodes")
+  @@map("subdistricts")
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   name       String
-  email      String   @unique
+  email      String    @unique
   password   String?
   isVerified Boolean?
-  referral   String?  @unique
-  role       Role     @default(USER)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  addressId  Int
+  isDelete   Boolean?  @default(false)
+  referral   String?   @unique
+  role       Role      @default(USER)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  addressId  Int?
+  avatarUrl  String?
+  provider   String?
+  gender     String?
+  birthDate  DateTime?
 
-  addresses    Address           @relation(fields: [addressId], references: [id])
-  employee     Employee?
+  addresses    Address[]
+  storeAdmin   StoreAdmin?
   Order        Order[]
   userDiscount userDiscount[]
   UserVoucher  UserVoucher[]
@@ -109,8 +105,8 @@ model User {
 
 enum Role {
   USER
-  EMPLOYEE
-  ADMIN
+  STOREADMIN
+  SUPERADMIN
 }
 
 model ReferralHistory {
@@ -120,88 +116,124 @@ model ReferralHistory {
 
   referrer User @relation(fields: [referrerId], references: [id], name: "referrer")
   referred User @relation(fields: [referredId], references: [id], name: "referred")
+
   @@map("referral_histories")
 }
 
-model Employee {
+model StoreAdmin {
   id        Int      @id @default(autoincrement())
   userId    Int      @unique
   nip       Int
+  isDelete  Boolean?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id])
-  stores    Store[]
+  stores    Store?
 
-  @@map("employees")
+  @@map("store_admin")
 }
 
 model Store {
-  id         Int        @id @default(autoincrement())
-  name       String
-  lat        String
-  long       Int
-  isPrimary  Boolean
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  city       String
-  employeeId Int
-  employee   Employee   @relation(fields: [employeeId], references: [id])
-  stocks     Stock[]
-  discounts  Discount[]
-  Order      Order[]
-  Delivery   Delivery[]
+  id            Int             @id @default(autoincrement())
+  name          String
+  qty           Int             @default(0)
+  lat           Float
+  long          Float
+  isPrimary     Boolean         @default(false)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  cityId        Int
+  storeAdminId  Int?            @unique
+  storeAdmin    StoreAdmin?     @relation(fields: [storeAdminId], references: [id])
+  storeProduct  StoreProduct[]
+  discounts     Discount[]
+  stockJournals StockJournal[]
+  JournalDetail JournalDetail[]
+  Order         Order[]
+  Delivery      Delivery[]
+  City          City            @relation(fields: [cityId], references: [id])
 
   @@map("stores")
 }
 
-model Stock {
-  id        Int            @id @default(autoincrement())
+model StoreProduct {
+  id        Int      @id @default(autoincrement())
   qty       Int
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
   storeId   Int
   productId Int
-  store     Store          @relation(fields: [storeId], references: [id])
-  product   Product        @relation(fields: [productId], references: [id])
-  fromStock StockJournal[] @relation(name: "fromStock")
-  toStock   StockJournal[] @relation(name: "toStock")
+  store     Store    @relation(fields: [storeId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  @@map("stocks")
+  @@unique([storeId, productId])
+  @@map("store_products")
 }
 
 model StockJournal {
-  id          Int      @id @default(autoincrement())
-  changeQty   Int
-  createdAt   DateTime @default(now())
-  fromStockId Int
-  toStockId   Int
-  fromStock   Stock    @relation(fields: [fromStockId], references: [id], name: "fromStock")
-  toStock     Stock    @relation(fields: [toStockId], references: [id], name: "toStock")
+  id            Int             @id @default(autoincrement())
+  quantity      Int
+  type          String
+  isRead        Boolean?        @default(false)
+  status        String
+  productId     Int
+  storeId       Int
+  fromStoreId   Int?
+  toStoreId     Int?
+  product       Product         @relation(fields: [productId], references: [id])
+  store         Store           @relation(fields: [storeId], references: [id])
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  JournalDetail JournalDetail[]
 
   @@map("stock_journals")
 }
 
+enum JournalType {
+  MUTATION
+  INCREASE
+  DECREASE
+}
+
+enum JournalStatus {
+  WAITING_ADMIN_CONFIRMATION
+  SUCCESS
+  CANCELLED
+}
+
+model JournalDetail {
+  id             Int          @id @default(autoincrement())
+  stockJournalId Int
+  stockJournal   StockJournal @relation(fields: [stockJournalId], references: [id])
+  toStoreId      Int?
+  toStore        Store?       @relation(fields: [toStoreId], references: [id])
+
+  @@map("journal_detail")
+}
+
 model Product {
-  id          Int                    @id @default(autoincrement())
-  name        String
-  description String
-  price       Int
-  isDelete    Boolean?
-  createdAt   DateTime               @default(now())
-  updatedAt   DateTime               @updatedAt
-  stocks      Stock[]
-  categories  CategoriesOnProducts[]
-  images      ProductImage[]
-  discounts   Discount[]
-  OrderItems  OrderItems[]
-  Voucher     Voucher[]
+  id            Int                    @id @default(autoincrement())
+  name          String                 @unique
+  description   String
+  weight        Int
+  price         Int
+  isDelete      Boolean?               @default(false)
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+  storeProduct  StoreProduct[]
+  categories    CategoriesOnProducts[]
+  images        ProductImage[]
+  discounts     Discount[]
+  stockJournals StockJournal[]
+  Voucher       Voucher[]
+  OrderItems    OrderItems[]
 
   @@map("products")
 }
 
 model ProductImage {
   id        Int     @id @default(autoincrement())
-  image     String
+  images    String
   productId Int
   product   Product @relation(fields: [productId], references: [id])
 
@@ -211,6 +243,7 @@ model ProductImage {
 model Category {
   id       Int                    @id @default(autoincrement())
   name     String                 @unique
+  isDelete Boolean?               @default(false)
   products CategoriesOnProducts[]
 
   @@map("categories")
@@ -223,11 +256,13 @@ model CategoriesOnProducts {
   product    Product  @relation(fields: [productId], references: [id])
 
   @@id([productId, categoryId])
-  @@map("CategoriesOnProducts")
+  @@map("categories_on_products")
 }
 
 model Discount {
   id            Int          @id @default(autoincrement())
+  title         String
+  desc          String
   discountType  DiscountType
   discountvalue Float
   minPurchase   Float?
@@ -263,7 +298,7 @@ model userDiscount {
   Order      Order[]
   OrderItems OrderItems[]
 
-  @@map("user_discount")
+  @@map("user_discounts")
 }
 
 model Voucher {
@@ -295,16 +330,18 @@ model UserVoucher {
   voucherId Int
   userId    Int
 
-  vouchers Voucher @relation(fields: [voucherId], references: [id])
-  users    User    @relation(fields: [userId], references: [id])
-  Order    Order[]
+  vouchers   Voucher      @relation(fields: [voucherId], references: [id])
+  users      User         @relation(fields: [userId], references: [id])
+  Order      Order[]
+  OrderItems OrderItems[]
 
-  @@map("user_voucher")
+  @@map("user_vouchers")
 }
 
 model Order {
   id          Int         @id @default(autoincrement())
   totalAmount Int
+  totalWeight Int?
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   status      OrderStatus @default(WAITING_FOR_PAYMENT)
@@ -335,17 +372,22 @@ enum OrderStatus {
 }
 
 model OrderItems {
-  id    Int @id @default(autoincrement())
-  qty   Int
-  price Int
+  id            Int  @id @default(autoincrement())
+  qty           Int
+  total         Int
+  discValue     Int
+  originalPrice Int
+  totalWeight   Int?
 
   orderId        Int
   productId      Int
   userDiscountId Int?
+  userVoucherId  Int?
 
   orders        Order         @relation(fields: [orderId], references: [id])
   products      Product       @relation(fields: [productId], references: [id])
   userDiscounts userDiscount? @relation(fields: [userDiscountId], references: [id])
+  userVouchers  UserVoucher?  @relation(fields: [userVoucherId], references: [id])
 
   @@map("order_items")
 }
