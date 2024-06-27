@@ -1,26 +1,21 @@
 "use client";
 
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { axiosInstance } from "@/lib/axios";
 import { AxiosError } from "axios";
 import { useState } from "react";
 
 const useDeleteCategory = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { toast } = useToast();
   const deleteCategory = async (categoryId: number) => {
     setIsLoading(true);
     try {
       await axiosInstance.delete(`/categories/${categoryId}`);
-      toast({
-        description: "Category deleted successfully!",
-      });
+      toast.success("Category deleted succesfully");
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError) {
-        toast({
-          description: error?.response?.data,
-        });
+        toast.error(error?.response?.data);
       }
     } finally {
       setIsLoading(false);

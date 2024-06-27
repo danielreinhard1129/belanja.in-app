@@ -1,4 +1,5 @@
 import { FormInput } from "@/components/FormInput";
+import ImageUploader from "@/components/FormInputImages";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -24,7 +25,6 @@ import {
   useForm,
 } from "react-hook-form";
 import { TEditProductSchema, editProductSchema } from "./EditProductSchema";
-import ImageUploader from "@/components/FormInputImages";
 const Select = dynamic(() => import("react-select"), { ssr: false });
 interface DialogEditProductProps {
   productId: number;

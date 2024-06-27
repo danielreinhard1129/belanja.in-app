@@ -1,9 +1,6 @@
 "use client";
 import Pagination from "@/components/Pagination";
-import {
-  AlertDialogContent,
-  AlertDialogHeader,
-} from "@/components/ui/alert-dialog";
+import { AlertDialogHeader } from "@/components/ui/alert-dialog";
 import {
   Dialog,
   DialogContent,
@@ -11,6 +8,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -28,16 +33,8 @@ import {
 import useGetStockJournalByStoreAdmin from "@/hooks/api/stock-journal/useGetStockJournalByStoreAdmin";
 import { format } from "date-fns";
 import { Eye } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import SearchInput from "../../products/components/Search";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 const StoreAdmin = () => {
   const [page, setPage] = useState<number>(1);
@@ -65,7 +62,7 @@ const StoreAdmin = () => {
   console.log(stockJournals);
 
   return (
-    <main className="container mx-auto my-28 mb-10 max-w-4xl border-2 py-5 shadow-xl">
+    <main className="container mx-auto mb-10 max-w-6xl border-2 py-5 shadow-xl">
       <div className="mb-4 flex justify-between">
         <div className="w-[300px]">
           <SearchInput search={search} setSearch={setSearch} />

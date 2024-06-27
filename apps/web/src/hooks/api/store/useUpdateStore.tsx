@@ -1,17 +1,14 @@
 "use client";
 
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { axiosInstance } from "@/lib/axios";
 import { useAppSelector } from "@/redux/hooks";
 import { IFormStore } from "@/types/store.type";
 import { AxiosError } from "axios";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const useUpdateStore = (storeId: number) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const router = useRouter();
-  const { toast } = useToast();
   const { token } = useAppSelector((state) => state.user);
   const updateStore = async (data: IFormStore) => {
     setIsLoading(true);
@@ -30,16 +27,11 @@ const useUpdateStore = (storeId: number) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      toast({
-        description: "Store created successfully!",
-      });
-      // router.push("/admin/stock");
+      toast.success("Store updated successfully!");
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError) {
-        toast({
-          description: error?.response?.data,
-        });
+        toast.error(error?.response?.data);
       }
     } finally {
       setIsLoading(false);

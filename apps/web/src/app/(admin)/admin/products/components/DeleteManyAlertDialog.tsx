@@ -1,4 +1,3 @@
-import React from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,8 +9,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Loader2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Loader2, Trash2 } from "lucide-react";
+import React from "react";
 
 interface DeleteManyAlertDialogProps {
   productId: number[];

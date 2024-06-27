@@ -1,25 +1,15 @@
 import Pagination from "@/components/Pagination";
-import { Bell } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import React from "react";
-import { AddStockModal } from "./AddStockModal";
-import { Input } from "@/components/ui/input";
-import PopoverStockMenu from "./PopoverStockMenu";
 import DialogStockActionSuperAdmin from "./DialogStockActionSuperAdmin";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import NotificationIcon from "./NotificationStockSuperAdmin";
 
 interface StoreInventoryTableProps {
   storeId: number;

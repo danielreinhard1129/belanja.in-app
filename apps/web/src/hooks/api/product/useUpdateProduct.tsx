@@ -1,18 +1,15 @@
 "use client";
 
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { axiosInstance } from "@/lib/axios";
 import { useAppSelector } from "@/redux/hooks";
-import { Product, IFormProduct } from "@/types/product.type";
-import axios, { AxiosError } from "axios";
-import { useRouter } from "next/navigation";
+import { IFormProduct, Product } from "@/types/product.type";
+import { AxiosError } from "axios";
 import { useState } from "react";
 
 const useUpdateProduct = (productId: number) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { token, id } = useAppSelector((state) => state.user);
-  const router = useRouter();
-  const { toast } = useToast();
   const updateProduct = async (data: IFormProduct) => {
     setIsLoading(true);
     try {
@@ -47,15 +44,10 @@ const useUpdateProduct = (productId: number) => {
           },
         },
       );
-      toast({
-        description: "Product updated successfully!",
-      });
-      // router.push("/admin/products");
+      toast.success("Product updated successfully!");
     } catch (error) {
       if (error instanceof AxiosError) {
-        toast({
-          description: error?.response?.data?.message || error?.response?.data,
-        });
+        toast.error(error?.response?.data);
       }
     } finally {
       setIsLoading(false);

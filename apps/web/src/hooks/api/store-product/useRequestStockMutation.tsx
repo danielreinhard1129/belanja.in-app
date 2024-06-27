@@ -1,17 +1,14 @@
 "use client";
 
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { axiosInstance } from "@/lib/axios";
 import { useAppSelector } from "@/redux/hooks";
 import { IFormRequestStoreProduct } from "@/types/storeProduct.type";
 import { AxiosError } from "axios";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const useRequestStockMutation = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const router = useRouter();
-  const { toast } = useToast();
   const { token } = useAppSelector((state) => state.user);
   const requestStockMutation = async (
     data: IFormRequestStoreProduct,
@@ -32,15 +29,11 @@ const useRequestStockMutation = () => {
         //   Authorization: `Bearer ${token}`,
         // },
       });
-      toast({
-        description: "request mutation created successfully!",
-      });
+      toast.success("request has send to Super Admin");
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError) {
-        toast({
-          description: error?.response?.data,
-        });
+        toast.error(error?.response?.data);
       }
     } finally {
       setIsLoading(false);

@@ -4,12 +4,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Settings2 } from "lucide-react";
-import React, { useState } from "react";
-import DialogStockMutation from "./DialogStockMutation";
 import { NotebookPen } from "lucide-react";
-import DialogAddProducts from "./DialogSettingStoreProducts";
+import React, { useState } from "react";
 import DialogSettingStoreProducts from "./DialogSettingStoreProducts";
+import DialogStockMutation from "./DialogStockMutation";
 
 interface PopoverStockMenuProps {
   storeId: number;

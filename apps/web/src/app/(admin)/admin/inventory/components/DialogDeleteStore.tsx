@@ -10,7 +10,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Loader2, Trash2 } from "lucide-react";
-import React, { useState } from "react";
+import React from "react";
 
 interface DeleteAlertDialogProps {
   storeId: number;

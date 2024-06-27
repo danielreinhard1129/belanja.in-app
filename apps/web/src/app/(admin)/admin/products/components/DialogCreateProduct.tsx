@@ -11,6 +11,7 @@ import {
 import { Label } from "@/components/ui/label";
 // import Select from 'react-select';
 import { FormInput } from "@/components/FormInput";
+import ImageUploader from "@/components/FormInputImages";
 import useGetCategories from "@/hooks/api/category/useGetCategories";
 import useCreateProduct from "@/hooks/api/product/useCreateProduct";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,7 +29,6 @@ import {
   createProductSchema,
   defaultValues,
 } from "./CreateProductSchema";
-import ImageUploader from "@/components/FormInputImages";
 
 // Dynamic import for react-select
 const Select = dynamic(() => import("react-select"), { ssr: false });
