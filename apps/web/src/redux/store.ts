@@ -1,9 +1,4 @@
-import {
-  configureStore,
-  combineReducers,
-  Action,
-  Dispatch,
-} from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import userReducer from "./slices/userSlice";
 import tokenExpirationMiddleware from "./middlewares/tokenExpiration";
@@ -11,13 +6,13 @@ import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 
 const createNoopStorage = () => {
   return {
-    getItem(_key: string): Promise<string | null> {
+    getItem() {
       return Promise.resolve(null);
     },
-    setItem(_key: string, value: string): Promise<void> {
-      return Promise.resolve();
+    setItem(_key: string, value: number) {
+      return Promise.resolve(value);
     },
-    removeItem(_key: string): Promise<void> {
+    removeItem() {
       return Promise.resolve();
     },
   };
@@ -28,34 +23,41 @@ const storage =
     ? createWebStorage("local")
     : createNoopStorage();
 
-const fingerprintName =
-  process.env.NEXT_PUBLIC_FINGERPRINT_NAME || "default_key";
+const fingerprintName = process.env.NEXT_PUBLIC_FINGERPRINT_NAME!;
 
 const persistConfig = {
   key: fingerprintName,
   storage,
-  whitelist: ["user"],
+  timeout: 2000,
 };
 
 const rootReducer = combineReducers({
   user: userReducer,
 });
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const makeConfiguredStore = () =>
+  configureStore({
+    reducer: rootReducer,
+  });
 
 export const makeStore = () => {
-  const store = configureStore({
-    reducer: persistedReducer,
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({
-        serializableCheck: false,
-      }).concat(tokenExpirationMiddleware),
-  });
-  const persistor = persistStore(store);
-  return { store, persistor };
+  const isServer = typeof window === "undefined";
+  if (isServer) {
+    return makeConfiguredStore();
+  } else {
+    const persistedReducer = persistReducer(persistConfig, rootReducer);
+    let store = configureStore({
+      reducer: persistedReducer,
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+          serializableCheck: false,
+        }).concat(tokenExpirationMiddleware),
+    });
+    (store as any).__persistor = persistStore(store);
+    return store;
+  }
 };
 
-export const { store, persistor } = makeStore();
-
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = Dispatch<Action>;
+export type AppStore = ReturnType<typeof makeStore>;
+export type RootState = ReturnType<AppStore["getState"]>;
+export type AppDispatch = AppStore["dispatch"];

@@ -1,14 +1,13 @@
 "use client";
 
-import { axiosInstance } from "@/lib/axios";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { setUser } from "@/redux/slices/userSlice";
 import { User } from "@/types/user.type";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FileWithPath } from "react-dropzone";
 import { toast } from "sonner";
+import useAxios from "../useAxios";
 
 interface UpdateUserForm {
   name: string;
@@ -19,6 +18,7 @@ interface UpdateUserForm {
 }
 
 const useUpdateUserDetails = (userId: number) => {
+  const { axiosInstance } = useAxios();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -46,15 +46,8 @@ const useUpdateUserDetails = (userId: number) => {
         `/auth/update-user-details/${userId}`,
         userUpdateForm,
       );
-
-      const updatedUser: User = {
-        ...currentUser,
-        ...response.data.data,
-      };
-
-      dispatch(setUser(updatedUser));
-
-      toast.success(`${response.data.message}`)
+      
+      toast.success(`${response.data.message}`);
 
       router.push(`/user/${userId}`);
     } catch (error) {

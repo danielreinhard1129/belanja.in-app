@@ -24,12 +24,12 @@ export const Header = () => {
   const [lastScrollTop, setLastScrollTop] = useState(0);
 
   const { logout } = useGoogleAuth();
-  const userLogout = async () => {
+  const userLogout = () => {
     localStorage.removeItem("Authorization");
-    await dispatch(logoutAction());
+    dispatch(logoutAction());
     router.push("/");
   };
-  const scrollThreshold = 100;
+  const scrollThreshold = 40;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -54,7 +54,7 @@ export const Header = () => {
 
   return (
     <nav
-      className={`fixed left-0 right-0 top-0 z-20 w-full overflow-x-hidden bg-inherit p-0 transition-transform duration-300 ${hideHeader ? "-translate-y-full" : "translate-y-0"}`}
+      className={`fixed left-0 right-0 top-0 z-20 w-full overflow-x-hidden bg-inherit p-0 transition-transform duration-500 ${hideHeader ? "-translate-y-full" : "translate-y-0"} border-b`}
     >
       <div className="container mx-auto flex h-20 items-center justify-between p-0 px-6 py-2">
         <Logo />
@@ -68,9 +68,9 @@ export const Header = () => {
                 <Avatar>
                   <AvatarImage
                     src={
-                      (provider === "GOOGLE"
-                        ? avatarUrl
-                        : `${appConfig.baseUrl}/assets${avatarUrl}`) as string
+                      (avatarUrl
+                        ? `${appConfig.baseUrl}/assets${avatarUrl}`
+                        : defaultAvatar) as string
                     }
                     alt="avatar"
                     className="object-cover"
@@ -119,9 +119,9 @@ export const Header = () => {
                           <div className="relative h-12 w-12 overflow-hidden rounded-full">
                             <Image
                               src={
-                                (provider === "GOOGLE"
-                                  ? avatarUrl
-                                  : `${appConfig.baseUrl}/assets${avatarUrl}`) as string
+                                (avatarUrl
+                                  ? `${appConfig.baseUrl}/assets${avatarUrl}`
+                                  : defaultAvatar) as string
                               }
                               alt="pfp"
                               fill

@@ -35,7 +35,6 @@ export const loginWithGoogleService = async (code: string) => {
       newUser = await prisma.user.create({
         data: {
           email: userInfo.email,
-          avatarUrl: userInfo.picture,
           name: userInfo.name,
           isVerified: true,
           provider: 'GOOGLE',

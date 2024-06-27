@@ -58,7 +58,7 @@ const HeroCarousel = () => {
         <CarouselContent className="flex">
           {images.map((image, index) => (
             <CarouselItem key={index} className="flex-shrink-0">
-              <Card className="rounded-none border-none shadow-none md:rounded-sm">
+              <Card className="rounded-none border-none shadow-none md:rounded-lg">
                 <CardContent className="relative flex h-48 w-full items-center justify-center md:h-96">
                   <div className="z-20 text-white">DISCOVER MORE</div>
                   <Image

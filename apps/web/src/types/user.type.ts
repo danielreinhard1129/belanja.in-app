@@ -5,7 +5,6 @@ export interface User {
   addressId: number;
   role: string;
   provider: string;
-  token: string;
   birthDate?: Date;
   gender: string;
   password: string;

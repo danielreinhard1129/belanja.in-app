@@ -1,3 +1,5 @@
+"use client";
+
 import { Undo2 } from "lucide-react";
 import Link from "next/link";
 import notfound404 from "../../public/404.svg";

@@ -10,7 +10,6 @@ import express, {
 import cors from 'cors';
 import { join } from 'path';
 import { PORT } from './config';
-import { SampleRouter } from './routers/sample.router';
 import { AuthRouter } from './routers/auth.router';
 import { OrderRouter } from './routers/order.router';
 import { StoreAdminRouter } from './routers/store-admin.router';
@@ -63,7 +62,6 @@ export default class App {
   }
 
   private routes(): void {
-    const sampleRouter = new SampleRouter();
     const orderRouter = new OrderRouter();
     const authRouter = new AuthRouter();
     const storeAdminRouter = new StoreAdminRouter();
@@ -77,7 +75,6 @@ export default class App {
       res.send(`Welcome to belanja.in API !`);
     });
 
-    this.app.use('/samples', sampleRouter.getRouter());
     this.app.use('/api/orders', orderRouter.getRouter());
     this.app.use('/api/auth', authRouter.getRouter());
     this.app.use('/api/stores', storeRouter.getRouter());

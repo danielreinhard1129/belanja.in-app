@@ -1,11 +1,11 @@
 "use client";
 
-import { axiosInstance } from "@/lib/axios";
 import { User } from "@/types/user.type";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import useAxios from "../useAxios";
 
 interface RegisterResponse {
   message: string;
@@ -15,6 +15,7 @@ interface RegisterResponse {
 interface RegisterArgs extends Pick<User, "email" | "name"> {}
 
 const useRegister = () => {
+  const { axiosInstance } = useAxios();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const register = async (payload: RegisterArgs) => {

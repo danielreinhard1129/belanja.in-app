@@ -1,11 +1,11 @@
 "use client";
 
-import { axiosInstance } from "@/lib/axios";
 import { AxiosError } from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import useAxios from "../useAxios";
 
 interface IChangePasswordResponse {
   message: string;
@@ -20,6 +20,7 @@ interface DecodedToken {
 const useChangePassword = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const { axiosInstance } = useAxios();
 
   const changePassword = async (password: string, token: string) => {
     try {
@@ -34,7 +35,7 @@ const useChangePassword = () => {
         },
       );
 
-      toast.success(data.message)
+      toast.success(data.message);
       const decode = jwtDecode<DecodedToken>(token);
 
       router.replace(`/user/${decode.id}`);
