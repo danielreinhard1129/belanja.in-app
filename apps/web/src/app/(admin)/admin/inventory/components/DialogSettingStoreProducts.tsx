@@ -63,15 +63,15 @@ const DialogSettingStoreProducts: React.FC<DialogSettingStoreProductsProps> = ({
   });
   const { reset, handleSubmit, control } = methods;
   const { append, fields, remove } = useFieldArray({ control, name: "stocks" });
-
-  useEffect(() => {
-    handleReset();
-  }, [storeId, activeTab]);
-
+  
   const handleReset = () => {
     reset(defaultValues);
     setSelectedProductIds([]);
   };
+
+  useEffect(() => {
+    handleReset();
+  }, [storeId, activeTab, handleReset]);
 
   const handleAddStock = () => append({ productId: "", qty: 0 });
 

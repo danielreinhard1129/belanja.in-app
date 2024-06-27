@@ -45,7 +45,7 @@ const DialogDetailProduct: React.FC<DialogDetailProductProps> = ({
           <div>{product?.name}</div>
           <div>{product?.price}</div>
           <div>{product?.weight}</div>
-          <div className="text-wrap w-[200px] bg-blue-200">{product?.description}</div>
+          <div>{product?.description}</div>
         </DialogHeader>
         <DialogFooter className="mt-4 flex justify-end">
           <Button

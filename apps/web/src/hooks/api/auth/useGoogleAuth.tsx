@@ -1,16 +1,17 @@
 "use client";
 
 import { googleLogout, useGoogleLogin } from "@react-oauth/google";
-import { axiosInstance } from "@/lib/axios";
 import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
 import { loginAction, logoutAction } from "@/redux/slices/userSlice";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { useState } from "react";
+import { useAppDispatch } from "@/redux/hooks";
+import useAxios from "../useAxios";
 
 const useGoogleAuth = () => {
-  const dispatch = useDispatch();
+  const { axiosInstance } = useAxios();
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -23,7 +24,7 @@ const useGoogleAuth = () => {
         });
 
         localStorage.setItem("Authorization", `Bearer ${data.token}`);
-        dispatch(loginAction({ user: data.data, token: data.token }));
+        dispatch(loginAction(data.data));
         toast.success(data.message);
       } catch (error) {
         if (error instanceof AxiosError) {

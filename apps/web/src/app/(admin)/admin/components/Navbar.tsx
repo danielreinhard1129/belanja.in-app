@@ -3,17 +3,7 @@ import logo from "../../../../../public/belanjainlogotransparent.svg";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  AlignJustify,
-  BookMarked,
-  Box,
-  Briefcase,
-  ChevronRight,
-  Home,
-  LogOut,
-  Users,
-  X,
-} from "lucide-react";
+import { AlignJustify, ChevronRight, LogOut, X } from "lucide-react";
 import {
   Sheet,
   SheetClose,
@@ -22,11 +12,13 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import useGoogleAuth from "@/hooks/api/auth/useGoogleAuth";
-import { useDispatch } from "react-redux";
 import { logoutAction } from "@/redux/slices/userSlice";
-import { useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { appConfig } from "@/utils/config";
 import { Separator } from "@/components/ui/separator";
+import defaultAvatar from "../../../../../public/default-avatar.png";
+import { lists, baseClass } from "./helpers";
+import Logo from "@/components/Logo";
 
 const Navbar = () => {
   const { provider, id, name, email, avatarUrl } = useAppSelector(
@@ -34,55 +26,24 @@ const Navbar = () => {
   );
   const router = useRouter();
   const pathname = usePathname();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const { logout } = useGoogleAuth();
-  const userLogout = async () => {
+  const userLogout = () => {
     localStorage.removeItem("Authorization");
-    await dispatch(logoutAction());
+    dispatch(logoutAction());
     router.push("/");
   };
 
-  const lists = [
-    { name: "Home", url: "/admin", icon: <Home size={20} /> },
-    { name: "Products", url: "/admin/products", icon: <Box size={20} /> },
-    {
-      name: "Inventory",
-      url: "/admin/inventory",
-      icon: <Briefcase size={20} />,
-    },
-    { name: "Users", url: "/admin/users", icon: <Users size={20} /> },
-    {
-      name: "Journals",
-      url: "/admin/journals",
-      icon: <BookMarked size={20} />,
-    },
-  ];
-  const baseClass = "bg-[#FF6100] text-white border-none flex gap-4";
-
   return (
     <nav className="flex w-full flex-row items-center justify-between gap-4 border-b-2 px-5 py-6 md:h-screen md:max-w-[240px] md:flex-col md:justify-start md:border-b-0 md:border-r-2">
-      <div className="w-34 relative md:mb-10 md:hidden">
-        <Image
-          src={logo}
-          alt="logo"
-          height={34}
-          className="cursor-pointer"
-          draggable={false}
-          onClick={() => router.push("/admin")}
-        />
+      <div className="flex md:hidden">
+        <Logo />
       </div>
       <div className="hidden h-full w-full items-center justify-between gap-2 md:flex md:flex-col">
         <div className="flex w-full flex-col items-center gap-2">
-          <div className="w-34 relative md:mb-10">
-            <Image
-              src={logo}
-              alt="logo"
-              height={34}
-              className="cursor-pointer"
-              draggable={false}
-              onClick={() => router.push("/admin")}
-            />
+          <div className="mb-10">
+            <Logo />
           </div>
           {lists.map((item, index) => (
             <Button
@@ -97,30 +58,27 @@ const Navbar = () => {
           ))}
         </div>
         <div className="hidden w-full gap-8 md:flex md:flex-col">
-          <div className="flex items-center justify-between px-4">
+          <div className="items-center justify-between px-3">
             <div
-              className="flex cursor-pointer items-center gap-4"
+              className="flex w-full cursor-pointer items-center justify-start gap-4"
               onClick={() => router.push(`/user/${id}`)}
             >
-              <div className="relative h-8 w-8 overflow-hidden rounded-full">
+              <div className="relative flex h-9 w-12 items-center overflow-hidden rounded-full bg-black">
                 <Image
                   src={
-                    (provider === "GOOGLE"
-                      ? avatarUrl
-                      : `${appConfig.baseUrl}/assets${avatarUrl}`) as string
+                    (avatarUrl
+                      ? `${appConfig.baseUrl}/assets${avatarUrl}`
+                      : defaultAvatar) as string
                   }
                   alt="pfp"
-                  fill
+                  height={200}
+                  width={200}
                   className="object-cover"
                 />
               </div>
-              <div>
-                <div className="line-clamp-1 max-w-full text-sm font-medium">
-                  {name}
-                </div>
-                <div className="line-clamp-1 max-w-full text-xs text-black/50">
-                  {email}
-                </div>
+              <div className="w-full">
+                <p className="line-clamp-1 text-sm font-medium">{name}</p>
+                <p className="line-clamp-1 text-xs text-black/50">{email}</p>
               </div>
             </div>
           </div>
@@ -141,15 +99,8 @@ const Navbar = () => {
           </SheetTrigger>
           <SheetContent>
             <SheetHeader>
-              <div className="mb-10 flex h-20 w-full items-center justify-between p-0 px-6 py-2">
-                <Image
-                  src={logo}
-                  alt="logo"
-                  height={34}
-                  className="cursor-pointer"
-                  draggable={false}
-                  onClick={() => router.push("/admin")}
-                />
+              <div className="mb-6 flex h-20 w-full items-center justify-between p-0 px-6 py-2">
+                <Logo />
                 <SheetClose>
                   <X size={20} />
                 </SheetClose>
@@ -164,9 +115,9 @@ const Navbar = () => {
                   <div className="relative h-12 w-12 overflow-hidden rounded-full">
                     <Image
                       src={
-                        (provider === "GOOGLE"
-                          ? avatarUrl
-                          : `${appConfig.baseUrl}/assets${avatarUrl}`) as string
+                        (avatarUrl
+                          ? `${appConfig.baseUrl}/assets${avatarUrl}`
+                          : defaultAvatar) as string
                       }
                       alt="pfp"
                       fill

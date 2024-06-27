@@ -1,7 +1,7 @@
-import { axiosInstance } from "@/lib/axios";
 import { AxiosError } from "axios";
 import { useState } from "react";
 import { toast } from "sonner";
+import useAxios from "../useAxios";
 
 interface IForgotPasswordResponse {
   message: string;
@@ -9,6 +9,7 @@ interface IForgotPasswordResponse {
 }
 
 const useForgotPassword = () => {
+  const { axiosInstance } = useAxios();
   const [isLoading, setIsLoading] = useState(false);
 
   const forgotPassword = async (email: string) => {

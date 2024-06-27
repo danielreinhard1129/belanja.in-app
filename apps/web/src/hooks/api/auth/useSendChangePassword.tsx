@@ -1,10 +1,10 @@
 "use client";
 
-import { axiosInstance } from "@/lib/axios";
 import { User } from "@/types/user.type";
 import { AxiosError } from "axios";
 import { useState } from "react";
 import { toast } from "sonner";
+import useAxios from "../useAxios";
 
 interface ISendChangePasswordResponse {
   message: string;
@@ -13,6 +13,7 @@ interface ISendChangePasswordResponse {
 interface SendChangePwArgs extends Pick<User, "id"> {}
 
 const useSendChangePassword = () => {
+  const { axiosInstance } = useAxios();
   const [isLoading, setIsLoading] = useState(false);
   const [onSuccess, setOnSuccess] = useState(false);
 
