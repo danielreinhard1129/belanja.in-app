@@ -74,7 +74,7 @@ export const createRequestStockProductMutationService = async (
             `Product with ID ${stock.productId} not found in the store`,
           );
         }
-        if (currentQty - stock.qty < 0) {
+        if (currentQty - stock.qty <= 0) {
           throw new Error(
             `Insufficient quantity for product ID ${stock.productId}`,
           );
@@ -145,7 +145,7 @@ export const createRequestStockProductMutationService = async (
             `Product with ID ${stock.productId} not found in the store`,
           );
         }
-        if (currentQty - stock.qty < 0) {
+        if (currentQty - stock.qty <= 0) {
           throw new Error(
             `Insufficient quantity for product ID ${stock.productId}`,
           );

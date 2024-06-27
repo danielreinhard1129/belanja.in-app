@@ -1,17 +1,14 @@
 "use client";
 
+import { toast } from "sonner";
 import { axiosInstance } from "@/lib/axios";
-import { useToast } from "@/components/ui/use-toast";
-import { Product, IFormProduct } from "@/types/product.type";
-import axios, { AxiosError } from "axios";
 import { useAppSelector } from "@/redux/hooks";
-import { useRouter } from "next/navigation";
+import { IFormProduct, Product } from "@/types/product.type";
+import { AxiosError } from "axios";
 import { useState } from "react";
 
 const useCreateProduct = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const router = useRouter();
-  const { toast } = useToast();
   const { token, id } = useAppSelector((state) => state.user);
   const createProduct = async (data: IFormProduct) => {
     setIsLoading(true);
@@ -43,14 +40,10 @@ const useCreateProduct = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      toast({
-        description: "Product created successfully!",
-      });
+      toast.success("Product created successfully!");
     } catch (error) {
       if (error instanceof AxiosError) {
-        toast({
-          description: error?.response?.data?.message || error?.response?.data,
-        });
+        toast.error(error?.response?.data);
       }
     } finally {
       setIsLoading(false);

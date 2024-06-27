@@ -1,11 +1,11 @@
 import prisma from '@/prisma';
 import { PaginationQueryParams } from '@/types/pagination.type';
 
-interface GetProductsByParams extends PaginationQueryParams {
+interface GetStoresByParams extends PaginationQueryParams {
   search?: string;
 }
 
-export const getStoresByParamsService = async (query: GetProductsByParams) => {
+export const getStoresByParamsService = async (query: GetStoresByParams) => {
   const { take, page, search } = query;
 
   const where: { name?: { contains: string } } = {};

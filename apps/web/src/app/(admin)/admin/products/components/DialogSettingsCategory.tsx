@@ -12,11 +12,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import useCreateCategory from "@/hooks/api/category/useCreateCategory";
-import useUpdateCategory from "@/hooks/api/category/useUpdateCategory";
 import useDeleteCategory from "@/hooks/api/category/useDeleteCategory";
 import useGetCategories from "@/hooks/api/category/useGetCategories";
+import useUpdateCategory from "@/hooks/api/category/useUpdateCategory";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Settings, Trash, Edit } from "lucide-react";
+import { Edit, Loader2, Settings, Trash } from "lucide-react";
 import React, { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import {

@@ -1,23 +1,22 @@
-import React from "react";
-import { Bell, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Popover,
-  PopoverTrigger,
   PopoverContent,
+  PopoverTrigger,
 } from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import useGetNotificationSuperAdmin from "@/hooks/api/store-product/useGetNotificationSuperAdmin";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import useUpdateIsReadStockJournalSuperAdmin from "@/hooks/api/stock-journal/useUpdateIsReadStockJournalSuperAdmin";
+import useGetNotificationSuperAdmin from "@/hooks/api/store-product/useGetNotificationSuperAdmin";
+import { Bell, Loader2 } from "lucide-react";
+import React from "react";
 
 const NotificationIcon: React.FC = () => {
   const { notifications, refetch } = useGetNotificationSuperAdmin();

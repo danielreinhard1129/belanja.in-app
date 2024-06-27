@@ -3,9 +3,6 @@ import prisma from '@/prisma';
 export const getStoreAdminsService = async () => {
   try {
     const storeAdmin = await prisma.storeAdmin.findMany({
-      where: {
-        stores: null,
-      },
       include: {
         user: true,
       },

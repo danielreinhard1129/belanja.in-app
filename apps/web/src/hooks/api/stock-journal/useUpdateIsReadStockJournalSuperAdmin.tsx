@@ -1,9 +1,9 @@
 import { useToast } from "@/components/ui/use-toast";
 import { axiosInstance } from "@/lib/axios";
 import { useAppSelector } from "@/redux/hooks";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const useUpdateIsReadStockJournalSuperAdmin = () => {
   const router = useRouter();
@@ -24,7 +24,7 @@ const useUpdateIsReadStockJournalSuperAdmin = () => {
           },
         },
       );
-      return response.data; // Jika respons membutuhkan pengaksesan data tertentu, sesuaikan di sini
+      return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
         toast({

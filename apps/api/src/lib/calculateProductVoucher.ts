@@ -9,7 +9,7 @@ export const calculateProductVoucher = async (
   const product = await prisma.product.findFirst({
     where: {
       id: productId,
-      isDelete: false
+      isDelete: false,
     },
   });
   if (!product) {
@@ -34,16 +34,22 @@ export const calculateProductVoucher = async (
   }
 
   // Ensure the discount value is valid
-  if (typeof voucher.vouchers.discountValue !== 'number' || voucher.vouchers.discountValue <= 0) {
+  if (
+    typeof voucher.vouchers.discountValue !== 'number' ||
+    voucher.vouchers.discountValue <= 0
+  ) {
     throw new Error(`Invalid discount value for product ID ${productId}!`);
   }
 
   // Calculate the discounted price
-  const total = product.price - product.price * (voucher.vouchers.discountValue / 100);
+  const total =
+    product.price - product.price * (voucher.vouchers.discountValue / 100);
 
   // Ensure the total price is not negative
   if (total < 0) {
-    throw new Error(`Discount calculation error: negative price for product ID ${productId}!`);
+    throw new Error(
+      `Discount calculation error: negative price for product ID ${productId}!`,
+    );
   }
 
   return total;

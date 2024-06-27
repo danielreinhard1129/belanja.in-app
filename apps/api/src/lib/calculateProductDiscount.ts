@@ -33,16 +33,22 @@ export const calculateProductDiscount = async (
   }
 
   // Ensure the discount value is valid
-  if (typeof discount.discounts.discountvalue !== 'number' || discount.discounts.discountvalue <= 0) {
+  if (
+    typeof discount.discounts.discountvalue !== 'number' ||
+    discount.discounts.discountvalue <= 0
+  ) {
     throw new Error(`Invalid discount value for product ID ${productId}!`);
   }
 
   // Calculate the discounted price
-  const total = product.price - product.price * (discount.discounts.discountvalue / 100);
+  const total =
+    product.price - product.price * (discount.discounts.discountvalue / 100);
 
   // Ensure the total price is not negative
   if (total < 0) {
-    throw new Error(`Discount calculation error: negative price for product ID ${productId}!`);
+    throw new Error(
+      `Discount calculation error: negative price for product ID ${productId}!`,
+    );
   }
 
   return total;

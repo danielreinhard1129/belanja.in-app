@@ -1,7 +1,6 @@
 import { FormInput } from "@/components/FormInput";
 import { FormSelect } from "@/components/FormSelect";
 import { Button } from "@/components/ui/button";
-import { Pencil, Plus } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -12,13 +11,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import useGetStoreAdmin from "@/hooks/api/store-admin/useGetStoreAdmin";
+import useGetStore from "@/hooks/api/store/useGetStore";
+import useUpdateStore from "@/hooks/api/store/useUpdateStore";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, Pencil } from "lucide-react";
+import { useEffect } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { SchemaEditStore, schemaEditStore } from "./schemaEditStore";
-import { useEffect, useState } from "react";
-import useUpdateStore from "@/hooks/api/store/useUpdateStore";
-import useGetStore from "@/hooks/api/store/useGetStore";
 
 interface DialogEditStoreProps {
   storeId: number;
@@ -46,7 +45,7 @@ export function DialogEditStore({
   });
   const { reset, handleSubmit } = methods;
 
-  console.log(store);
+  // console.log(storeAdminsOptions);
 
   useEffect(() => {
     if (store) {
@@ -55,10 +54,7 @@ export function DialogEditStore({
         city: store.city,
         lat: store.lat,
         long: store.long,
-        storeAdminId: {
-          value: (store.storeAdmin?.id || "").toString(),
-          label: store.storeAdmin?.user.name || "",
-        },
+        storeAdminId: store.storeAdmin.user.name,
       });
     }
   }, [store, reset]);

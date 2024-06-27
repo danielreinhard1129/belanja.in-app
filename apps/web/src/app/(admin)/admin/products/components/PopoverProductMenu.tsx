@@ -1,13 +1,13 @@
-import React from "react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import DeleteAlertDialog from "./DeleteAlertDialog";
-import DialogEditProduct from "./DialogEditProduct";
-import DialogDetailProduct from "./DialogDetailProduct";
 import { MoreHorizontal } from "lucide-react";
+import React from "react";
+import DeleteAlertDialog from "./DeleteAlertDialog";
+import DialogDetailProduct from "./DialogDetailProduct";
+import DialogEditProduct from "./DialogEditProduct";
 
 interface PopoverMenuProps {
   productId: number;

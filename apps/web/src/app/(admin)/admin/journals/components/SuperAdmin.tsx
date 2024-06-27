@@ -1,25 +1,4 @@
 "use client";
-import { format } from "date-fns";
-import useGetStores from "@/hooks/api/store/useGetStores";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import React, { useState, useEffect } from "react";
-import useGetStockJournalsByStoreWithParams from "@/hooks/api/stock-journal/useGetStockJournalsByStoreWithParams";
 import Pagination from "@/components/Pagination";
 import {
   Dialog,
@@ -30,12 +9,32 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import useGetStockJournalsByStoreWithParams from "@/hooks/api/stock-journal/useGetStockJournalsByStoreWithParams";
+import useGetStores from "@/hooks/api/store/useGetStores";
+import { format } from "date-fns";
 import { Eye } from "lucide-react";
+import { useEffect, useState } from "react";
 import SearchInput from "../../products/components/Search";
 
 const SuperAdmin = () => {
@@ -75,7 +74,7 @@ const SuperAdmin = () => {
   // console.log(stockJournals);
 
   return (
-    <main className="container mx-auto my-28 mb-10 max-w-4xl border-2 py-5 shadow-xl">
+    <main className="container mx-auto mb-10 max-w-6xl border-2 py-5 shadow-xl">
       <div className="flex justify-between">
         <div>
           <Select onValueChange={handleStoreChange}>

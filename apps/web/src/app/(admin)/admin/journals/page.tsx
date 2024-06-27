@@ -1,11 +1,14 @@
 "use client";
-import React from "react";
 import { useAppSelector } from "@/redux/hooks";
-import SuperAdmin from "./components/SuperAdmin";
 import StoreAdmin from "./components/StoreAdmin";
+import SuperAdmin from "./components/SuperAdmin";
 const Journal = () => {
   const { role } = useAppSelector((state) => state.user);
-  return <main>{role === "SUPERADMIN" ? <SuperAdmin /> : <StoreAdmin />}</main>;
+  return (
+    <main className="container mx-auto py-20">
+      {role === "SUPERADMIN" ? <SuperAdmin /> : <StoreAdmin />}
+    </main>
+  );
 };
 
 export default Journal;

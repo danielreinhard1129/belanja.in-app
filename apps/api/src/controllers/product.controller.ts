@@ -1,11 +1,11 @@
-import { NextFunction, Request, Response } from 'express';
-import { getProductsService } from '@/services/product/get-products.service';
-import { getProductService } from '@/services/product/get-product.service';
 import { createProductService } from '@/services/product/create-product.service';
-import { deleteProductService } from '@/services/product/delete-product.service';
-import { updateProductService } from '@/services/product/update-product.service';
-import { getProductsByParamsService } from '@/services/product/get-productsByParams.service';
 import { deleteManyProductsService } from '@/services/product/delete-many.product.service';
+import { deleteProductService } from '@/services/product/delete-product.service';
+import { getProductService } from '@/services/product/get-product.service';
+import { getProductsService } from '@/services/product/get-products.service';
+import { getProductsByParamsService } from '@/services/product/get-productsByParams.service';
+import { updateProductService } from '@/services/product/update-product.service';
+import { NextFunction, Request, Response } from 'express';
 export class ProductController {
   async createProduct(req: Request, res: Response, next: NextFunction) {
     try {

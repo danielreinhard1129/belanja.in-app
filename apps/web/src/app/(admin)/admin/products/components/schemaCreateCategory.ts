@@ -8,6 +8,6 @@ export const schemaCreateCategory = z.object({
 export type SchemaCreateCategory = z.infer<typeof schemaCreateCategory>;
 
 export const defaultValues: SchemaCreateCategory = {
-  id: undefined, // Menambahkan id dengan nilai default undefined
+  id: undefined,
   name: "",
 };

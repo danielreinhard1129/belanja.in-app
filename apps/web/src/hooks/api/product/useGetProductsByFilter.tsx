@@ -1,8 +1,8 @@
-import { Product } from "@/types/product.type";
-import { IPaginationMeta, IPaginationQueries } from "@/types/pagination.type";
-import axios, { AxiosError } from "axios";
-import { useEffect, useState } from "react";
 import { axiosInstance } from "@/lib/axios";
+import { IPaginationMeta, IPaginationQueries } from "@/types/pagination.type";
+import { Product } from "@/types/product.type";
+import { AxiosError } from "axios";
+import { useEffect, useState } from "react";
 
 interface IGetEventsQuery extends IPaginationQueries {
   search?: string;
