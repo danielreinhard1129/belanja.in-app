@@ -1,6 +1,6 @@
 "use client";
-import { FC, ReactNode } from "react";
 import AuthGuardAdmin from "@/hoc/AuthGuardAdmin";
+import { FC, ReactNode } from "react";
 import Navbar from "./components/Navbar";
 
 interface AdminLayoutProps {

@@ -1,6 +1,6 @@
 import { StoreProductController } from '@/controllers/store-product.controller';
-import { Router } from 'express';
 import { verifyToken } from '@/middlewares/verifyToken';
+import { Router } from 'express';
 
 export class StoreProductRouter {
   private router: Router;
@@ -14,10 +14,6 @@ export class StoreProductRouter {
 
   private initializeRoutes(): void {
     this.router.get('/', verifyToken, this.storeProductController.getStocks);
-    // this.router.post(
-    //   '/mutation',
-    //   this.storeProductController.createStoreProductMutation,
-    // );
     this.router.post(
       '/request-mutation',
       this.storeProductController.createRequestStoreProductMutation,

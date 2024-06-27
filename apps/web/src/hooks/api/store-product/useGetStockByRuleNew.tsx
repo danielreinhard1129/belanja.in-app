@@ -1,9 +1,9 @@
-import { IPaginationMeta, IPaginationQueries } from "@/types/pagination.type";
-import { AxiosError } from "axios";
-import { useEffect, useState } from "react";
-import { Stock } from "@/types/stock.type";
 import { axiosInstance } from "@/lib/axios";
 import { useAppSelector } from "@/redux/hooks";
+import { IPaginationMeta, IPaginationQueries } from "@/types/pagination.type";
+import { Stock } from "@/types/stock.type";
+import { AxiosError } from "axios";
+import { useEffect, useState } from "react";
 
 interface IGetStocksQuery extends IPaginationQueries {
   search?: string;

@@ -1,17 +1,18 @@
-import React from "react";
+import Pagination from "@/components/Pagination";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import { Stock } from "@/types/stock.type";
-import Pagination from "@/components/Pagination";
-import { Input } from "@/components/ui/input";
+import React from "react";
 import PopoverStockRequest from "./PopoverStockRequest";
+import useGetStoreByStoreAdmin from "@/hooks/api/store/useGetStoreByStoreAdmin";
+import { useAppSelector } from "@/redux/hooks";
 
 interface StoreAdminProps {
   stocks: Stock;
@@ -31,12 +32,13 @@ const StoreAdmin: React.FC<StoreAdminProps> = ({
   setSearch,
 }) => {
   const filteredStocks = stocks?.storeProducts?.data;
-  const storeId = stocks?.storeProducts?.data[0]?.store.id;
+  const { id } = useAppSelector((state) => state.user);
+  const { store } = useGetStoreByStoreAdmin(id);
+  const storeId = store?.id;
   // console.log(storeId);
-  // console.log(filteredStocks);
 
   return (
-    <main className="mx-auto my-10 max-w-4xl">
+    <main className="container mx-auto my-10 max-w-6xl">
       <h3 className="text-xl font-bold">Store Inventory</h3>
       <div className="mt-4 flex items-center justify-between">
         <Input
@@ -47,7 +49,7 @@ const StoreAdmin: React.FC<StoreAdminProps> = ({
           onChange={(e) => setSearch(e.target.value)}
           className="w-[300px]"
         />
-        <PopoverStockRequest refetch={refetch} storeId={storeId} />
+        <PopoverStockRequest refetch={refetch} storeId={Number(storeId)} />
       </div>
       <div className="my-4 mb-10 border-2 p-5 shadow-xl">
         <Table>

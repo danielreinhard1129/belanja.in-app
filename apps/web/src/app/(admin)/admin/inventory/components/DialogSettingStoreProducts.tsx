@@ -1,11 +1,6 @@
-import React, { useState, useEffect } from "react";
-import {
-  ArrowRightLeft,
-  Loader2,
-  SquarePlus,
-  Trash2,
-  Settings2,
-} from "lucide-react";
+import { FormInput } from "@/components/FormInput";
+import { FormSelectStock } from "@/components/FormSelectStock";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -14,7 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
@@ -23,20 +17,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { FormProvider, useFieldArray, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { FormSelectStock } from "@/components/FormSelectStock";
-import { FormInput } from "@/components/FormInput";
-import { Button } from "@/components/ui/button";
-import useGetProductsByStore from "@/hooks/api/store-product/useGetStoreProductByStore";
-import useGetProducts from "@/hooks/api/product/useGetProducts";
 import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import useGetProducts from "@/hooks/api/product/useGetProducts";
+import useGetProductsByStore from "@/hooks/api/store-product/useGetStoreProductByStore";
+import useRequestStockMutation from "@/hooks/api/store-product/useRequestStockMutation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2, Settings2, SquarePlus, Trash2 } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import {
   SchemaCreateStoreProducts,
   defaultValues,
   schemaCreateStoreProducts,
 } from "./schemaCreateStoreProducts";
-import useRequestStockMutation from "@/hooks/api/store-product/useRequestStockMutation";
 
 interface DialogSettingStoreProductsProps {
   storeId: number;
@@ -111,11 +105,11 @@ const DialogSettingStoreProducts: React.FC<DialogSettingStoreProductsProps> = ({
 
   const onSubmit = async (data: SchemaCreateStoreProducts) => {
     const payload = { ...data, type: activeTab, storeId: String(storeId) };
-    console.log(payload);
-    // await requestStockMutation(payload, storeId);
-    // onOpenChange(false);
-    // refetch();
-    // handleReset();
+    // console.log(payload);
+    await requestStockMutation(payload, storeId);
+    onOpenChange(false);
+    refetch();
+    handleReset();
   };
 
   if (!products || !productsReduce) {
@@ -241,7 +235,7 @@ const DialogSettingStoreProducts: React.FC<DialogSettingStoreProductsProps> = ({
                   <CardHeader className="ml-4">
                     <CardTitle>Decrease</CardTitle>
                     <CardDescription>
-                      Choose product you need to decrease
+                      Choose product you need to decrease or delete
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -258,7 +252,7 @@ const DialogSettingStoreProducts: React.FC<DialogSettingStoreProductsProps> = ({
                           </div>
                         </Button>
                         <Label>
-                          Select the product and fill in how much you need
+                          If you want to delete, reduce the quantity to 0
                         </Label>
                       </div>
                       {!isProductsReduceAvailable && (

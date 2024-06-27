@@ -1,7 +1,7 @@
+import { User } from '@prisma/client';
 import { NextFunction, Request, Response } from 'express';
 import { TokenExpiredError, verify } from 'jsonwebtoken';
 import { appConfig } from '../utils/config';
-import { User } from '@prisma/client';
 
 const secretKey = appConfig.jwtSecretKey;
 
@@ -36,7 +36,7 @@ export const verifyToken = (
       }
     }
     res.locals.user = payload as PayloadToken;
-    console.log(res.locals.user, payload)
+    console.log(res.locals.user, payload);
     next();
   });
 };

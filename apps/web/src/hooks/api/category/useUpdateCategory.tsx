@@ -1,33 +1,29 @@
 "use client";
 
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { axiosInstance } from "@/lib/axios";
+import { useAppSelector } from "@/redux/hooks";
 import { IFormCategory } from "@/types/category.type";
 import { AxiosError } from "axios";
 import { useState } from "react";
 
 const useUpdateCategory = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { toast } = useToast();
-  const userId = "1";
+  const { id } = useAppSelector((state) => state.user);
   const updateCategory = async (data: IFormCategory, categoryId: number) => {
     setIsLoading(true);
     try {
       const payload = {
         name: data.name,
-        userId: userId,
+        userId: id,
       };
 
       await axiosInstance.patch(`/categories/${categoryId}`, payload);
-      toast({
-        description: "Category updated successfully!",
-      });
+      toast.success("Category updated succesfully");
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError) {
-        toast({
-          description: error?.response?.data,
-        });
+        toast.error(error?.response?.data);
       }
     } finally {
       setIsLoading(false);

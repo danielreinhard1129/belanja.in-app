@@ -1,8 +1,8 @@
-import { AxiosError } from "axios";
-import { useEffect, useState } from "react";
-import { NotifSuperAdmin } from "@/types/notification.type";
 import { axiosInstance } from "@/lib/axios";
 import { useAppSelector } from "@/redux/hooks";
+import { NotifSuperAdmin } from "@/types/notification.type";
+import { AxiosError } from "axios";
+import { useEffect, useState } from "react";
 
 const useGetNotificationSuperAdmin = () => {
   const [notifications, setNotifications] = useState<NotifSuperAdmin[] | []>(

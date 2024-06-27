@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Eye } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -10,6 +9,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import useGetProduct from "@/hooks/api/product/useGetProduct";
+import { Eye } from "lucide-react";
 import React from "react";
 interface DialogDetailProductProps {
   productId: number;
@@ -45,7 +45,13 @@ const DialogDetailProduct: React.FC<DialogDetailProductProps> = ({
           <div>{product?.name}</div>
           <div>{product?.price}</div>
           <div>{product?.weight}</div>
+<<<<<<< Updated upstream
           <div>{product?.description}</div>
+=======
+          <div className="w-[200px] text-wrap bg-blue-200">
+            {product?.description}
+          </div>
+>>>>>>> Stashed changes
         </DialogHeader>
         <DialogFooter className="mt-4 flex justify-end">
           <Button
