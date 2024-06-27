@@ -1,7 +1,6 @@
 import { FormInput } from "@/components/FormInput";
 import { FormSelect } from "@/components/FormSelect";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -12,16 +11,16 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import useCreateStore from "@/hooks/api/store/useCreateStore";
-import useGetStoreAdmin from "@/hooks/api/store-admin/useGetStoreAdmin";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
+import { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import {
   SchemaCreateStore,
   defaultValues,
   schemaCreateStore,
 } from "./schemaCreateStore";
-import { useState } from "react";
+import useGetStoreAdminNoStore from "@/hooks/api/store-admin/useGetStoreAdminNoStore";
 
 interface AddStoreModalProps {
   refetch: () => void;
@@ -30,7 +29,7 @@ interface AddStoreModalProps {
 export function AddStoreModal({ refetch }: AddStoreModalProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { createStore, isLoading } = useCreateStore();
-  const { storeAdmins } = useGetStoreAdmin();
+  const { storeAdmins } = useGetStoreAdminNoStore();
   const storeAdminsOptions = storeAdmins.map((storeAdmin) => ({
     value: storeAdmin.id.toString(),
     label: storeAdmin.user.name,

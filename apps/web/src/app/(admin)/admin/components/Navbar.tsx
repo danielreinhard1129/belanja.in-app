@@ -21,7 +21,7 @@ import { lists, baseClass } from "./helpers";
 import Logo from "@/components/Logo";
 
 const Navbar = () => {
-  const { provider, id, name, email, avatarUrl } = useAppSelector(
+  const { provider, id, name, email, avatarUrl, role } = useAppSelector(
     (state) => state.user,
   );
   const router = useRouter();
@@ -137,9 +137,8 @@ const Navbar = () => {
               </div>
               <Separator />
               {lists.map((item, index) => (
-                <SheetClose>
+                <SheetClose key={index}>
                   <Button
-                    key={index}
                     variant="secondary"
                     className={`${baseClass} ${item.url === pathname ? "w-full justify-start px-4 py-3" : "w-full justify-start bg-white px-4 py-3 text-black/50"}`}
                     onClick={() => router.replace(item.url)}

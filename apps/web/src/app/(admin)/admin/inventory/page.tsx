@@ -1,15 +1,12 @@
 "use client";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import useGetStockByRuleNew from "@/hooks/api/store-product/useGetStockByRuleNew";
-import useGetStores from "@/hooks/api/store/useGetStoresByParams";
 import { useAppSelector } from "@/redux/hooks";
+import Image from "next/image";
 import { useState } from "react";
-import { AddStoreModal } from "./components/AddStoreModal";
+import ImageChooseStore from "../../../../../public/superAdminCS.svg";
 import StoreAdmin from "./components/StoreAdmin";
 import StoreInventoryTable from "./components/StoreInventoryTable";
 import Stores from "./components/Stores";
-import ImageChooseStore from "../../../../../public/superAdminCS.svg";
-import Image from "next/image";
 
 const Inventory = () => {
   const { role } = useAppSelector((state) => state.user);
@@ -47,12 +44,12 @@ const Inventory = () => {
     return <div>Data Not Found</div>;
   }
 
-  console.log(stocks);
+  // console.log(stocks);
 
   return (
     <>
       {role === "SUPERADMIN" && (
-        <div className="container mx-auto my-10 max-w-4xl">
+        <div className="container mx-auto my-10 max-w-6xl">
           <Stores
             onStoreClick={handleStoreClick}
             activeStoreId={activeStoreId}

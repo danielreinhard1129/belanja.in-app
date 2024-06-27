@@ -1,19 +1,17 @@
 "use client";
 import Pagination from "@/components/Pagination";
-import React, { useState } from "react";
 import {
   Card,
-  CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { AddStoreModal } from "./AddStoreModal";
 import useDeleteStore from "@/hooks/api/store/useDeleteStore";
-import PopoverStoreMenu from "./PopoverStoreMenu";
 import useGetStoresByParams from "@/hooks/api/store/useGetStoresByParams";
+import React, { useState } from "react";
+import { AddStoreModal } from "./AddStoreModal";
 import NotificationIcon from "./NotificationStockSuperAdmin";
+import PopoverStoreMenu from "./PopoverStoreMenu";
 import SearchInput from "./Search";
 
 interface StoresProps {
@@ -34,7 +32,7 @@ const Stores: React.FC<StoresProps> = ({ onStoreClick, activeStoreId }) => {
     meta,
   } = useGetStoresByParams({
     page,
-    take: 4,
+    take: 5,
     sortOrder: "name",
     search,
   });

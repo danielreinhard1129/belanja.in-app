@@ -13,6 +13,10 @@ export class StoreAdminRouter {
 
   private initializeRoutes(): void {
     this.router.get('/', this.storeAdminController.getStoreAdmins);
+    this.router.get(
+      '/no-store',
+      this.storeAdminController.getStoreAdminsNoStore,
+    );
     this.router.get('/:id', this.storeAdminController.getStoreAdminById);
   }
 

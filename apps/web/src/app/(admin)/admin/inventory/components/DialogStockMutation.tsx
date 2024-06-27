@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import { ArrowRightLeft, Loader2, SquarePlus, Trash2 } from "lucide-react";
+import { FormInput } from "@/components/FormInput";
+import { FormSelect } from "@/components/FormSelect";
+import { FormSelectStock } from "@/components/FormSelectStock";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
@@ -17,22 +18,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import useGetProductsByStore from "@/hooks/api/store-product/useGetStoreProductByStore";
+import useRequestStockMutation from "@/hooks/api/store-product/useRequestStockMutation";
+import useGetStores from "@/hooks/api/store/useGetStores";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowRightLeft, Loader2, SquarePlus, Trash2 } from "lucide-react";
+import React, { useState } from "react";
+import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import {
   SchemaCreateStockMutation,
   defaultValues,
   schemaCreateStockMutation,
 } from "./schemaCreateStockMutation";
-import { FormProvider, useFieldArray, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { FormSelectStock } from "@/components/FormSelectStock";
-import { FormInput } from "@/components/FormInput";
-import { Button } from "@/components/ui/button";
-import useGetProductsByStore from "@/hooks/api/store-product/useGetStoreProductByStore";
-import { Label } from "@/components/ui/label";
-import { FormSelect } from "@/components/FormSelect";
-import useGetStores from "@/hooks/api/store/useGetStores";
-import useCreateStockMutation from "@/hooks/api/store-product/useCreateStockMutation";
-import useRequestStockMutation from "@/hooks/api/store-product/useRequestStockMutation";
 
 interface DialogStockMutationProps {
   storeId: number;
@@ -101,9 +100,9 @@ const DialogStockMutation: React.FC<DialogStockMutationProps> = ({
     const payload = { ...data, type: activeTab };
     // console.log(payload, storeId);
     await requestStockMutation(payload, storeId);
-    // onOpenChange(false);
-    // refetch();
-    // handleReset();
+    onOpenChange(false);
+    refetch();
+    handleReset();
   };
 
   if (!products) {

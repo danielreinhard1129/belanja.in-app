@@ -204,6 +204,54 @@ export const confirmStockProductMutationService = async (
           status: 'SUCCESS',
         },
       });
+    } else if (journal.type === 'DECREASE') {
+      // Handle decrease type
+      const storeProduct = await prisma.storeProduct.findFirst({
+        where: {
+          storeId: journal.storeId,
+          productId: journal.productId,
+        },
+      });
+
+      if (!storeProduct) {
+        throw new Error("Can't find storeProduct for decrease");
+      }
+
+      if (storeProduct.qty < journal.quantity) {
+        throw new Error('Insufficient quantity in store');
+      }
+
+      // Calculate new quantity
+      const newQty = storeProduct.qty - journal.quantity;
+
+      if (newQty === 0) {
+        // Delete the storeProduct if quantity is 0
+        await prisma.storeProduct.delete({
+          where: {
+            id: storeProduct.id,
+          },
+        });
+      } else {
+        // Update the quantity of the storeProduct
+        await prisma.storeProduct.update({
+          where: {
+            id: storeProduct.id,
+          },
+          data: {
+            qty: newQty,
+          },
+        });
+      }
+
+      // Update status of stockJournal to 'SUCCESS'
+      updatedJournal = await prisma.stockJournal.update({
+        where: {
+          id: journal.id,
+        },
+        data: {
+          status: 'SUCCESS',
+        },
+      });
     }
 
     return {

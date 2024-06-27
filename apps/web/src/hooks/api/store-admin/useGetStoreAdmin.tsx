@@ -2,7 +2,7 @@
 
 import { axiosInstance } from "@/lib/axios";
 import { StoreAdmin } from "@/types/storeAdmin.type";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
 const useGetStoreAdmin = () => {

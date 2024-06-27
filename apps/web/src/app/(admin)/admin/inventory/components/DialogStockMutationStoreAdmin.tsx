@@ -1,34 +1,33 @@
-import React, { useState } from "react";
-import { ArrowRightLeft, Loader2, SquarePlus, Trash2 } from "lucide-react";
+import { FormInput } from "@/components/FormInput";
+import { FormSelect } from "@/components/FormSelect";
+import { FormSelectStock } from "@/components/FormSelectStock";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  SchemaCreateStockMutation,
-  defaultValues,
-  schemaCreateStockMutation,
-} from "./schemaCreateStockMutation";
+import { Label } from "@/components/ui/label";
+import useCreateStockMutation from "@/hooks/api/store-product/useCreateStockMutation";
+import useGetProductsByStore from "@/hooks/api/store-product/useGetStoreProductByStore";
+import useGetStores from "@/hooks/api/store/useGetStores";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowRightLeft, Loader2, SquarePlus, Trash2 } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import {
   FormProvider,
   SubmitHandler,
   useFieldArray,
   useForm,
 } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { FormSelectStock } from "@/components/FormSelectStock";
-import { FormInput } from "@/components/FormInput";
-import { Button } from "@/components/ui/button";
-import useGetProductsByStore from "@/hooks/api/store-product/useGetStoreProductByStore";
-import { Label } from "@/components/ui/label";
-import { FormSelect } from "@/components/FormSelect";
-import useGetStores from "@/hooks/api/store/useGetStores";
-import useCreateStockMutation from "@/hooks/api/store-product/useCreateStockMutation";
+import {
+  SchemaCreateStockMutation,
+  defaultValues,
+  schemaCreateStockMutation,
+} from "./schemaCreateStockMutation";
 
 interface DialogStockMutationStoreAdminProps {
   storeId: number;

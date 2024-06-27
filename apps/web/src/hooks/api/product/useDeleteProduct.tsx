@@ -1,13 +1,12 @@
-import { useToast } from "@/components/ui/use-toast";
+"use client";
+
+import { toast } from "sonner";
 import { axiosInstance } from "@/lib/axios";
 import { useAppSelector } from "@/redux/hooks";
-import axios, { AxiosError } from "axios";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { AxiosError } from "axios";
+import { useState } from "react";
 
 const useDeleteProduct = () => {
-  const router = useRouter();
-  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { token } = useAppSelector((state) => state.user);
 
@@ -20,16 +19,11 @@ const useDeleteProduct = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      toast({
-        description: "Product deleted successfully!",
-      });
+      toast.success("Product deleted successfully!");
       return response.data.data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        toast({
-          description: error?.response?.data?.message || error?.response?.data,
-        });
-        // console.log(error);
+        toast.error(error?.response?.data);
       }
     } finally {
       setIsLoading(false);

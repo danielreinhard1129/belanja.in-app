@@ -1,13 +1,10 @@
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { axiosInstance } from "@/lib/axios";
 import { useAppSelector } from "@/redux/hooks";
-import axios, { AxiosError } from "axios";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { AxiosError } from "axios";
+import { useState } from "react";
 
 const useRejectStockMutation = () => {
-  const router = useRouter();
-  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { token } = useAppSelector((state) => state.user);
 
@@ -16,7 +13,7 @@ const useRejectStockMutation = () => {
       setIsLoading(true);
       const response = await axiosInstance.post(
         `/store-products/reject/${journalId}`,
-        {}, // Empty body
+        {},
         {
           headers: {
             "Content-Type": "application/json",
@@ -24,16 +21,11 @@ const useRejectStockMutation = () => {
           },
         },
       );
-      toast({
-        description: "Mutation rejected successfully!",
-      });
+      toast.success("Mutation rejected!");
       return response.data.data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        toast({
-          description: error?.response?.data?.message || error?.response?.data,
-        });
-        // console.log(error);
+        toast.error(error?.response?.data);
       }
     } finally {
       setIsLoading(false);

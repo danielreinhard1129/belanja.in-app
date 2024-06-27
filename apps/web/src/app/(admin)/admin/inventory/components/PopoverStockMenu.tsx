@@ -1,12 +1,10 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Settings2 } from "lucide-react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { MoreVertical } from "lucide-react";
+import { Settings2 } from "lucide-react";
 import React, { useState } from "react";
 import DialogStockMutation from "./DialogStockMutation";
 
