@@ -33,7 +33,7 @@ export class AuthController {
 
   async verifyController(req: Request, res: Response, next: NextFunction) {
     try {
-      const userId = Number(req.body.user.id);
+      const userId = Number(res.locals.user.id);
       const password = req.body.password;
       const result = await verifyService(userId, password);
 
