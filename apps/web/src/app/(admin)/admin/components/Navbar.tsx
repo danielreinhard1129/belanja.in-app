@@ -17,7 +17,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { appConfig } from "@/utils/config";
 import { Separator } from "@/components/ui/separator";
 import defaultAvatar from "../../../../../public/default-avatar.png";
-import { lists, baseClass } from "./helpers";
+import { lists, baseClass, listsSuper } from "./helpers";
 import Logo from "@/components/Logo";
 
 const Navbar = () => {
@@ -45,7 +45,23 @@ const Navbar = () => {
           <div className="mb-10">
             <Logo />
           </div>
-          {lists.map((item, index) => (
+          {role === "STOREADMIN" ? (
+            <React.Fragment>
+              {lists.map((item, index) => (
+                <Button
+                  key={index}
+                  variant="secondary"
+                  className={`${baseClass} ${item.url === pathname ? "w-full justify-start px-4 py-3" : "w-full justify-start bg-white px-4 py-3 text-black/50"}`}
+                  onClick={() => router.replace(item.url)}
+                >
+                  {item.icon}
+                  {item.name}
+                </Button>
+              ))}
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              {listsSuper.map((item, index) => (
             <Button
               key={index}
               variant="secondary"
@@ -56,6 +72,8 @@ const Navbar = () => {
               {item.name}
             </Button>
           ))}
+            </React.Fragment>
+          )}
         </div>
         <div className="hidden w-full gap-8 md:flex md:flex-col">
           <div className="items-center justify-between px-3">
