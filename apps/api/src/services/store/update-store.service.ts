@@ -8,62 +8,62 @@ interface UpdateStore
   };
 }
 
-export const updateStoreService = async (id: number, body: UpdateStore) => {
-  try {
-    const { name, city, lat, long, storeAdminId, user } = body;
+// export const updateStoreService = async (id: number, body: UpdateStore) => {
+//   try {
+//     const { name, city, lat, long, storeAdminId, user } = body;
 
-    // Check if store exists
-    const store = await prisma.store.findFirst({
-      where: { id },
-    });
+//     // Check if store exists
+//     const store = await prisma.store.findFirst({
+//       where: { id },
+//     });
 
-    if (!store) {
-      throw new Error('store not found');
-    }
+//     if (!store) {
+//       throw new Error('store not found');
+//     }
 
-    const checkUser = await prisma.user.findUnique({
-      where: {
-        id: Number(user.id),
-      },
-    });
+//     const checkUser = await prisma.user.findUnique({
+//       where: {
+//         id: Number(user.id),
+//       },
+//     });
 
-    if (!checkUser) {
-      throw new Error("Can't find your account");
-    }
+//     if (!checkUser) {
+//       throw new Error("Can't find your account");
+//     }
 
-    if (checkUser.role !== 'SUPERADMIN') throw new Error('Unauthorized access');
+//     if (checkUser.role !== 'SUPERADMIN') throw new Error('Unauthorized access');
 
-    if (name) {
-      const existingStore = await prisma.store.findFirst({
-        where: {
-          name,
-          NOT: {
-            id,
-          },
-        },
-      });
+//     if (name) {
+//       const existingStore = await prisma.store.findFirst({
+//         where: {
+//           name,
+//           NOT: {
+//             id,
+//           },
+//         },
+//       });
 
-      if (existingStore) {
-        throw new Error('Name already in use');
-      }
-    }
+//       if (existingStore) {
+//         throw new Error('Name already in use');
+//       }
+//     }
 
-    // Tentukan nilai storeAdminId
-    const adminId = storeAdminId ? Number(storeAdminId) : null;
+//     // Tentukan nilai storeAdminId
+//     const adminId = storeAdminId ? Number(storeAdminId) : null;
 
-    const updateStore = await prisma.store.update({
-      where: { id },
-      data: {
-        name: name,
-        city: city,
-        lat: lat,
-        long: long,
-        storeAdminId: adminId,
-      },
-    });
+//     const updateStore = await prisma.store.update({
+//       where: { id },
+//       data: {
+//         name: name,
+//         city: city,
+//         lat: lat,
+//         long: long,
+//         storeAdminId: adminId,
+//       },
+//     });
 
-    return { message: 'Update Store Success', data: updateStore };
-  } catch (error) {
-    throw error;
-  }
-};
+//     return { message: 'Update Store Success', data: updateStore };
+//   } catch (error) {
+//     throw error;
+//   }
+// };

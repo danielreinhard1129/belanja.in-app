@@ -5,16 +5,32 @@ import { OrderStatus, Prisma } from '@prisma/client';
 interface GetOrdersQuery extends PaginationQueryParams {
   id: number;
   search: string;
-  status: OrderStatus;
+  status: OrderStatus | undefined;
+  category: string;
 }
 
 export const getOrdersByUserId = async (query: GetOrdersQuery) => {
   try {
-    const { page, search, sortBy, sortOrder, take, id, status } = query;
+    const { page, search, sortBy, sortOrder, take, id, status, category } =
+      query;
 
+      
+      const categoryArgs = category && category === "all" ? undefined : category
+      // console.log("ini dari getOrdersService", categoryArgs);
+      
     const whereClause: Prisma.OrderWhereInput = {
       status: status,
       userId: id,
+      OrderItems: {
+        some: {
+          products: {
+            name: { contains: search },
+            categories: {
+              some: { category: { name: { contains: categoryArgs } } },
+            },
+          },
+        },
+      },
     };
 
     const orders = await prisma.order.findMany({
@@ -27,7 +43,7 @@ export const getOrdersByUserId = async (query: GetOrdersQuery) => {
       include: {
         OrderItems: {
           include: {
-            products: true,
+            products: { include: { images: true } },
           },
         },
       },
