@@ -1,5 +1,6 @@
 import { getUserService } from '@/services/auth/get-user.service';
 import { deleteUserService } from '@/services/user/delete-user.service';
+import { getUserNotStoreAdminService } from '@/services/user/get-userNotStoreAdmin.service';
 import { getUsersService } from '@/services/user/get-users.service';
 import { NextFunction, Request, Response } from 'express';
 export class UserController {
@@ -35,6 +36,16 @@ export class UserController {
         Number(req.params.id),
         res.locals.user,
       );
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getUserNotStoreAdmin(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await getUserNotStoreAdminService();
 
       return res.status(200).send(result);
     } catch (error) {

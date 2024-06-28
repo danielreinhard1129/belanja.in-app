@@ -1,36 +1,30 @@
 "use client";
 
 import { toast } from "sonner";
-import { axiosInstance } from "@/lib/axios";
-import { useAppSelector } from "@/redux/hooks";
+import { axiosInstance } from "@/libs/axios";
 import { IFormStore } from "@/types/store.type";
 import { AxiosError } from "axios";
 import { useState } from "react";
 
 const useCreateStore = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { token } = useAppSelector((state) => state.user);
   const createStore = async (data: IFormStore) => {
     setIsLoading(true);
     try {
       const payload = {
         name: data.name,
-        city: data.city,
+        cityId: data.cityId,
         lat: data.lat,
-        long: String(data.long),
+        long: data.long,
         storeAdminId: String(data.storeAdminId),
       };
 
-      await axiosInstance.post("/stores", payload, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await axiosInstance.post("/stores", payload);
       toast.success("Store created successfully!");
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError) {
+        toast.error(error?.response?.data);
         toast.error(error?.response?.data);
       }
     } finally {

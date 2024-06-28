@@ -6,7 +6,7 @@ export interface Voucher {
   description: string;
   voucherType: string;
   discountValue: number;
-  expiredDate: string;
+  isActive: boolean;
   productId: number;
   products: Product;
   UserVoucher: [];
