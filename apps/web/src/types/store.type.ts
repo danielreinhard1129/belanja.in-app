@@ -9,7 +9,7 @@ export interface Store {
   isPrimary: boolean;
   createdAt: string;
   updatedAt: string;
-  city: string;
+  cityId: string;
   storeAdminId: number;
   storeAdmin: StoreAdmin;
 }
@@ -18,6 +18,6 @@ export interface IFormStore {
   name: string;
   lat: string;
   long: string;
-  city: string;
+  cityId: string;
   storeAdminId?: string;
 }

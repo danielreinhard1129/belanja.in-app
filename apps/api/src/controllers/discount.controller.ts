@@ -1,3 +1,4 @@
+import { createDiscountService } from '@/services/discount/create-discount.service';
 import { getDiscountsByStoreAdminService } from '@/services/discount/get-discountsByStoreAdmin.service';
 import { getDiscountsBySuperAdminService } from '@/services/discount/get-discountsBySuperAdmin.service';
 import { NextFunction, Request, Response } from 'express';
@@ -28,6 +29,16 @@ export class DiscountController {
   ) {
     try {
       const result = await getDiscountsByStoreAdminService(res.locals.user);
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async createDiscount(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await createDiscountService(req.body, res.locals.user);
 
       return res.status(200).send(result);
     } catch (error) {

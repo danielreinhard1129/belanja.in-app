@@ -13,6 +13,7 @@ export class DiscountRouter {
   }
 
   private initializeRoutes(): void {
+    this.router.post('/', verifyToken, this.discountController.createDiscount);
     this.router.get(
       '/store-admin',
       verifyToken,

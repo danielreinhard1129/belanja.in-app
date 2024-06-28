@@ -1,6 +1,7 @@
 import { getStoreAdminService } from '@/services/store-admin/get-store-admin.service';
 import { getStoreAdminsService } from '@/services/store-admin/get-store-admins.service';
 import { getStoreAdminsNoStoreService } from '@/services/store-admin/get-store-adminsNoStore.service';
+import { createStoreAdminService } from '@/services/store-admin/create-storeAdmin.service';
 import { NextFunction, Request, Response } from 'express';
 
 export class StoreAdminController {
@@ -27,6 +28,16 @@ export class StoreAdminController {
     try {
       const id = req.params.id;
       const result = await getStoreAdminService(Number(id));
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async createStoreAdmin(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await createStoreAdminService(req.body, res.locals.user);
 
       return res.status(200).send(result);
     } catch (error) {

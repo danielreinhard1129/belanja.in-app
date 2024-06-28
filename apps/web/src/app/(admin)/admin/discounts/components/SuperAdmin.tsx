@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/table";
 import useGetDiscountsBySuperAdmin from "@/hooks/api/discounts/useGetDiscountsBySuperAdmin";
 import useGetStores from "@/hooks/api/store/useGetStores";
+import { Ban, Check } from "lucide-react";
 import { useState } from "react";
 
 const DiscountsSuperAdmin = () => {
@@ -56,11 +57,11 @@ const DiscountsSuperAdmin = () => {
               <TableHead>Name</TableHead>
               <TableHead>Discount Type</TableHead>
               <TableHead>Discount Value</TableHead>
+              <TableHead>Discount Limit</TableHead>
               <TableHead>Store</TableHead>
               <TableHead>Product</TableHead>
               <TableHead>Minimal Purchase</TableHead>
-              <TableHead>Start</TableHead>
-              <TableHead>End</TableHead>
+              <TableHead>Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -71,11 +72,17 @@ const DiscountsSuperAdmin = () => {
                   <TableCell>{discount.title}</TableCell>
                   <TableCell>{discount.discountType}</TableCell>
                   <TableCell>{discount.discountvalue}</TableCell>
+                  <TableCell>{discount.discountLimit}</TableCell>
                   <TableCell>{discount.store.name}</TableCell>
                   <TableCell>{discount.product.name}</TableCell>
                   <TableCell>{discount.minPurchase}</TableCell>
-                  <TableCell>{discount.startDate}</TableCell>
-                  <TableCell>{discount.endDate}</TableCell>
+                  <TableCell>
+                    {discount.isActive ? (
+                      <Check style={{ color: "green" }} />
+                    ) : (
+                      <Ban style={{ color: "red" }} />
+                    )}
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
