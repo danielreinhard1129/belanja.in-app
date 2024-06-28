@@ -17,7 +17,7 @@ export const createDiscountService = async (
       desc,
       discountType,
       discountvalue,
-      discountLimit,
+      // discountLimit,
       productId,
       minPurchase,
     } = body;
@@ -58,23 +58,23 @@ export const createDiscountService = async (
     }
 
     // Buat discount baru
-    const createDiscount = await prisma.discount.create({
-      data: {
-        title,
-        desc,
-        discountType: discountType,
-        discountvalue: Number(discountvalue),
-        discountLimit: Number(discountLimit),
-        minPurchase: Number(minPurchase),
-        isActive: true,
-        storeId: store.id,
-        productId: Number(productId),
-      },
-    });
+    // const createDiscount = await prisma.discount.create({
+    //   data: {
+    //     title,
+    //     desc,
+    //     discountType: discountType,
+    //     discountvalue: Number(discountvalue),
+    //     discountLimit: Number(discountLimit),
+    //     minPurchase: Number(minPurchase),
+    //     isActive: true,
+    //     storeId: store.id,
+    //     productId: Number(productId),
+    //   },
+    // });
 
     return {
       message: 'Discount has been created',
-      data: createDiscount,
+      // data: createDiscount,
     };
   } catch (error) {
     throw error;

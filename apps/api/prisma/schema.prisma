@@ -25,7 +25,7 @@ model Address {
   addressLine   String
   lat           Float
   long          Float
-  isPrimary     Boolean @default(true)
+  isPrimary     Boolean @default(false)
   provinceId    Int
   cityId        Int
   subdistrictId Int
@@ -36,7 +36,7 @@ model Address {
   subdistricts Subdistrict @relation(fields: [subdistrictId], references: [id])
 
   Delivery Delivery[]
-  User     User       @relation(fields: [userId], references: [id])
+  user     User       @relation(fields: [userId], references: [id])
 
   @@map("addresses")
 }
