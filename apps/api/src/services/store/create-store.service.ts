@@ -1,12 +1,12 @@
-import prisma from '@/prisma';
-import { Store } from '@prisma/client';
+// import prisma from '@/prisma';
+// import { Store } from '@prisma/client';
 
-interface CreateStore
-  extends Omit<Store, 'id' | 'updatedAt' | 'qty' | 'createdAt'> {
-  user: {
-    id: number;
-  };
-}
+// interface CreateStore
+//   extends Omit<Store, 'id' | 'updatedAt' | 'qty' | 'createdAt'> {
+//   user: {
+//     id: number;
+//   };
+// }
 
 // export const createStoreService = async (body: CreateStore) => {
 //   try {

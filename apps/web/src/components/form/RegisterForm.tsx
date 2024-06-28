@@ -17,7 +17,6 @@ import useRegister from "@/hooks/api/auth/useRegister";
 import Image from "next/image";
 import BackToHome from "../BackToHome";
 import { Separator } from "../ui/separator";
-import { useGoogleLogin } from "@react-oauth/google";
 import useGoogleAuth from "@/hooks/api/auth/useGoogleAuth";
 import { useRouter } from "next/navigation";
 import googleLogo from "../../../public/6929234_google_logo_icon.svg";

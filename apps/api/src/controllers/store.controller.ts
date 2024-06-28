@@ -7,15 +7,15 @@ import { getStoresByParamsService } from '@/services/store/get-storesByParams.se
 // import { updateStoreService } from '@/services/store/update-store.service';
 import { NextFunction, Request, Response } from 'express';
 export class StoreController {
-  async createStore(req: Request, res: Response, next: NextFunction) {
-    try {
-      // const result = await createStoreService(req.body);
+  // async createStore(req: Request, res: Response, next: NextFunction) {
+  //   try {
+  //     const result = await createStoreService(req.body);
 
-      // return res.status(200).send(result);
-    } catch (error) {
-      next(error);
-    }
-  }
+  //     return res.status(200).send(result);
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // }
 
   async getStores(req: Request, res: Response, next: NextFunction) {
     try {
@@ -27,14 +27,14 @@ export class StoreController {
     }
   }
 
-  async updateStore(req: Request, res: Response, next: NextFunction) {
-    try {
-      // const result = await updateStoreService(Number(req.params.id), req.body);
-      // return res.status(201).send(result);
-    } catch (error) {
-      next(error);
-    }
-  }
+  // async updateStore(req: Request, res: Response, next: NextFunction) {
+  //   try {
+  //     const result = await updateStoreService(Number(req.params.id), req.body);
+  //     return res.status(201).send(result);
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // }
 
   async getStoresByParams(req: Request, res: Response, next: NextFunction) {
     try {

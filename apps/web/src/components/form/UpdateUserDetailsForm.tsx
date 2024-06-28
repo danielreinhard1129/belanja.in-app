@@ -26,6 +26,7 @@ import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { useState } from "react";
 import Image from "next/image";
+import { appConfig } from "@/utils/config";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 5;
 const ACCEPTED_IMAGE_MIME_TYPES = [
@@ -61,7 +62,7 @@ const FormSchema = z.object({
 type FormData = z.infer<typeof FormSchema>;
 
 const UpdateUserDetailsForm = ({ params }: { params: { id: string } }) => {
-  const { name, email, birthDate, gender } = useAppSelector(
+  const { name, email, birthDate, gender, avatarUrl } = useAppSelector(
     (state) => state.user,
   );
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -100,7 +101,12 @@ const UpdateUserDetailsForm = ({ params }: { params: { id: string } }) => {
         ) : (
           <div className="inline-flex items-center justify-between">
             <div className="flex items-center justify-center bg-slate-200 p-3">
-              <ImagePlus size={56} />
+              <Image
+                src={`${appConfig.baseUrl}/assets${avatarUrl}`}
+                alt="avatar"
+                fill
+                className="object-cover"
+              />
             </div>
           </div>
         )}
