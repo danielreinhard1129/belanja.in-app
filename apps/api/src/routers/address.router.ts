@@ -6,16 +6,28 @@ export class AddressRouter {
   private addressController: AddressController;
 
   constructor() {
-    this.router = Router();
     this.addressController = new AddressController();
+    this.router = Router();
     this.initializeRoutes();
   }
 
   private initializeRoutes(): void {
-    this.router.post('/', this.addressController.getAddressByUserIdController);
+    this.router.get('/:id', this.addressController.getAddressController);
+    this.router.post(
+      '/add-address',
+      this.addressController.addAddressController,
+    );
+    this.router.patch(
+      '/update-address/:id',
+      this.addressController.updateAddressController,
+    );
+    this.router.delete(
+      '/delete-address/:id',
+      this.addressController.deleteAddressController,
+    );
   }
 
-  public getRouter(): Router {
+  getRouter(): Router {
     return this.router;
   }
 }

@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosError } from "axios";
 import { useAppDispatch } from "@/redux/hooks";
 import { logoutAction } from "@/redux/slices/userSlice";
+import { useRouter } from "next/navigation";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
@@ -31,7 +32,10 @@ axiosInstance.interceptors.response.use(
   (error: AxiosError) => {
     if (error.response?.status === 401) {
       const dispatch = useAppDispatch();
+      const router = useRouter();
+      router.push("/")
       dispatch(logoutAction());
+      localStorage.removeItem("Authorization")
       localStorage.removeItem("token");
     }
     return Promise.reject(error);
