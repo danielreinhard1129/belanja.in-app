@@ -8,6 +8,7 @@ import { useState } from "react";
 import { FileWithPath } from "react-dropzone";
 import { toast } from "sonner";
 import useAxios from "../useAxios";
+import localStorage from "redux-persist/es/storage";
 
 interface UpdateUserForm {
   name: string;
@@ -48,6 +49,7 @@ const useUpdateUserDetails = (userId: number) => {
       );
       
       toast.success(`${response.data.message}`);
+      console.log(response.data.data)
 
       router.push(`/user/${userId}`);
     } catch (error) {

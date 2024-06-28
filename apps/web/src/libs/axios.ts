@@ -1,4 +1,6 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosInstance, AxiosError } from "axios";
+import { useAppDispatch } from "@/redux/hooks";
+import { logoutAction } from "@/redux/slices/userSlice";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
@@ -8,7 +10,7 @@ export const axiosInstance: AxiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("Authorization");
+    const token = localStorage.getItem("token");
 
     if (token) {
       config.headers.Authorization = `${token}`;
@@ -20,3 +22,20 @@ axiosInstance.interceptors.request.use(
     return Promise.reject(error);
   },
 );
+
+axiosInstance.interceptors.response.use(
+  (response) => {
+    console.log("response");
+    return response;
+  },
+  (error: AxiosError) => {
+    if (error.response?.status === 401) {
+      const dispatch = useAppDispatch();
+      dispatch(logoutAction());
+      localStorage.removeItem("token");
+    }
+    return Promise.reject(error);
+  },
+);
+
+export default axiosInstance;

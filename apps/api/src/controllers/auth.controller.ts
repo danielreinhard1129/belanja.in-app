@@ -75,7 +75,7 @@ export class AuthController {
     next: NextFunction,
   ) {
     try {
-      const userId = Number(req.body.user.id);
+      const userId = Number(res.locals.user.id);
       const result = await sendChangePasswordService(userId);
 
       return res.status(200).send(result);
@@ -90,7 +90,7 @@ export class AuthController {
     next: NextFunction,
   ) {
     try {
-      const userId = Number(req.body.user.id);
+      const userId = Number(res.locals.user.id);
       const password = req.body.password;
       const result = await changePasswordService(userId, password);
 
@@ -120,7 +120,7 @@ export class AuthController {
     next: NextFunction,
   ) {
     try {
-      const userId = Number(req.body.user.id);
+      const userId = Number(res.locals.user.id);
       const password = req.body.password;
       const result = await resetPasswordService(userId, password);
 

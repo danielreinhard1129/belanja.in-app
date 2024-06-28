@@ -1,6 +1,9 @@
 import { FormInput } from "@/components/FormInput";
 import { FormSelectStock } from "@/components/FormSelectStock";
 import { Button } from "@/components/ui/button";
+import { FormInput } from "@/components/FormInput";
+import { FormSelectStock } from "@/components/FormSelectStock";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -17,6 +20,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import useGetProducts from "@/hooks/api/product/useGetProducts";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import useGetProducts from "@/hooks/api/product/useGetProducts";
@@ -105,6 +111,11 @@ const DialogSettingStoreProducts: React.FC<DialogSettingStoreProductsProps> = ({
 
   const onSubmit = async (data: SchemaCreateStoreProducts) => {
     const payload = { ...data, type: activeTab, storeId: String(storeId) };
+    // console.log(payload);
+    await requestStockMutation(payload, storeId);
+    onOpenChange(false);
+    refetch();
+    handleReset();
     // console.log(payload);
     await requestStockMutation(payload, storeId);
     onOpenChange(false);
@@ -235,7 +246,8 @@ const DialogSettingStoreProducts: React.FC<DialogSettingStoreProductsProps> = ({
                   <CardHeader className="ml-4">
                     <CardTitle>Decrease</CardTitle>
                     <CardDescription>
-                      Choose product you need to decrease or delete
+                      Choose product you need to decrease or delete Choose
+                      product you need to decrease or delete
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -252,7 +264,8 @@ const DialogSettingStoreProducts: React.FC<DialogSettingStoreProductsProps> = ({
                           </div>
                         </Button>
                         <Label>
-                          If you want to delete, reduce the quantity to 0
+                          If you want to delete, reduce the quantity to 0 If you
+                          want to delete, reduce the quantity to 0
                         </Label>
                       </div>
                       {!isProductsReduceAvailable && (

@@ -4,12 +4,14 @@ import {
   Briefcase,
   Home,
   NotepadText,
+  NotepadText,
   Users,
   TicketPercent,
   Percent,
   DollarSign,
 } from "lucide-react";
 
+export const listsSuper = [
 export const listsSuper = [
   { name: "Home", url: "/admin", icon: <Home size={20} /> },
   { name: "Products", url: "/admin/products", icon: <Box size={20} /> },

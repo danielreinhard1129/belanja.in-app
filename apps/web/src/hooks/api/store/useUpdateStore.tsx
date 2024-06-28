@@ -28,9 +28,11 @@ const useUpdateStore = (storeId: number) => {
         },
       });
       toast.success("Store updated successfully!");
+      toast.success("Store updated successfully!");
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError) {
+        toast.error(error?.response?.data);
         toast.error(error?.response?.data);
       }
     } finally {

@@ -25,6 +25,7 @@ const useCreateStore = () => {
       console.log(error);
       if (error instanceof AxiosError) {
         toast.error(error?.response?.data);
+        toast.error(error?.response?.data);
       }
     } finally {
       setIsLoading(false);

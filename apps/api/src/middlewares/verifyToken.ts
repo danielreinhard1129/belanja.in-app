@@ -1,7 +1,7 @@
+import { User } from '@prisma/client';
 import { NextFunction, Request, Response } from 'express';
 import { TokenExpiredError, verify } from 'jsonwebtoken';
 import { appConfig } from '../utils/config';
-import { User } from '@prisma/client';
 
 const secretKey = appConfig.jwtSecretKey;
 

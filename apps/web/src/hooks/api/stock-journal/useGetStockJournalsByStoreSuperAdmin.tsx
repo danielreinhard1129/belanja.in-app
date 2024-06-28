@@ -1,6 +1,7 @@
 import { axiosInstance } from "@/lib/axios";
 import { IPaginationMeta, IPaginationQueries } from "@/types/pagination.type";
 import { StockJournal } from "@/types/stockJournal.type";
+import { StockJournal } from "@/types/stockJournal.type";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";

@@ -13,6 +13,7 @@ const useDeleteProducts = () => {
         data: { productId },
       });
       toast.success("Product deleted successfully!");
+      toast.success("Product deleted successfully!");
       return response.data.data;
     } catch (error) {
       if (error instanceof AxiosError) {

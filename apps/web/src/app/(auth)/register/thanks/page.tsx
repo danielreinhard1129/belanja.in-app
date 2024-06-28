@@ -1,7 +1,11 @@
-import React from "react";
-
 const Thanks = () => {
-  return <div>Thanks, please check your email to verify</div>;
+  return (
+    <div className="container px-0">
+      <div>
+        <p>Thankyou for registering</p>
+      </div>
+    </div>
+  );
 };
 
 export default Thanks;

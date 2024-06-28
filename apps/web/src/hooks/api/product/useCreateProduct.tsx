@@ -5,6 +5,8 @@ import { axiosInstance } from "@/libs/axios";
 import { useAppSelector } from "@/redux/hooks";
 import { IFormProduct, Product } from "@/types/product.type";
 import { AxiosError } from "axios";
+import { IFormProduct, Product } from "@/types/product.type";
+import { AxiosError } from "axios";
 import { useState } from "react";
 
 const useCreateProduct = () => {
@@ -38,6 +40,7 @@ const useCreateProduct = () => {
       toast.success("Product created successfully!");
     } catch (error) {
       if (error instanceof AxiosError) {
+        toast.error(error?.response?.data);
         toast.error(error?.response?.data);
       }
     } finally {

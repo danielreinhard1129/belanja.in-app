@@ -24,7 +24,7 @@ const useAxios = () => {
     const responseIntercept = axiosInstance.interceptors.response.use(
       (response) => response,
       (err) => {
-        if (err?.response?.status !== 200) {
+        if (err?.response?.status === 401) {
           dispatch(logoutAction());
           localStorage.removeItem("Authorization");
         }
