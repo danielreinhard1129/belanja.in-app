@@ -1,4 +1,4 @@
-import { axiosInstance } from "@/lib/axios";
+import { axiosInstance } from "@/libs/axios";
 import { useAppSelector } from "@/redux/hooks";
 import { IPaginationMeta, IPaginationQueries } from "@/types/pagination.type";
 import { StockJournal } from "@/types/stockJournal.type";
@@ -11,7 +11,7 @@ interface IGetStocksQuery extends IPaginationQueries {
 }
 
 const useGetStockJournalByStoreAdmin = (queries: IGetStocksQuery) => {
-  const { token } = useAppSelector((state) => state.user);
+  // const { token } = useAppSelector((state) => state.user);
   const [stockJournals, setStockJournals] = useState<StockJournal[] | []>([]);
   const [meta, setMeta] = useState<IPaginationMeta | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -19,10 +19,10 @@ const useGetStockJournalByStoreAdmin = (queries: IGetStocksQuery) => {
   const getStockJournalByStoreAdmin = async () => {
     try {
       const { data } = await axiosInstance.get("/stock-journals", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        // headers: {
+        //   "Content-Type": "application/json",
+        //   Authorization: `Bearer ${token}`,
+        // },
         params: queries,
       });
       setStockJournals(data.data);

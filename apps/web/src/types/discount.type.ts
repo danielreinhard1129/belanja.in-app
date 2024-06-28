@@ -8,9 +8,9 @@ export interface Discount {
   desc: string;
   discountType: string;
   discountvalue: number;
+  isActive: boolean;
+  discountLimit: number;
   minPurchase: number;
-  startDate: string;
-  endDate: string;
   storeId: number;
   store: Store;
   productId: number;
@@ -29,4 +29,14 @@ export interface UserDiscount {
   discount: Discount;
   Order: [];
   OrderItems: [];
+}
+
+export interface IFormDiscount {
+  title: string;
+  desc: string;
+  discountType: string;
+  discountvalue: number;
+  discountLimit: number;
+  minPurchase?: number;
+  productId: string;
 }

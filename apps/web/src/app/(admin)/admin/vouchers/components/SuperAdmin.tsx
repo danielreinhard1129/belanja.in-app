@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/table";
 import useGetStores from "@/hooks/api/store/useGetStores";
 import useGetVouchersBySuperAdmin from "@/hooks/api/vouchers/useGetVouchersBySuperAdmin";
+import { Ban, Check } from "lucide-react";
 import { useState } from "react";
 
 const VouchersSuperAdmin = () => {
@@ -57,8 +58,8 @@ const VouchersSuperAdmin = () => {
               <TableHead>Description</TableHead>
               <TableHead>Voucher Type</TableHead>
               <TableHead>Discount Value</TableHead>
-              <TableHead>Expired</TableHead>
               <TableHead>Product</TableHead>
+              <TableHead>Available</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -70,8 +71,14 @@ const VouchersSuperAdmin = () => {
                   <TableCell>{voucher.description}</TableCell>
                   <TableCell>{voucher.voucherType}</TableCell>
                   <TableCell>{voucher.discountValue}</TableCell>
-                  <TableCell>{voucher.expiredDate}</TableCell>
                   <TableCell>{voucher.products.name}</TableCell>
+                  <TableCell>
+                    {voucher.isActive ? (
+                      <Check style={{ color: "green" }} />
+                    ) : (
+                      <Ban style={{ color: "red" }} />
+                    )}
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
