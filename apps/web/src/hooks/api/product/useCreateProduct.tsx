@@ -1,7 +1,7 @@
 "use client";
 
 import { toast } from "sonner";
-import { axiosInstance } from "@/lib/axios";
+import { axiosInstance } from "@/libs/axios";
 import { useAppSelector } from "@/redux/hooks";
 import { IFormProduct, Product } from "@/types/product.type";
 import { AxiosError } from "axios";
@@ -9,7 +9,7 @@ import { useState } from "react";
 
 const useCreateProduct = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { token, id } = useAppSelector((state) => state.user);
+  const { id } = useAppSelector((state) => state.user);
   const createProduct = async (data: IFormProduct) => {
     setIsLoading(true);
     try {
@@ -34,12 +34,7 @@ const useCreateProduct = () => {
         createProductForm.append("images", file);
       });
 
-      await axiosInstance.post<Product>("/products", createProductForm, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await axiosInstance.post<Product>("/products", createProductForm);
       toast.success("Product created successfully!");
     } catch (error) {
       if (error instanceof AxiosError) {

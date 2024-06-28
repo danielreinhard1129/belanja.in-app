@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 
 const useGetVouchersByStoreAdmin = () => {
   const [vouchers, setVouchers] = useState<Voucher[]>([]);
-  const { token } = useAppSelector((state) => state.user);
+  const token = localStorage.getItem("Authorization")?.split(" ")[1];
   const getVouchersByStoreAdmin = async () => {
     try {
       const { data } = await axiosInstance.get<Voucher[]>(

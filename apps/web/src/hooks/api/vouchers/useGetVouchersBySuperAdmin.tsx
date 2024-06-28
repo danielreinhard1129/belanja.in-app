@@ -12,7 +12,7 @@ interface IGetVouchersQuery {
 
 const useGetVouchersBySuperAdmin = (queries: IGetVouchersQuery) => {
   const [vouchers, setVouchers] = useState<Voucher[]>([]);
-  const { token } = useAppSelector((state) => state.user);
+  const token = localStorage.getItem("Authorization")?.split(" ")[1];
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const getVouchersBySuperAdmin = async () => {
     try {

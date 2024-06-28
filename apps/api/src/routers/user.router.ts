@@ -14,6 +14,7 @@ export class UserRouter {
 
   private initializeRoutes(): void {
     this.router.get('/', this.userController.getUsers);
+    this.router.get('/user', this.userController.getUserNotStoreAdmin);
     this.router.get('/:id', this.userController.getUser);
     this.router.delete('/:id', verifyToken, this.userController.deleteUser);
   }

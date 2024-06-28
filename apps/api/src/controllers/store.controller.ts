@@ -4,13 +4,12 @@ import { getStoreService } from '@/services/store/get-store.service';
 import { getStoreBySuperAdminService } from '@/services/store/get-storeByStoreAdmin.service';
 import { getStoresService } from '@/services/store/get-stores.service';
 import { getStoresByParamsService } from '@/services/store/get-storesByParams.service';
-import { updateStoreService } from '@/services/store/update-store.service';
+// import { updateStoreService } from '@/services/store/update-store.service';
 import { NextFunction, Request, Response } from 'express';
 export class StoreController {
   async createStore(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await createStoreService(req.body);
-
+      const result = await createStoreService(req.body, res.locals.user);
       return res.status(200).send(result);
     } catch (error) {
       next(error);
@@ -29,8 +28,8 @@ export class StoreController {
 
   async updateStore(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await updateStoreService(Number(req.params.id), req.body);
-      return res.status(201).send(result);
+      // const result = await updateStoreService(Number(req.params.id), req.body);
+      // return res.status(201).send(result);
     } catch (error) {
       next(error);
     }

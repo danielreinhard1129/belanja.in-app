@@ -12,7 +12,7 @@ const useCreateStockMutation = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
   const { toast } = useToast();
-  const { token } = useAppSelector((state) => state.user);
+  const token = localStorage.getItem("Authorization")?.split(" ")[1];
   const createStockMutation = async (
     data: IFormStoreProduct,
     storeId: number,

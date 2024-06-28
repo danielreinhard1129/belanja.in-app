@@ -9,15 +9,15 @@ import { useState } from "react";
 
 const useUpdateStore = (storeId: number) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { token } = useAppSelector((state) => state.user);
+  const token = localStorage.getItem("Authorization")?.split(" ")[1];
   const updateStore = async (data: IFormStore) => {
     setIsLoading(true);
     try {
       const payload = {
         name: data.name,
-        city: data.city,
+        cityId: data.cityId,
         lat: data.lat,
-        long: String(data.long),
+        long: data.long,
         storeAdminId: String(data.storeAdminId),
       };
 

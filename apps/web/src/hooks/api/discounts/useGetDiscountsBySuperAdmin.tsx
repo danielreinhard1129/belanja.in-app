@@ -12,7 +12,7 @@ interface IGetDiscountsQuery {
 
 const useGetDiscountsBySuperAdmin = (queries: IGetDiscountsQuery) => {
   const [discounts, setDiscounts] = useState<Discount[]>([]);
-  const { token } = useAppSelector((state) => state.user);
+  const token = localStorage.getItem("Authorization")?.split(" ")[1];
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const getDiscountsBySuperAdmin = async () => {
     try {

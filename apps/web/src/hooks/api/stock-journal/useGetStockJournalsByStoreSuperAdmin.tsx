@@ -1,9 +1,9 @@
 import { axiosInstance } from "@/lib/axios";
-import { useAppSelector } from "@/redux/hooks";
 import { IPaginationMeta, IPaginationQueries } from "@/types/pagination.type";
 import { StockJournal } from "@/types/stockJournal.type";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface IGetStocksQuery extends IPaginationQueries {
   search?: string;
@@ -12,7 +12,7 @@ interface IGetStocksQuery extends IPaginationQueries {
 }
 
 const useGetStockJournalsByStoreSuperAdmin = (queries: IGetStocksQuery) => {
-  const { token } = useAppSelector((state) => state.user);
+  const token = localStorage.getItem("Authorization")?.split(" ")[1];
   const [stockJournals, setStockJournals] = useState<StockJournal[] | []>([]);
   const [meta, setMeta] = useState<IPaginationMeta | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -26,7 +26,6 @@ const useGetStockJournalsByStoreSuperAdmin = (queries: IGetStocksQuery) => {
         },
         params: queries,
       });
-      // console.log(data);
       setStockJournals(data.data);
       setMeta(data.meta);
     } catch (error) {

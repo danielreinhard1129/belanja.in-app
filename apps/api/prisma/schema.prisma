@@ -23,19 +23,20 @@ model Sample {
 model Address {
   id            Int     @id @default(autoincrement())
   addressLine   String
-  lat           String
-  long          String
+  lat           Float
+  long          Float
   isPrimary     Boolean @default(true)
   provinceId    Int
   cityId        Int
   subdistrictId Int
+  userId        Int
 
   provinces    Province    @relation(fields: [provinceId], references: [id])
   cities       City        @relation(fields: [cityId], references: [id])
   subdistricts Subdistrict @relation(fields: [subdistrictId], references: [id])
 
-  User     User[]
   Delivery Delivery[]
+  User     User       @relation(fields: [userId], references: [id])
 
   @@map("addresses")
 }
@@ -49,6 +50,8 @@ model City {
   subdistricts Subdistrict[]
 
   addresses Address[]
+  Store     Store[]
+  storeId   Int?
 
   @@map("cities")
 }
@@ -89,7 +92,7 @@ model User {
   gender     String?
   birthDate  DateTime?
 
-  addresses    Address?          @relation(fields: [addressId], references: [id])
+  addresses    Address[]
   storeAdmin   StoreAdmin?
   Order        Order[]
   userDiscount userDiscount[]
@@ -134,12 +137,12 @@ model Store {
   id            Int             @id @default(autoincrement())
   name          String
   qty           Int             @default(0)
-  lat           String
-  long          String
+  lat           Float
+  long          Float
   isPrimary     Boolean         @default(false)
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
-  city          String
+  cityId        Int
   storeAdminId  Int?            @unique
   storeAdmin    StoreAdmin?     @relation(fields: [storeAdminId], references: [id])
   storeProduct  StoreProduct[]
@@ -148,6 +151,7 @@ model Store {
   JournalDetail JournalDetail[]
   Order         Order[]
   Delivery      Delivery[]
+  City          City            @relation(fields: [cityId], references: [id])
 
   @@map("stores")
 }
@@ -256,20 +260,19 @@ model CategoriesOnProducts {
 }
 
 model Discount {
-  id            Int          @id @default(autoincrement())
+  id            Int            @id @default(autoincrement())
   title         String
   desc          String
   discountType  DiscountType
   discountvalue Float
+  discountLimit Float
   minPurchase   Float?
-  startDate     DateTime
-  endDate       DateTime
+  isActive      Boolean        @default(true)
   storeId       Int
   productId     Int?
-
-  store        Store          @relation(fields: [storeId], references: [id])
-  product      Product?       @relation(fields: [productId], references: [id])
-  userDiscount userDiscount[]
+  store         Store          @relation(fields: [storeId], references: [id])
+  product       Product?       @relation(fields: [productId], references: [id])
+  userDiscount  userDiscount[]
 
   @@map("discounts")
 }
@@ -303,7 +306,7 @@ model Voucher {
   description   String
   voucherType   VoucherType
   discountValue Int
-  expiredDate   DateTime
+  isActive      Boolean     @default(true)
 
   productId   Int?
   products    Product?      @relation(fields: [productId], references: [id])
@@ -359,12 +362,12 @@ model Order {
 }
 
 enum OrderStatus {
-  WAITING_FOR_PAYMENT
-  WAITING_ADMIN_CONFIRMATION
-  ORDER_PROCESSED
-  ORDER_SHIPPED
-  ORDER_RECEIVED
-  ORDER_CANCELLED
+  WAITING_FOR_PAYMENT        @map("WAITING_FOR_PAYMENT")
+  WAITING_ADMIN_CONFIRMATION @map("WAITING_ADMIN_CONFIRMATION")
+  ORDER_PROCESSED            @map("ORDER_PROCESSED")
+  ORDER_SHIPPED              @map("ORDER_SHIPPED")
+  ORDER_RECEIVED             @map("ORDER_RECEIVED")
+  ORDER_CANCELLED            @map("ORDER_CANCELLED")
 }
 
 model OrderItems {

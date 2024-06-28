@@ -24,7 +24,7 @@ import useGetProductsByStore from "@/hooks/api/store-product/useGetStoreProductB
 import useRequestStockMutation from "@/hooks/api/store-product/useRequestStockMutation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Settings2, SquarePlus, Trash2 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import {
   SchemaCreateStoreProducts,
@@ -58,10 +58,10 @@ const DialogSettingStoreProducts: React.FC<DialogSettingStoreProductsProps> = ({
   const { reset, handleSubmit, control } = methods;
   const { append, fields, remove } = useFieldArray({ control, name: "stocks" });
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     reset(defaultValues);
     setSelectedProductIds([]);
-  };
+  }, [reset]);
 
   useEffect(() => {
     handleReset();

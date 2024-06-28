@@ -8,6 +8,8 @@ export interface Discount {
   desc: string;
   discountType: string;
   discountvalue: number;
+  isActive: boolean;
+  discountLimit: number;
   minPurchase: number;
   storeId: number;
   store: Store;
@@ -34,6 +36,7 @@ export interface IFormDiscount {
   desc: string;
   discountType: string;
   discountvalue: number;
-  minPurchase: number;
-  productId: number;
+  discountLimit: number;
+  minPurchase?: number;
+  productId: string;
 }

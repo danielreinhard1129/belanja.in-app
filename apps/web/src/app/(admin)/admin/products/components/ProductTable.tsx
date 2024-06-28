@@ -68,7 +68,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
           <TableHead>Name</TableHead>
           <TableHead>
             <div className="flex items-center gap-2">
-              <DialogSettingsCategory refetch={refetch} />{" "}
+              <DialogSettingsCategory refetch={refetch} />
               <span>Categories</span>
             </div>
           </TableHead>
@@ -80,6 +80,12 @@ const ProductTable: React.FC<ProductTableProps> = ({
           <TableRow>
             <TableCell colSpan={6} className="text-center text-xs">
               Loading...
+            </TableCell>
+          </TableRow>
+        ) : products.length === 0 ? (
+          <TableRow>
+            <TableCell colSpan={6} className="text-center text-xs">
+              Data not found
             </TableCell>
           </TableRow>
         ) : (

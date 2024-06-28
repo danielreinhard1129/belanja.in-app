@@ -8,7 +8,7 @@ import { useState } from "react";
 const useDeleteStore = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { token } = useAppSelector((state) => state.user);
+  const token = localStorage.getItem("Authorization")?.split(" ")[1];
 
   const deleteStore = async (storeId: number) => {
     try {

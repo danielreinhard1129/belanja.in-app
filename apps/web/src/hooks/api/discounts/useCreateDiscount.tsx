@@ -8,6 +8,7 @@ import { IFormDiscount } from "@/types/discount.type";
 
 const useCreateDiscount = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const token = localStorage.getItem("Authorization")?.split(" ")[1];
   const createDiscount = async (data: IFormDiscount) => {
     setIsLoading(true);
     try {
@@ -16,11 +17,17 @@ const useCreateDiscount = () => {
         desc: data.desc,
         discountType: data.discountType,
         discountvalue: data.discountvalue,
+        discountLimit: data.discountLimit,
         minPurchase: data.minPurchase,
-        productId: data.productId,
+        productId: Number(data.productId),
       };
 
-      await axiosInstance.post("/discounts", payload);
+      await axiosInstance.post("/discounts", payload, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       toast.success("Store created successfully!");
     } catch (error) {
       console.log(error);

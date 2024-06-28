@@ -7,29 +7,21 @@ import { useEffect, useState } from "react";
 
 const useGetCategories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
-
-  useEffect(() => {
-    const getCategories = async () => {
-      try {
-        const { data } = await axiosInstance.get<Category[]>("/categories/");
-        setCategories(data);
-      } catch (error) {
-        if (error instanceof AxiosError) {
-          console.error("Error fetching categories:", error.message);
-        }
+  const getCategories = async () => {
+    try {
+      const { data } = await axiosInstance.get<Category[]>("/categories");
+      setCategories(data);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.error("Error fetching categories:", error.message);
       }
-    };
-
+    }
+  };
+  useEffect(() => {
     getCategories();
-
-    // Polling every 1 second
-    const intervalId = setInterval(getCategories, 1000);
-
-    // Clean up interval on component unmount
-    return () => clearInterval(intervalId);
   }, []);
 
-  return { categories };
+  return { categories, refetch: getCategories };
 };
 
 export default useGetCategories;

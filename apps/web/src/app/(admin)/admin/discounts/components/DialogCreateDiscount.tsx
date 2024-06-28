@@ -21,6 +21,7 @@ import { FormInput } from "@/components/FormInput";
 import { FormSelect } from "@/components/FormSelect";
 import { Button } from "@/components/ui/button";
 import useGetProducts from "@/hooks/api/product/useGetProducts";
+import useCreateDiscount from "@/hooks/api/discounts/useCreateDiscount";
 
 interface DialogCreateDiscountProps {
   open: boolean;
@@ -33,6 +34,7 @@ const DialogCreateDiscount: React.FC<DialogCreateDiscountProps> = ({
   open,
   refetch,
 }) => {
+  const { createDiscount, isLoading } = useCreateDiscount();
   const { products } = useGetProducts();
   const methods = useForm<CreateStore>({
     mode: "all",
@@ -61,10 +63,10 @@ const DialogCreateDiscount: React.FC<DialogCreateDiscountProps> = ({
 
   const onSubmit: SubmitHandler<CreateStore> = async (data) => {
     console.log(data);
-    // await createStore(data);
-    // refetch();
-    // reset(defaultValues);
-    // setIsOpen(false);
+    await createDiscount(data);
+    refetch();
+    reset(defaultValues);
+    onOpenChange(false);
   };
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -108,7 +110,7 @@ const DialogCreateDiscount: React.FC<DialogCreateDiscountProps> = ({
               />
               <div className="flex justify-between gap-10">
                 <FormInput<CreateStore>
-                  name="discountValue"
+                  name="discountvalue"
                   label="Discount Value"
                   type="number"
                   placeholder=""
@@ -120,6 +122,12 @@ const DialogCreateDiscount: React.FC<DialogCreateDiscountProps> = ({
                   placeholder=""
                 />
               </div>
+              <FormInput<CreateStore>
+                name="discountLimit"
+                label="Discount Limit"
+                type="number"
+                placeholder=""
+              />
             </div>
             <DialogFooter>
               <Button
@@ -129,11 +137,10 @@ const DialogCreateDiscount: React.FC<DialogCreateDiscountProps> = ({
               >
                 Reset
               </Button>
-              {/* <Button disabled={isLoading} type="submit" className="px-4 py-2">
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {isLoading ? "Loading" : "Add"}
-            </Button> */}
-              <Button type="submit">Add</Button>
+              <Button disabled={isLoading} type="submit" className="px-4 py-2">
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {isLoading ? "Loading" : "Add"}
+              </Button>
             </DialogFooter>
           </form>
         </FormProvider>

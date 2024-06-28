@@ -6,11 +6,10 @@ export const createStore = z.object({
   discountType: z
     .string()
     .min(4, "Discount type must be at least 4 characters long"),
-  discountValue: z.number().min(0, "Discount value must be at least 0"),
+  discountvalue: z.number().min(0, "Discount value must be at least 0"),
+  discountLimit: z.number().min(0, "Discount value must be at least 0"),
   minPurchase: z.number().optional(),
-  //   startDate: z.date().optional(),
-  //   endDate: z.date().optional(),
-  productId: z.string().optional(),
+  productId: z.string(),
 });
 
 export type CreateStore = z.infer<typeof createStore>;
@@ -19,9 +18,8 @@ export const defaultValues: CreateStore = {
   title: "",
   desc: "",
   discountType: "",
-  discountValue: 0,
+  discountvalue: 0,
+  discountLimit: 0,
   minPurchase: undefined,
-  //   startDate: undefined,
-  //   endDate: undefined,
   productId: "",
 };

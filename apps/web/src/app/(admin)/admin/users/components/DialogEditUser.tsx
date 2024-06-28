@@ -17,7 +17,7 @@ interface DialogEditUserProps {
   refetch: () => void;
 }
 
-const DialogCreateUser: React.FC<DialogEditUserProps> = ({
+const DialogEditUser: React.FC<DialogEditUserProps> = ({
   userId,
   onOpenChange,
   open,
@@ -45,4 +45,4 @@ const DialogCreateUser: React.FC<DialogEditUserProps> = ({
   );
 };
 
-export default DialogCreateUser;
+export default DialogEditUser;

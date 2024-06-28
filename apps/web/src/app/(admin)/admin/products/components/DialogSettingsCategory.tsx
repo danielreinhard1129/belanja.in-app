@@ -35,7 +35,7 @@ const DialogSettingsCategory: React.FC<DialogSettingsCategoryProps> = ({
   const { createCategory, isLoading: isCreating } = useCreateCategory();
   const { updateCategory, isLoading: isUpdating } = useUpdateCategory();
   const { deleteCategory } = useDeleteCategory();
-  const { categories } = useGetCategories();
+  const { categories, refetch: refetchCategories } = useGetCategories();
   const [editingCategory, setEditingCategory] =
     useState<SchemaCreateCategory | null>(null);
   const [deletingCategoryId, setDeletingCategoryId] = useState<number | null>(
@@ -56,9 +56,9 @@ const DialogSettingsCategory: React.FC<DialogSettingsCategoryProps> = ({
       await createCategory(data);
     }
     refetch();
+    refetchCategories();
     reset(defaultValues);
     setEditingCategory(null);
-    console.log(data);
   };
 
   const handleEdit = (category: SchemaCreateCategory) => {
@@ -71,6 +71,7 @@ const DialogSettingsCategory: React.FC<DialogSettingsCategoryProps> = ({
     try {
       await deleteCategory(categoryId);
       refetch();
+      refetchCategories();
     } finally {
       setDeletingCategoryId(null);
     }

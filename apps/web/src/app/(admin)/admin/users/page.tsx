@@ -13,12 +13,14 @@ import useGetUsers from "@/hooks/api/user/useGetUsers";
 import SearchInput from "../products/components/Search";
 import SortOrderSelect from "../products/components/SortOrderSelect";
 import Pagination from "@/components/Pagination";
-import DialogCreateUser from "./components/DialogCreateUser";
+import DialogCreateUser from "./components/DialogCreateUsers";
 import DialogDeleteUser from "./components/DialogDeleteUser";
 import useDeleteUser from "@/hooks/api/user/useDeleteUser";
 import AuthGuardSuperAdmin from "@/hoc/AuthGuardSuperAdmin";
+import DialogEditUser from "./components/DialogEditUser";
 
 const Users = () => {
+  const [isOpenDialogCreate, setIsOpenDialogCreate] = useState<boolean>(false);
   const [isOpenDialogEdit, setIsOpenDialogEdit] = useState<boolean>(false);
   const [isOpenDialogDelete, setIsOpenDialogDelete] = useState<boolean>(false);
   const { deleteUser, isLoading: isDeleting } = useDeleteUser();
@@ -54,9 +56,14 @@ const Users = () => {
     <main className="container mx-auto">
       <div className="container my-20 max-w-6xl border-2 pb-10 shadow-xl">
         <div className="my-4 flex justify-between">
-          <div className="flex gap-4">
+          <div className="flex justify-between gap-4">
             <SearchInput search={search} setSearch={setSearch} />
           </div>
+          <DialogCreateUser
+            refetch={refetch}
+            open={isOpenDialogCreate}
+            onOpenChange={setIsOpenDialogCreate}
+          />
         </div>
         <div>
           <Table>
@@ -78,7 +85,7 @@ const Users = () => {
                     <TableCell>{user.role}</TableCell>
                     <TableCell>
                       <div className="flex gap-2">
-                        <DialogCreateUser
+                        <DialogEditUser
                           userId={user.id}
                           refetch={refetch}
                           open={isOpenDialogEdit}

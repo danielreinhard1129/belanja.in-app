@@ -2,15 +2,18 @@ import prisma from '@/prisma';
 import { Store } from '@prisma/client';
 
 interface CreateStore
-  extends Omit<Store, 'id' | 'updatedAt' | 'qty' | 'createdAt'> {
-  user: {
-    id: number;
-  };
+  extends Omit<Store, 'id' | 'updatedAt' | 'qty' | 'createdAt'> {}
+
+interface UserToken {
+  id: number;
 }
 
-export const createStoreService = async (body: CreateStore) => {
+export const createStoreService = async (
+  body: CreateStore,
+  user: UserToken,
+) => {
   try {
-    const { name, city, lat, long, storeAdminId, user } = body;
+    const { name, cityId, lat, long, storeAdminId } = body;
 
     const checkUser = await prisma.user.findUnique({
       where: {
@@ -38,9 +41,9 @@ export const createStoreService = async (body: CreateStore) => {
     const createStore = await prisma.store.create({
       data: {
         name: name,
-        city: city,
-        lat: lat,
-        long: long,
+        cityId: Number(cityId),
+        lat: Number(lat),
+        long: Number(long),
         storeAdminId: adminId,
       },
     });

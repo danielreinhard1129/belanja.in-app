@@ -13,6 +13,7 @@ export class StoreAdminRouter {
 
   private initializeRoutes(): void {
     this.router.get('/', this.storeAdminController.getStoreAdmins);
+    this.router.post('/', this.storeAdminController.createStoreAdmin);
     this.router.get(
       '/no-store',
       this.storeAdminController.getStoreAdminsNoStore,

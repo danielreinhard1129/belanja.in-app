@@ -1,5 +1,4 @@
 import { axiosInstance } from "@/lib/axios";
-import { useAppSelector } from "@/redux/hooks";
 import { IPaginationMeta, IPaginationQueries } from "@/types/pagination.type";
 import { Stock } from "@/types/stock.type";
 import { AxiosError } from "axios";
@@ -11,8 +10,8 @@ interface IGetStocksQuery extends IPaginationQueries {
 }
 
 const useGetStockByRuleNew = (queries: IGetStocksQuery) => {
+  const token = localStorage.getItem("Authorization")?.split(" ")[1];
   const [stocks, setStocks] = useState<Stock | null>(null);
-  const { token } = useAppSelector((state) => state.user);
   const [metaStock, setMetaStock] = useState<IPaginationMeta | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 

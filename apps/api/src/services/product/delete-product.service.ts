@@ -26,10 +26,12 @@ export const deleteProductService = async (id: number, user: UserToken) => {
       throw new Error('invalid product id');
     }
 
-    await prisma.product.update({
+    const deleteProduct = await prisma.product.update({
       where: { id },
       data: { isDelete: true },
     });
+
+    return deleteProduct;
   } catch (error) {
     throw error;
   }

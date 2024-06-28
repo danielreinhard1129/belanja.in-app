@@ -12,7 +12,7 @@ interface IGetStocksQuery extends IPaginationQueries {
 }
 
 const useGetStockJournalsByStoreWithParams = (queries: IGetStocksQuery) => {
-  const { token } = useAppSelector((state) => state.user);
+  const token = localStorage.getItem("Authorization")?.split(" ")[1];
   const [stockJournals, setStockJournals] = useState<StockJournal[] | []>([]);
   const [meta, setMeta] = useState<IPaginationMeta | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);

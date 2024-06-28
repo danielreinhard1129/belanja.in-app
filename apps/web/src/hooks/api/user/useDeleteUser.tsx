@@ -6,7 +6,7 @@ import { useState } from "react";
 
 const useDeleteUser = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { token } = useAppSelector((state) => state.user);
+  const token = localStorage.getItem("Authorization")?.split(" ")[1];
 
   const deleteUser = async (userId: number) => {
     try {

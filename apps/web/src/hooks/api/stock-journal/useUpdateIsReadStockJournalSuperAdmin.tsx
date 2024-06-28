@@ -7,9 +7,8 @@ import { useState } from "react";
 
 const useUpdateIsReadStockJournalSuperAdmin = () => {
   const router = useRouter();
-  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { token } = useAppSelector((state) => state.user);
+  const token = localStorage.getItem("Authorization")?.split(" ")[1];
 
   const updateIsReadStockJournalSuperAdmin = async () => {
     try {
@@ -27,9 +26,7 @@ const useUpdateIsReadStockJournalSuperAdmin = () => {
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        toast({
-          description: error?.response?.data?.message || error?.response?.data,
-        });
+        console.log(error);
       }
     } finally {
       setIsLoading(false);

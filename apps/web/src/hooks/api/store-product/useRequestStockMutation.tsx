@@ -9,7 +9,7 @@ import { useState } from "react";
 
 const useRequestStockMutation = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { token } = useAppSelector((state) => state.user);
+  // const { token } = useAppSelector((state) => state.user);
   const requestStockMutation = async (
     data: IFormRequestStoreProduct,
     storeId: number,

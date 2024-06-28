@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 
 const useGetDiscountsByStoreAdmin = () => {
   const [discounts, setDiscounts] = useState<Discount[]>([]);
-  const { token } = useAppSelector((state) => state.user);
+  const token = localStorage.getItem("Authorization")?.split(" ")[1];
   const getDiscountsByStoreAdmin = async () => {
     try {
       const { data } = await axiosInstance.get<Discount[]>(

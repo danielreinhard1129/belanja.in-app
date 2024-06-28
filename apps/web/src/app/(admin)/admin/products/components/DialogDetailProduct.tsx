@@ -45,13 +45,9 @@ const DialogDetailProduct: React.FC<DialogDetailProductProps> = ({
           <div>{product?.name}</div>
           <div>{product?.price}</div>
           <div>{product?.weight}</div>
-<<<<<<< Updated upstream
-          <div>{product?.description}</div>
-=======
           <div className="w-[200px] text-wrap bg-blue-200">
             {product?.description}
           </div>
->>>>>>> Stashed changes
         </DialogHeader>
         <DialogFooter className="mt-4 flex justify-end">
           <Button
