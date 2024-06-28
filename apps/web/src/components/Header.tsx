@@ -15,6 +15,7 @@ import defaultAvatar from "../../public/default-avatar.png";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet"; // prettier-ignore
 import { useEffect, useState } from "react";
 import Logo from "./Logo";
+import useGetUser from "@/hooks/api/auth/useGetUser";
 
 export const Header = () => {
   const router = useRouter();
@@ -22,6 +23,7 @@ export const Header = () => {
   const dispatch = useAppDispatch();
   const [hideHeader, setHideHeader] = useState(false);
   const [lastScrollTop, setLastScrollTop] = useState(0);
+  const { user, isLoading } = useGetUser(id);
 
   const { logout } = useGoogleAuth();
   const userLogout = () => {
@@ -59,7 +61,7 @@ export const Header = () => {
       <div className="container mx-auto flex h-20 items-center justify-between p-0 px-6 py-2">
         <Logo />
         <div className="flex items-center gap-2 md:gap-6">
-          {Boolean(id) ? (
+          {user && !isLoading ? (
             <div className="flex items-center gap-10">
               <div
                 className="hidden cursor-pointer items-center gap-2 hover:underline md:flex"

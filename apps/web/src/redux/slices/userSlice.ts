@@ -9,6 +9,7 @@ interface UserState {
   provider?: string;
   role: string;
   gender?: string;
+  token?: string;
 }
 
 const initialState: UserState = {
@@ -17,9 +18,10 @@ const initialState: UserState = {
   email: "",
   role: "",
   avatarUrl: "",
-  birthDate: new Date(),
+  birthDate: undefined,
   provider: "",
   gender: "",
+  token: "",
 };
 
 export const userSlice = createSlice({
@@ -27,10 +29,37 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     loginAction: (state, action: PayloadAction<UserState>) => {
-      Object.assign(state, action.payload);
+      const {
+        id,
+        name,
+        email,
+        role,
+        avatarUrl,
+        birthDate,
+        gender,
+        provider,
+        token,
+      } = action.payload;
+      state.id = id;
+      state.email = email;
+      state.name = name;
+      state.role = role;
+      state.avatarUrl = avatarUrl;
+      state.birthDate = birthDate;
+      state.gender = gender;
+      state.provider = provider;
+      state.token = token;
     },
     logoutAction: (state) => {
-      Object.assign(state, initialState);
+      state.id = 0;
+      state.email = "";
+      state.name = "";
+      state.role = "";
+      state.avatarUrl = "";
+      state.birthDate = undefined;
+      state.gender = "";
+      state.provider = "";
+      state.token = "";
     },
   },
 });

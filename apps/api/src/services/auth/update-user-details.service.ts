@@ -32,7 +32,7 @@ export const updateUserDetailsService = async (
 
     if (file) {
       avatarUrl = `/images/${file.filename}`;
-      const imagePath = join(__dirname, '../../../public' + user.avatarUrl);
+      // const imagePath = join(__dirname, '../../../public' + user.avatarUrl);
     }
 
     const userDetails = await prisma.user.update({

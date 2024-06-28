@@ -56,7 +56,7 @@ const UserDetail = () => {
       </div>
       <div className="absolute top-0 z-0 h-[160px] w-[140vw] self-center rounded-b-full bg-[#FF6100] md:rounded-none"></div>
       <div className="z-50 flex w-full flex-col items-center md:items-start">
-        {avatarUrl ? (
+        {/* {avatarUrl ? (
           <div className="relative mt-10 h-32 w-32 overflow-hidden rounded-full border-4 border-white">
             <Image
               src={`${appConfig.baseUrl}/assets${avatarUrl}`}
@@ -74,7 +74,15 @@ const UserDetail = () => {
               className="object-cover"
             />
           </div>
-        )}
+        )} */}
+        <div className="relative mt-10 h-32 w-32 overflow-hidden rounded-full border-4 border-white">
+            <Image
+              src={`${appConfig.baseUrl}/assets${avatarUrl}`}
+              alt="profile picture"
+              fill
+              className="object-cover"
+            />
+          </div>
         <div className="flex w-full flex-col items-center justify-between gap-3 md:flex-row">
           <div className="pt-4 text-xl font-medium">{name}</div>
           <TooltipProvider>

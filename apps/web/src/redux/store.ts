@@ -1,8 +1,7 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import { persistStore, persistReducer } from "redux-persist";
-import userReducer from "./slices/userSlice";
-import tokenExpirationMiddleware from "./middlewares/tokenExpiration";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { persistReducer, persistStore } from "redux-persist";
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
+import userReducer from "./slices/userSlice";
 
 const createNoopStorage = () => {
   return {
@@ -23,10 +22,8 @@ const storage =
     ? createWebStorage("local")
     : createNoopStorage();
 
-const fingerprintName = process.env.NEXT_PUBLIC_FINGERPRINT_NAME!;
-
 const persistConfig = {
-  key: fingerprintName,
+  key: "user",
   storage,
   timeout: 2000,
 };
@@ -51,7 +48,7 @@ export const makeStore = () => {
       middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
           serializableCheck: false,
-        }).concat(tokenExpirationMiddleware),
+        }),
     });
     (store as any).__persistor = persistStore(store);
     return store;
