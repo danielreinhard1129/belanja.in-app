@@ -20,8 +20,9 @@ export interface ICart {
   userId: number;
   qty: number;
   productId: number;
-  products: Product
-  stores: Store
+  products: Product;
+  stores: Store;
+  isActive: boolean;
 }
 export interface UpdateCartArgs {
   userId: number;
@@ -31,10 +32,10 @@ export interface UpdateCartArgs {
 export enum OrderStatus {
   WAITING_FOR_PAYMENT = "WAITING_FOR_PAYMENT",
   WAITING_ADMIN_CONFIRMATION = "WAITING_ADMIN_CONFIRMATION",
-  ORDER_PROCESSED="ORDER_PROCESSED",
-  ORDER_SHIPPED="ORDER_SHIPPED",
-  ORDER_RECEIVED="ORDER_RECEIVED",
-  ORDER_CANCELLED="ORDER_CANCELLED",
+  ORDER_PROCESSED = "ORDER_PROCESSED",
+  ORDER_SHIPPED = "ORDER_SHIPPED",
+  ORDER_RECEIVED = "ORDER_RECEIVED",
+  ORDER_CANCELLED = "ORDER_CANCELLED",
 }
 
 export interface IOrder {
@@ -56,7 +57,6 @@ export interface IOrder {
   payment: IPayment[];
   delivery: IDelivery[];
 }
-
 
 export interface IOrderItem {
   id: number;
@@ -90,7 +90,7 @@ export interface IPayment {
 enum PaymentMethod {
   QRIS = "QRIS",
   VIRTUAL_ACCOUNT = "VIRTUAL_ACCOUNT",
-  MANUAL_TRANSFER = "MANUAL_TRANSFER"
+  MANUAL_TRANSFER = "MANUAL_TRANSFER",
 }
 
 export interface IDelivery {
@@ -107,7 +107,6 @@ export interface IDelivery {
 
 // Assuming the other related interfaces are defined as below:
 
-
 interface UserDiscount {
   id: number;
   // other fields...
@@ -117,4 +116,3 @@ interface UserVoucher {
   id: number;
   // other fields...
 }
-
