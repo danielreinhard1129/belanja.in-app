@@ -5,7 +5,7 @@ import { Label } from "./ui/label";
 type Props<T extends FieldValues> = {
   name: Path<T>;
   label: string;
-  type: "text" | "number";
+  type: "text" | "number" | "password";
   placeholder: string;
 } & Omit<InputProps, "name">;
 

@@ -5,15 +5,15 @@ import { axiosInstance } from "@/libs/axios";
 import { AxiosError } from "axios";
 import { useState } from "react";
 
-interface CreateStoreAdmin {
+interface UpdateStoreAdmin {
   nip: number;
   name: string;
   email: string;
 }
 
-const useCreateStoreAdmin = () => {
+const useUpdateStoreAdmin = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const createStoreAdmin = async (data: CreateStoreAdmin) => {
+  const updateStoreAdmin = async (data: UpdateStoreAdmin, id: number) => {
     setIsLoading(true);
     try {
       const payload = {
@@ -22,8 +22,8 @@ const useCreateStoreAdmin = () => {
         email: data.email,
       };
 
-      await axiosInstance.post("/store-admins", payload);
-      toast.success("Store Admin created successfully!");
+      await axiosInstance.patch(`/store-admins/${id}`, payload);
+      toast.success("Store Admin has been updated!");
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError) {
@@ -33,7 +33,7 @@ const useCreateStoreAdmin = () => {
       setIsLoading(false);
     }
   };
-  return { createStoreAdmin, isLoading };
+  return { updateStoreAdmin, isLoading };
 };
 
-export default useCreateStoreAdmin;
+export default useUpdateStoreAdmin;

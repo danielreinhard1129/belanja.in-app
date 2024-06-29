@@ -9,6 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import useGetUser from "@/hooks/api/user/useGetUserWithStoreAdmin";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   FormProvider,
@@ -16,31 +17,34 @@ import {
   useForm,
   useFormState,
 } from "react-hook-form";
-import { editUser, EditUser, defaultValues } from "./validationSchema/editUser";
+import {
+  editStoreAdmin,
+  EditStoreAdmin,
+  defaultValues,
+} from "./validationSchema/editStoreAdmin";
 import { FormInput } from "@/components/FormInput";
-import useGetUser from "@/hooks/api/user/useGetUserWithStoreAdmin";
-import useUpdateUser from "@/hooks/api/user/useUpdateUser";
 import { Button } from "@/components/ui/button";
+import useUpdateStoreAdmin from "@/hooks/api/store-admin/useUpdateStoreAdmin";
 
-interface DialogEditUserProps {
+interface DialogEditStoreAdminProps {
   userId: number;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   refetch: () => void;
 }
 
-const DialogEditUser: React.FC<DialogEditUserProps> = ({
+const DialogEditStoreAdmin: React.FC<DialogEditStoreAdminProps> = ({
   userId,
   onOpenChange,
   open,
   refetch,
 }) => {
   const { user, refetch: refetchUser } = useGetUser(userId);
-  const { updateUser, isLoading } = useUpdateUser();
+  const { updateStoreAdmin, isLoading } = useUpdateStoreAdmin();
 
-  const methods = useForm<EditUser>({
+  const methods = useForm<EditStoreAdmin>({
     mode: "all",
-    resolver: zodResolver(editUser),
+    resolver: zodResolver(editStoreAdmin),
     defaultValues,
   });
   const { reset, handleSubmit, control } = methods;
@@ -51,29 +55,39 @@ const DialogEditUser: React.FC<DialogEditUserProps> = ({
   useEffect(() => {
     if (user) {
       reset({
+        nip: user?.storeAdmin?.nip || 0,
         name: user?.name || "",
         email: user?.email || "",
       });
     }
   }, [user, reset]);
 
-  const onSubmit: SubmitHandler<EditUser> = async (data) => {
+  const onSubmit: SubmitHandler<EditStoreAdmin> = async (data) => {
     // console.log(data);
-    await updateUser(data, userId);
+    await updateStoreAdmin(data, userId);
     refetchUser();
     refetch();
     onOpenChange(false);
   };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <DialogHeader>
-              <DialogTitle>Edit User</DialogTitle>
-              <DialogDescription>Edit this User</DialogDescription>
+              <DialogTitle>Edit Store Admin</DialogTitle>
+              <DialogDescription>Edit this store admin</DialogDescription>
               <div className="mt-4">
-                <FormInput<EditUser>
+                <FormInput<EditStoreAdmin>
+                  name="nip"
+                  label="NIP"
+                  type="number"
+                  placeholder=""
+                />
+              </div>
+              <div className="mt-4">
+                <FormInput<EditStoreAdmin>
                   name="name"
                   label="Name"
                   type="text"
@@ -81,7 +95,7 @@ const DialogEditUser: React.FC<DialogEditUserProps> = ({
                 />
               </div>
               <div className="mt-4">
-                <FormInput<EditUser>
+                <FormInput<EditStoreAdmin>
                   name="email"
                   label="Email"
                   type="text"
@@ -106,4 +120,4 @@ const DialogEditUser: React.FC<DialogEditUserProps> = ({
   );
 };
 
-export default DialogEditUser;
+export default DialogEditStoreAdmin;

@@ -82,6 +82,12 @@ const ProductTable: React.FC<ProductTableProps> = ({
               Loading...
             </TableCell>
           </TableRow>
+        ) : products.length === 0 ? (
+          <TableRow>
+            <TableCell colSpan={6} className="text-center text-xs">
+              Data not found
+            </TableCell>
+          </TableRow>
         ) : (
           products.map((product, index) => (
             <TableRow key={product.id}>

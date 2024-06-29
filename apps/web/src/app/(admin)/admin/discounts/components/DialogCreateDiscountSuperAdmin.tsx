@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,57 +8,49 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ClipboardPlus, Loader2, Pencil } from "lucide-react";
+import { ClipboardPlus, Loader2 } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  FormProvider,
-  SubmitHandler,
-  useForm,
-  useFormState,
-} from "react-hook-form";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
 import {
   CreateStore,
   createStore,
   defaultValues,
-} from "./validationSchema/createDiscount";
+} from "./validationSchema/createDiscountSuperAdmin";
 import { FormInput } from "@/components/FormInput";
 import { FormSelect } from "@/components/FormSelect";
 import { Button } from "@/components/ui/button";
 import useGetProducts from "@/hooks/api/product/useGetProducts";
 import useCreateDiscount from "@/hooks/api/discounts/useCreateDiscount";
-import useGetDiscount from "@/hooks/api/discounts/useGetDiscount";
-import useUpdateDiscount from "@/hooks/api/discounts/useUpdateDiscount";
+import useGetStores from "@/hooks/api/store/useGetStores";
 
-interface DialogEditDiscountProps {
-  discountId: number;
+interface DialogCreateDiscountSuperAdminProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   refetch: () => void;
 }
 
-const DialogEditDiscount: React.FC<DialogEditDiscountProps> = ({
-  discountId,
-  onOpenChange,
-  open,
-  refetch,
-}) => {
-  const { discount, refetch: refetchDiscount } = useGetDiscount(discountId);
-  const { updateDiscount, isLoading } = useUpdateDiscount();
+const DialogCreateDiscountSuperAdmin: React.FC<
+  DialogCreateDiscountSuperAdminProps
+> = ({ onOpenChange, open, refetch }) => {
+  const { createDiscount, isLoading } = useCreateDiscount();
   const { products } = useGetProducts();
+  const { stores } = useGetStores();
   const methods = useForm<CreateStore>({
     mode: "all",
     resolver: zodResolver(createStore),
     defaultValues,
   });
-  const { reset, handleSubmit, control } = methods;
-  const { isDirty, isValid } = useFormState({
-    control,
-  });
+  const { reset, handleSubmit } = methods;
 
   const productsOptions = products.map((product) => ({
     value: product.id.toString(),
     label: product.name,
+  }));
+
+  const storesOptions = stores.map((store) => ({
+    value: store.id.toString(),
+    label: store.name,
   }));
 
   const discountTypeOptions = [
@@ -70,44 +62,32 @@ const DialogEditDiscount: React.FC<DialogEditDiscountProps> = ({
     { value: "MIN_PURCHASE", label: "MIN_PURCHASE" },
   ];
 
-  useEffect(() => {
-    if (discount) {
-      reset({
-        title: discount.title || "",
-        desc: discount.desc || "",
-        discountType: discount.discountType || "",
-        discountvalue: discount.discountvalue || 0,
-        discountLimit: discount.discountLimit || 0,
-        minPurchase: discount.minPurchase || 0,
-        productId: discount.product.name || "1",
-      });
-    }
-  }, [discount, reset]);
+  const handleReset = () => {
+    reset(defaultValues);
+  };
 
   const onSubmit: SubmitHandler<CreateStore> = async (data) => {
     // console.log(data);
-    const payload = { ...data, storeId: String(discount?.storeId) };
-    await updateDiscount(payload, discountId);
+    await createDiscount(data);
     refetch();
-    refetchDiscount();
     reset(defaultValues);
     onOpenChange(false);
   };
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger>
-        <div className="flex cursor-pointer items-center gap-2">
-          <Pencil size={18} />
-          Edit
+        <div className="mt-1 flex cursor-pointer items-center gap-2">
+          <ClipboardPlus />
+          Discount
         </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <DialogHeader>
-              <DialogTitle>Edit Discount</DialogTitle>
+              <DialogTitle>Add Discount</DialogTitle>
               <DialogDescription>
-                Edit a this discount {discount?.product.name}
+                Create a new discount to your products
               </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col gap-4 py-4">
@@ -122,6 +102,11 @@ const DialogEditDiscount: React.FC<DialogEditDiscountProps> = ({
                 label="Description"
                 type="text"
                 placeholder="Description"
+              />
+              <FormSelect<CreateStore>
+                name="storeId"
+                label="Store"
+                datas={storesOptions}
               />
               <FormSelect<CreateStore>
                 name="discountType"
@@ -156,12 +141,15 @@ const DialogEditDiscount: React.FC<DialogEditDiscountProps> = ({
             </div>
             <DialogFooter>
               <Button
-                disabled={!isDirty || !isValid || isLoading}
-                type="submit"
+                variant="secondary"
+                onClick={handleReset}
                 className="px-4 py-2"
               >
+                Reset
+              </Button>
+              <Button disabled={isLoading} type="submit" className="px-4 py-2">
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {isLoading ? "Loading" : "Update"}
+                {isLoading ? "Loading" : "Add"}
               </Button>
             </DialogFooter>
           </form>
@@ -171,4 +159,4 @@ const DialogEditDiscount: React.FC<DialogEditDiscountProps> = ({
   );
 };
 
-export default DialogEditDiscount;
+export default DialogCreateDiscountSuperAdmin;

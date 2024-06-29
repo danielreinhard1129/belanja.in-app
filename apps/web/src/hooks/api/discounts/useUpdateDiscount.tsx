@@ -6,9 +6,9 @@ import { AxiosError } from "axios";
 import { useState } from "react";
 import { IFormDiscount } from "@/types/discount.type";
 
-const useCreateDiscount = () => {
+const useUpdateDiscount = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const createDiscount = async (data: IFormDiscount) => {
+  const updateDiscount = async (data: IFormDiscount, id: number) => {
     setIsLoading(true);
     try {
       const payload = {
@@ -22,8 +22,8 @@ const useCreateDiscount = () => {
         storeId: Number(data.storeId),
       };
 
-      await axiosInstance.post("/discounts", payload);
-      toast.success("discount has been created!");
+      await axiosInstance.patch(`/discounts/${id}`, payload);
+      toast.success("discount has been updated!");
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError) {
@@ -33,7 +33,7 @@ const useCreateDiscount = () => {
       setIsLoading(false);
     }
   };
-  return { createDiscount, isLoading };
+  return { updateDiscount, isLoading };
 };
 
-export default useCreateDiscount;
+export default useUpdateDiscount;

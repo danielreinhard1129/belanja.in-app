@@ -13,7 +13,17 @@ export class DiscountRouter {
   }
 
   private initializeRoutes(): void {
+    this.router.delete(
+      '/:id',
+      verifyToken,
+      this.discountController.deleteDiscount,
+    );
     this.router.post('/', verifyToken, this.discountController.createDiscount);
+    this.router.patch(
+      '/:id',
+      verifyToken,
+      this.discountController.updateDiscount,
+    );
     this.router.get(
       '/store-admin',
       verifyToken,
@@ -24,6 +34,7 @@ export class DiscountRouter {
       verifyToken,
       this.discountController.getDiscountsBySuperAdmin,
     );
+    this.router.get('/:id', this.discountController.getDiscount);
   }
 
   getRouter(): Router {
