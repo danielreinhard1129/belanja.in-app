@@ -3,14 +3,14 @@ import { axiosInstance } from "@/libs/axios";
 import { AxiosError } from "axios";
 import { useState } from "react";
 
-const useDeleteUser = () => {
+const useDeleteDiscount = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const deleteUser = async (userId: number) => {
+  const deleteDiscount = async (discountId: number) => {
     try {
       setIsLoading(true);
-      await axiosInstance.delete(`/users/${userId}`);
-      toast.success("User deleted successfully!");
+      await axiosInstance.delete(`/discounts/${discountId}`);
+      toast.success("Discount deleted successfully!");
     } catch (error) {
       if (error instanceof AxiosError) {
         toast.error(error?.response?.data);
@@ -20,7 +20,7 @@ const useDeleteUser = () => {
     }
   };
 
-  return { deleteUser, isLoading };
+  return { deleteDiscount, isLoading };
 };
 
-export default useDeleteUser;
+export default useDeleteDiscount;

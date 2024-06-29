@@ -1,3 +1,5 @@
+import { StoreAdmin } from "./storeAdmin.type";
+
 export interface User {
   id: number;
   name: string;
@@ -13,6 +15,7 @@ export interface User {
   createdAt: Date;
   updatedAt: Date;
   avatarUrl?: string;
+  storeAdmin: StoreAdmin;
 }
 
 export interface Address {
@@ -30,7 +33,7 @@ export interface Address {
   subdistricts: Subdistrict;
   user: User;
   Delivery: Delivery[];
-  isSelected: boolean
+  isSelected: boolean;
 }
 
 export interface City {

@@ -102,7 +102,7 @@ const Stores: React.FC<StoresProps> = ({ onStoreClick, activeStoreId }) => {
                   </div>
                 </CardTitle>
                 <CardDescription className="text-sm">
-                  Location : {store.city}
+                  Location : {store.City.citName}
                 </CardDescription>
               </CardHeader>
               <div className="items-center text-left text-xs">

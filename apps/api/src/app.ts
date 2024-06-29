@@ -20,7 +20,6 @@ import { CategoryRouter } from './routers/category.router';
 import { StockJournalRouter } from './routers/stock-journal.router';
 import { UserRouter } from './routers/user.router';
 import { DiscountRouter } from './routers/discount.router';
-import { VoucherRouter } from './routers/voucher.router';
 import { AddressRouter } from './routers/address.router';
 import { CartRouter } from './routers/cart.router';
 
@@ -77,7 +76,7 @@ export default class App {
     const stockJournalRouter = new StockJournalRouter();
     const userRouter = new UserRouter();
     const discountRouter = new DiscountRouter();
-    const voucherRouter = new VoucherRouter();
+    // const voucherRouter = new VoucherRouter();
     const addressRouter = new AddressRouter();
     const cartRouter = new CartRouter();
 
@@ -95,7 +94,7 @@ export default class App {
     this.app.use('/api/stock-journals', stockJournalRouter.getRouter());
     this.app.use('/api/users', userRouter.getRouter());
     this.app.use('/api/discounts', discountRouter.getRouter());
-    this.app.use('/api/vouchers', voucherRouter.getRouter());
+    // this.app.use('/api/vouchers', voucherRouter.getRouter());
     this.app.use('/api/address', addressRouter.getRouter());
     this.app.use('/api/carts', cartRouter.getRouter());
   }

@@ -1,4 +1,5 @@
 import { StoreAdminController } from '@/controllers/store-admin.controller';
+import { verifyToken } from '@/middlewares/verifyToken';
 import { Router } from 'express';
 
 export class StoreAdminRouter {
@@ -13,9 +14,19 @@ export class StoreAdminRouter {
 
   private initializeRoutes(): void {
     this.router.get('/', this.storeAdminController.getStoreAdmins);
+    this.router.post(
+      '/',
+      verifyToken,
+      this.storeAdminController.createStoreAdmin,
+    );
     this.router.get(
       '/no-store',
       this.storeAdminController.getStoreAdminsNoStore,
+    );
+    this.router.patch(
+      '/:id',
+      verifyToken,
+      this.storeAdminController.updateStoreAdmin,
     );
     this.router.get('/:id', this.storeAdminController.getStoreAdminById);
   }

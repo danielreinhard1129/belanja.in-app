@@ -1,43 +1,40 @@
 "use client";
 
-import { axiosInstance } from "@/lib/axios";
-import { useAppSelector } from "@/redux/hooks";
+import { axiosInstance } from "@/libs/axios";
 import { Discount } from "@/types/discount.type";
+import { IPaginationMeta, IPaginationQueries } from "@/types/pagination.type";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
-interface IGetDiscountsQuery {
+interface IGetDiscountsQuery extends IPaginationQueries {
   storeId?: string | undefined;
 }
 
 const useGetDiscountsBySuperAdmin = (queries: IGetDiscountsQuery) => {
-  const [discounts, setDiscounts] = useState<Discount[]>([]);
-  const { token } = useAppSelector((state) => state.user);
+  const [data, setData] = useState<Discount[]>([]);
+  const [meta, setMeta] = useState<IPaginationMeta | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const getDiscountsBySuperAdmin = async () => {
     try {
       const { data } = await axiosInstance.get("/discounts/super-admin", {
         params: queries,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
       });
-      setDiscounts(data);
+      setData(data.data);
+      setMeta(data.meta);
     } catch (error) {
       if (error instanceof AxiosError) {
         console.error("Error fetching product:", error);
       }
-      setDiscounts([]);
+      setData([]);
     } finally {
       setIsLoading(false);
     }
   };
   useEffect(() => {
     getDiscountsBySuperAdmin();
-  }, [queries?.storeId]);
+  }, [queries?.storeId, queries?.page, queries?.sortOrder]);
 
-  return { discounts, isLoading, refetch: getDiscountsBySuperAdmin };
+  return { data, isLoading, meta, refetch: getDiscountsBySuperAdmin };
 };
 
 export default useGetDiscountsBySuperAdmin;

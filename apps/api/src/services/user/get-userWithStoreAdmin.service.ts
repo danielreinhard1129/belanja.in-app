@@ -1,8 +1,8 @@
 import prisma from '@/prisma';
 
-export const getUserService = async (id: number) => {
+export const getUserWithSuperAdminService = async (id: number) => {
   try {
-    const users = await prisma.user.findMany({
+    const user = await prisma.user.findFirst({
       where: { id },
       include: {
         storeAdmin: {
@@ -13,13 +13,10 @@ export const getUserService = async (id: number) => {
       },
     });
 
-    if (!users.length) {
+    if (!user) {
       throw new Error('No user found');
     }
-
-    return {
-      data: users,
-    };
+    return user;
   } catch (error) {
     throw error;
   }

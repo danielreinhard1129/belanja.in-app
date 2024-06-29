@@ -125,7 +125,6 @@ model StoreAdmin {
   id        Int      @id @default(autoincrement())
   userId    Int      @unique
   nip       Int
-  isDelete  Boolean?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id])
@@ -228,6 +227,7 @@ model Cart {
 
   @@map("carts")
 }
+
 model Product {
   id            Int                    @id @default(autoincrement())
   name          String                 @unique
@@ -283,9 +283,9 @@ model Discount {
   desc          String
   discountType  DiscountType
   discountvalue Float
+  discountLimit Float
   minPurchase   Float?
-  startDate     DateTime
-  endDate       DateTime
+  isActive      Boolean      @default(true)
   storeId       Int
   productId     Int?
 

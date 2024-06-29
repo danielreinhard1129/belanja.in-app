@@ -16,25 +16,22 @@ import {
   createStoreAdmin,
   CreateStoreAdmin,
   defaultValues,
-} from "./validationSchema/createUser";
+} from "./validationSchema/createStoreAdmin";
 import { FormInput } from "@/components/FormInput";
-import { FormSelect } from "@/components/FormSelect";
 import useCreateStoreAdmin from "@/hooks/api/store-admin/useCreateStoreAdmin";
-import useGetUserNotSuperAdmin from "@/hooks/api/user/useGetUserNotStoreAdmin";
 
-interface DialogEditUserProps {
+interface DialogCreateStoreAdminProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   refetch: () => void;
 }
 
-const DialogCreateUser: React.FC<DialogEditUserProps> = ({
+const DialogCreateStoreAdmin: React.FC<DialogCreateStoreAdminProps> = ({
   onOpenChange,
   open,
   refetch,
 }) => {
   const { createStoreAdmin: createSA, isLoading } = useCreateStoreAdmin();
-  const { users } = useGetUserNotSuperAdmin();
   const methods = useForm<CreateStoreAdmin>({
     mode: "all",
     resolver: zodResolver(createStoreAdmin),
@@ -42,13 +39,8 @@ const DialogCreateUser: React.FC<DialogEditUserProps> = ({
   });
   const { reset, handleSubmit } = methods;
 
-  const usersOptions = users.map((user) => ({
-    value: user.id.toString(),
-    label: user.name,
-  }));
-
   const onSubmit: SubmitHandler<CreateStoreAdmin> = async (data) => {
-    console.log(data);
+    // console.log(data);
     await createSA(data);
     refetch();
     reset(defaultValues);
@@ -67,22 +59,30 @@ const DialogCreateUser: React.FC<DialogEditUserProps> = ({
             <DialogHeader>
               <DialogTitle>Create Store Admin</DialogTitle>
               <DialogDescription>
-                create a nip to identifier a user as store admin, select user
-                you want to be
+                create a nip to identifier a store admin
               </DialogDescription>
-              <div className="pt-2">
-                <div className="mb-4">
-                  <FormSelect<CreateStoreAdmin>
-                    name="userId"
-                    label="User"
-                    datas={usersOptions}
-                  />
-                </div>
+              <div className="mt-4">
                 <FormInput<CreateStoreAdmin>
                   name="nip"
                   label="NIP"
                   type="number"
                   placeholder=""
+                />
+              </div>
+              <div className="mt-4">
+                <FormInput<CreateStoreAdmin>
+                  name="name"
+                  label="Name"
+                  type="text"
+                  placeholder="Name"
+                />
+              </div>
+              <div className="mt-4">
+                <FormInput<CreateStoreAdmin>
+                  name="email"
+                  label="Email"
+                  type="text"
+                  placeholder="Email"
                 />
               </div>
             </DialogHeader>
@@ -99,4 +99,4 @@ const DialogCreateUser: React.FC<DialogEditUserProps> = ({
   );
 };
 
-export default DialogCreateUser;
+export default DialogCreateStoreAdmin;

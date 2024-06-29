@@ -17,29 +17,62 @@ import {
 import useGetDiscountsBySuperAdmin from "@/hooks/api/discounts/useGetDiscountsBySuperAdmin";
 import useGetStores from "@/hooks/api/store/useGetStores";
 import { Ban, Check } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import DialogCreateDiscountSuperAdmin from "./DialogCreateDiscountSuperAdmin";
+import Pagination from "@/components/Pagination";
+import PopoverDiscountMenu from "./PopoverMenu";
+import useDeleteDiscount from "@/hooks/api/discounts/useDeleteDiscount";
 
 const DiscountsSuperAdmin = () => {
-  const [selectedStoreId, setSelectedStoreId] = useState<string>("");
-  const { discounts, refetch } = useGetDiscountsBySuperAdmin({
+  const [page, setPage] = useState<number>(1);
+  const [sortOrder, setSortOrder] = useState<string>("asc");
+  const [selectedStoreId, setSelectedStoreId] = useState<string>("all");
+  const [isOpenDialogCreate, setIsOpenDialogCreate] = useState<boolean>(false);
+  const { deleteDiscount, isLoading: isDeleting } = useDeleteDiscount();
+  const {
+    data: discounts,
+    meta,
+    refetch,
+  } = useGetDiscountsBySuperAdmin({
+    page,
+    take: 5,
+    sortBy: "name",
+    sortOrder,
     storeId: selectedStoreId,
   });
   const { stores } = useGetStores();
+
+  useEffect(() => {
+    setPage(1);
+  }, [selectedStoreId]);
+
+  const handleDelete = async (id: number) => {
+    await deleteDiscount(id);
+    refetch();
+  };
+
+  const handleChangePaginate = ({ selected }: { selected: number }) => {
+    setPage(selected + 1);
+  };
 
   const handleStoreChange = (value: string) => {
     setSelectedStoreId(value);
   };
 
-  console.log(discounts);
+  const total = meta?.total || 0;
+  const take = meta?.take || 10;
+
+  // console.log(discounts);
   return (
     <main className="container mx-auto mb-10 max-w-6xl border-2 py-5 shadow-xl">
       <div className="flex justify-between">
         <div>
-          <Select onValueChange={handleStoreChange}>
+          <Select onValueChange={handleStoreChange} defaultValue="all">
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Select store" />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="all">All</SelectItem>
               {stores.map((store) => (
                 <SelectItem key={store.id} value={String(store.id)}>
                   {store.name}
@@ -48,6 +81,11 @@ const DiscountsSuperAdmin = () => {
             </SelectContent>
           </Select>
         </div>
+        <DialogCreateDiscountSuperAdmin
+          refetch={refetch}
+          open={isOpenDialogCreate}
+          onOpenChange={setIsOpenDialogCreate}
+        />
       </div>
       <div>
         <Table>
@@ -83,17 +121,32 @@ const DiscountsSuperAdmin = () => {
                       <Ban style={{ color: "red" }} />
                     )}
                   </TableCell>
+                  <TableCell>
+                    <PopoverDiscountMenu
+                      discountId={discount.id}
+                      isDeleting={isDeleting}
+                      handleDelete={handleDelete}
+                      refetch={refetch}
+                    />
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={8} className="text-center">
+                <TableCell colSpan={9} className="text-center">
                   Data not found
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
+      </div>
+      <div className="mx-auto w-fit">
+        <Pagination
+          total={total}
+          take={take}
+          onChangePage={handleChangePaginate}
+        />
       </div>
     </main>
   );
