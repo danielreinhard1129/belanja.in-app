@@ -1,6 +1,6 @@
-"use client"
+"use client";
+import NonLandingHeader from "@/components/NonLandingHeader";
 import { FC, ReactNode } from "react";
-import RecentOrderHeader from "../components/RecentOrderHeader";
 
 interface OrderLayoutProps {
   children: ReactNode;
@@ -9,8 +9,7 @@ interface OrderLayoutProps {
 const RecentOrders: FC<OrderLayoutProps> = ({ children }) => {
   return (
     <div>
-        <RecentOrderHeader />
-        {children}
+      <NonLandingHeader label="Recent Orders" /> {children}
     </div>
   );
 };

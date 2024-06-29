@@ -99,6 +99,7 @@ model User {
   UserVoucher  UserVoucher[]
   referrer     ReferralHistory[] @relation(name: "referrer")
   referred     ReferralHistory[] @relation(name: "referred")
+  Cart         Cart[]
 
   @@map("users")
 }
@@ -151,6 +152,7 @@ model Store {
   Order         Order[]
   Delivery      Delivery[]
   City          City            @relation(fields: [cityId], references: [id])
+  Cart          Cart[]
 
   @@map("stores")
 }
@@ -210,6 +212,22 @@ model JournalDetail {
   @@map("journal_detail")
 }
 
+model Cart {
+  id       Int     @id @default(autoincrement())
+  qty      Int
+  isActive Boolean @default(true)
+
+  productId Int
+  storeId   Int
+  userId    Int
+
+  products Product @relation(fields: [productId], references: [id])
+  stores   Store   @relation(fields: [storeId], references: [id])
+  users    User    @relation(fields: [userId], references: [id])
+
+  @@map("carts")
+}
+
 model Product {
   id            Int                    @id @default(autoincrement())
   name          String                 @unique
@@ -226,6 +244,7 @@ model Product {
   stockJournals StockJournal[]
   Voucher       Voucher[]
   OrderItems    OrderItems[]
+  Cart          Cart[]
 
   @@map("products")
 }

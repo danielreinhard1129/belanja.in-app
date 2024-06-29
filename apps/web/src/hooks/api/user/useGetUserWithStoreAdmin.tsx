@@ -1,4 +1,4 @@
-import { axiosInstance } from "@/lib/axios";
+import { axiosInstance } from "@/libs/axios";
 import { User } from "@/types/user.type";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
