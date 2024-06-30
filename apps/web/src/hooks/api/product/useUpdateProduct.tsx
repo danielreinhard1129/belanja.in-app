@@ -1,7 +1,7 @@
 "use client";
 
 import { toast } from "sonner";
-import { axiosInstance } from "@/lib/axios";
+import { axiosInstance } from "@/libs/axios";
 import { useAppSelector } from "@/redux/hooks";
 import { IFormProduct, Product } from "@/types/product.type";
 import { AxiosError } from "axios";
@@ -9,7 +9,7 @@ import { useState } from "react";
 
 const useUpdateProduct = (productId: number) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { token, id } = useAppSelector((state) => state.user);
+  const { id } = useAppSelector((state) => state.user);
   const updateProduct = async (data: IFormProduct) => {
     setIsLoading(true);
     try {
@@ -37,12 +37,6 @@ const useUpdateProduct = (productId: number) => {
       await axiosInstance.patch<Product>(
         `/products/${productId}`,
         updateProductForm,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        },
       );
       toast.success("Product updated successfully!");
     } catch (error) {
