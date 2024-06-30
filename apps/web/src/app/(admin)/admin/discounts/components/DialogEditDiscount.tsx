@@ -8,9 +8,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ClipboardPlus, Loader2, Pencil } from "lucide-react";
+import { Loader2, Pencil } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  Controller,
   FormProvider,
   SubmitHandler,
   useForm,
@@ -18,15 +19,14 @@ import {
 } from "react-hook-form";
 
 import {
-  CreateStore,
-  createStore,
+  SchemaDiscount,
+  schemaDiscount,
   defaultValues,
-} from "./validationSchema/createDiscount";
+} from "./validationSchema/schemaDiscount";
 import { FormInput } from "@/components/FormInput";
 import { FormSelect } from "@/components/FormSelect";
 import { Button } from "@/components/ui/button";
 import useGetProducts from "@/hooks/api/product/useGetProducts";
-import useCreateDiscount from "@/hooks/api/discounts/useCreateDiscount";
 import useGetDiscount from "@/hooks/api/discounts/useGetDiscount";
 import useUpdateDiscount from "@/hooks/api/discounts/useUpdateDiscount";
 
@@ -46,9 +46,9 @@ const DialogEditDiscount: React.FC<DialogEditDiscountProps> = ({
   const { discount, refetch: refetchDiscount } = useGetDiscount(discountId);
   const { updateDiscount, isLoading } = useUpdateDiscount();
   const { products } = useGetProducts();
-  const methods = useForm<CreateStore>({
+  const methods = useForm<SchemaDiscount>({
     mode: "all",
-    resolver: zodResolver(createStore),
+    resolver: zodResolver(schemaDiscount),
     defaultValues,
   });
   const { reset, handleSubmit, control } = methods;
@@ -79,13 +79,12 @@ const DialogEditDiscount: React.FC<DialogEditDiscountProps> = ({
         discountvalue: discount.discountvalue || 0,
         discountLimit: discount.discountLimit || 0,
         minPurchase: discount.minPurchase || 0,
-        productId: discount.product.name || "1",
+        productId: discount.productId.toString() || "",
       });
     }
   }, [discount, reset]);
 
-  const onSubmit: SubmitHandler<CreateStore> = async (data) => {
-    // console.log(data);
+  const onSubmit: SubmitHandler<SchemaDiscount> = async (data) => {
     const payload = { ...data, storeId: String(discount?.storeId) };
     await updateDiscount(payload, discountId);
     refetch();
@@ -111,43 +110,54 @@ const DialogEditDiscount: React.FC<DialogEditDiscountProps> = ({
               </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col gap-4 py-4">
-              <FormInput<CreateStore>
+              <FormInput<SchemaDiscount>
                 name="title"
                 label="Title"
                 type="text"
                 placeholder="Title"
               />
-              <FormInput<CreateStore>
+              <FormInput<SchemaDiscount>
                 name="desc"
                 label="Description"
                 type="text"
                 placeholder="Description"
               />
-              <FormSelect<CreateStore>
+              <FormSelect<SchemaDiscount>
                 name="discountType"
                 label="Discount Type"
                 datas={discountTypeOptions}
               />
-              <FormSelect<CreateStore>
+              <Controller
                 name="productId"
-                label="Product"
-                datas={productsOptions}
+                control={control}
+                render={({ field }) => (
+                  <select {...field} className="mb-2 w-full">
+                    <option value="" disabled>
+                      Select a Product
+                    </option>
+                    {products.map((product) => (
+                      <option key={product.id} value={product.id.toString()}>
+                        {product.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
               />
               <div className="flex justify-between gap-10">
-                <FormInput<CreateStore>
+                <FormInput<SchemaDiscount>
                   name="discountvalue"
                   label="Discount Value"
                   type="number"
                   placeholder=""
                 />
-                <FormInput<CreateStore>
+                <FormInput<SchemaDiscount>
                   name="minPurchase"
                   label="Minimal Purchase"
                   type="number"
                   placeholder=""
                 />
               </div>
-              <FormInput<CreateStore>
+              <FormInput<SchemaDiscount>
                 name="discountLimit"
                 label="Discount Limit"
                 type="number"

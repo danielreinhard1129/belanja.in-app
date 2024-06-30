@@ -38,7 +38,7 @@ export const updateStoreAdminService = async (
         where: {
           nip,
           NOT: {
-            id,
+            userId: id,
           },
         },
       });
