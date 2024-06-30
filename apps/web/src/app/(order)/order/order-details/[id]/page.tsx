@@ -13,7 +13,7 @@ const OrderDetails = ({ params }: { params: { id: string } }) => {
   const { order, isLoading: isLoadingOrder, refetch: refetchOrder } = useGetUserOrder({
     orderId: Number(params.id),
   });
-  console.log(order);
+  console.log("in order dari FE",order);
   const {cancelOrderByUser} = useCancelOrderByUser()
   const{finishOrderByUser}= useFinishOrderByUser()
   const handleCancelOrder = async()=>{
@@ -46,7 +46,7 @@ const OrderDetails = ({ params }: { params: { id: string } }) => {
         </div>
         <div className="flex items-center justify-between">
           <div className="font-light">Purchase Date</div>
-          <div>{format(order.createdAt, "dd MMMM yyyy, HH:mm")} WIB</div>
+          {/* <div>{format(order.createdAt, "dd MMMM yyyy, HH:mm")} WIB</div> */}
         </div>
       </div>
       <Separator className="h-1" />

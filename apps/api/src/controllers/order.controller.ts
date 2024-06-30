@@ -1,5 +1,6 @@
 import { createOrderService } from '@/services/transactions/order/create-order.service';
 import { finishOrderService } from '@/services/transactions/order/finish-order.service';
+import { getOrderService } from '@/services/transactions/order/get-order.service';
 import { getOrdersByUserId } from '@/services/transactions/order/get-orders-byUserId.service';
 import { updateOrderByUserService } from '@/services/transactions/order/update-order-by-user.service';
 import { OrderStatus } from '@prisma/client';
@@ -65,6 +66,19 @@ export class OrderController {
       const userId = Number(res.locals.user.id);
       
       const result = await finishOrderService({ orderId, userId });
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async getOrderController(req: Request, res: Response, next: NextFunction) {
+    try {
+      const query = {
+        userId: parseInt(res.locals.user.id),
+        orderId: parseInt(req.query.orderId as string),
+      };
+      const result = await getOrderService(query);
 
       return res.status(200).send(result);
     } catch (error) {
