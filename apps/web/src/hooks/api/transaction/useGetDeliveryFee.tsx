@@ -20,6 +20,7 @@ const useGetDeliveryFee = (payload: DeliveryArgs) => {
 
       const { data } = await axiosInstance.post<CourierService[]>(
         "delivery/delivery-fee", {payload}
+
       );
       setData(data);
     } catch (error) {
