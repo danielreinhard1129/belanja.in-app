@@ -23,7 +23,7 @@ const FinishOrderDialog: FC<FinishOrderDialogProps> = ({ order, handleFinish }) 
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button
-          className="h-12 w-32 bg-red-200 px-4 py-2 text-red-600"
+          className="h-12 w-32 bg-green-200 px-4 py-2 text-green-600 border-green-800 hover:bg-green-600 "
           variant={"outline"}
           disabled={order.status !== OrderStatus.ORDER_SHIPPED}
         >
