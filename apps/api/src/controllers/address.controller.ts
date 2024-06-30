@@ -7,7 +7,7 @@ import { NextFunction, Request, Response } from 'express';
 export class AddressController {
   async getAddressController(req: Request, res: Response, next: NextFunction) {
     try {
-      const id = req.params.id;
+      const id = Number(res.locals.user.id);
       const result = await getUserAddressService(Number(id));
 
       res.status(200).send(result);
