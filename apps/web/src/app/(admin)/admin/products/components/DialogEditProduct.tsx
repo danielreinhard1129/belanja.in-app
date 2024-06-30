@@ -25,6 +25,7 @@ import {
   useForm,
 } from "react-hook-form";
 import { TEditProductSchema, editProductSchema } from "./EditProductSchema";
+import { BASE_API_URL } from "@/utils/config";
 const Select = dynamic(() => import("react-select"), { ssr: false });
 interface DialogEditProductProps {
   productId: number;
@@ -77,13 +78,13 @@ const DialogEditProduct: React.FC<DialogEditProductProps> = ({
     if (product) {
       const loadImages = async () => {
         const previews = product.images.map(
-          (image) => `http://localhost:8000/api/assets${image.images}`,
+          (image) => `${BASE_API_URL}/assets${image.images}`,
         );
         setImagePreviews(previews);
         const imageFiles = await Promise.all(
           product.images.map(async (image) => {
             const response = await fetch(
-              `http://localhost:8000/api/assets${image.images}`,
+              `${BASE_API_URL}/assets${image.images}`,
             );
             const blob = await response.blob();
             return new File([blob], image.images.split("/").pop() || "", {

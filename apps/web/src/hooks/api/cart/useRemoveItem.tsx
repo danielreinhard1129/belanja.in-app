@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios';
 import React from 'react'
 import useAxios from '../useAxios';
+import { toast } from 'sonner';
 
 const useRemoveItem = () => {
   const { axiosInstance } = useAxios();
@@ -17,7 +18,7 @@ const useRemoveItem = () => {
             //   },
             // },
           );
-          // alert(data.message);
+          toast(data.message);
         } catch (error) {
           if (error instanceof AxiosError) {
             alert(error.message);
