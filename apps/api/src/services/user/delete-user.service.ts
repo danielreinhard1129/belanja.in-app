@@ -21,12 +21,9 @@ export const deleteUserService = async (id: number, user: userToken) => {
       where: { id },
       data: {
         isDelete: true,
+        isVerified: false,
       },
     });
-
-    if (!users) {
-      throw new Error('No user found');
-    }
 
     return { message: 'User Has been deleted', data: users };
   } catch (error) {

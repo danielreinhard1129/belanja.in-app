@@ -41,7 +41,7 @@ const SuperAdmin = () => {
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState<string>("");
   const [status, setStatus] = useState<string>("all");
-  const [selectedStoreId, setSelectedStoreId] = useState<string>("");
+  const [selectedStoreId, setSelectedStoreId] = useState<string>("all");
   const { stores } = useGetStores();
   const { stockJournals, isLoading, refetch, meta } =
     useGetStockJournalsByStoreWithParams({
@@ -76,12 +76,13 @@ const SuperAdmin = () => {
   return (
     <main className="container mx-auto mb-10 max-w-6xl border-2 py-5 shadow-xl">
       <div className="flex justify-between">
-        <div>
-          <Select onValueChange={handleStoreChange}>
+        <div className="flex justify-between gap-4">
+          <Select onValueChange={handleStoreChange} defaultValue="all">
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Select store" />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="all">All</SelectItem>
               {stores.map((store) => (
                 <SelectItem key={store.id} value={String(store.id)}>
                   {store.name}
@@ -89,28 +90,24 @@ const SuperAdmin = () => {
               ))}
             </SelectContent>
           </Select>
+          <SearchInput search={search} setSearch={setSearch} />
         </div>
-        <div className="flex justify-between gap-2">
-          <div className="w-[300px]">
-            <SearchInput search={search} setSearch={setSearch} />
-          </div>
-          <div>
-            <Select onValueChange={(value) => setStatus(value)}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="WAITING_ADMIN_CONFIRMATION">
-                    WAITING_ADMIN_CONFIRMATION
-                  </SelectItem>
-                  <SelectItem value="REJECT">REJECT</SelectItem>
-                  <SelectItem value="SUCCESS">SUCCESS</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
+        <div>
+          <Select onValueChange={(value) => setStatus(value)}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="WAITING_ADMIN_CONFIRMATION">
+                  WAITING_ADMIN_CONFIRMATION
+                </SelectItem>
+                <SelectItem value="REJECT">REJECT</SelectItem>
+                <SelectItem value="SUCCESS">SUCCESS</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </div>
       </div>
       <div>

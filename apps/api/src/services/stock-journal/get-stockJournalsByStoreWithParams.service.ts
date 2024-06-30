@@ -47,7 +47,7 @@ export const getStockJournalsByStoreWithParamsService = async (
   }
 
   // Jika storeId didefinisikan, tambahkan filter berdasarkan storeId
-  if (storeId && storeId !== '') {
+  if (storeId && storeId !== 'all') {
     where = {
       ...where,
       OR: [

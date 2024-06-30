@@ -22,8 +22,13 @@ const useCreateStoreAdmin = () => {
         email: data.email,
       };
 
-      await axiosInstance.post("/store-admins", payload);
-      toast.success("Store Admin created successfully!");
+      // Lakukan permintaan POST
+      const response = await axiosInstance.post("/store-admins", payload);
+
+      // Jika berhasil, tampilkan pesan toast success dengan pesan dari server
+      toast.success(
+        response.data.message || "Store Admin created successfully!",
+      );
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError) {
@@ -33,6 +38,7 @@ const useCreateStoreAdmin = () => {
       setIsLoading(false);
     }
   };
+
   return { createStoreAdmin, isLoading };
 };
 

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const createStore = z.object({
+export const schemaDiscount = z.object({
   title: z.string().min(4, "Title must be at least 4 characters long"),
   desc: z.string().min(10, "Description must be at least 4 characters long"),
   discountType: z
@@ -16,9 +16,9 @@ export const createStore = z.object({
   productId: z.string().min(1, "Product is required"),
 });
 
-export type CreateStore = z.infer<typeof createStore>;
+export type SchemaDiscount = z.infer<typeof schemaDiscount>;
 
-export const defaultValues: CreateStore = {
+export const defaultValues: SchemaDiscount = {
   title: "",
   desc: "",
   discountType: "",
