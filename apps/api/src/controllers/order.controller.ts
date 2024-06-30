@@ -1,4 +1,5 @@
 import { createOrderService } from '@/services/transactions/order/create-order.service';
+import { finishOrderService } from '@/services/transactions/order/finish-order.service';
 import { getOrdersByUserId } from '@/services/transactions/order/get-orders-byUserId.service';
 import { updateOrderByUserService } from '@/services/transactions/order/update-order-by-user.service';
 import { OrderStatus } from '@prisma/client';
@@ -46,9 +47,24 @@ export class OrderController {
     try {
       const orderId = req.body.orderId;
       const userId = Number(res.locals.user.id);
-      console.log("ini dari controller", req.body);
       
       const result = await updateOrderByUserService({ orderId, userId });
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async finishOrderByUserController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const orderId = req.body.orderId;
+      const userId = Number(res.locals.user.id);
+      
+      const result = await finishOrderService({ orderId, userId });
 
       return res.status(200).send(result);
     } catch (error) {

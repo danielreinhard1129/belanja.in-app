@@ -19,6 +19,7 @@ export class OrderRouter {
       this.orderController.createOrderController,
     );
     this.router.patch('/user/cancel-order',verifyToken, this.orderController.cancelOrderByUserController);
+    this.router.patch('/user/finish-order',verifyToken, this.orderController.finishOrderByUserController);
 
   }
 

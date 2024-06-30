@@ -6,6 +6,8 @@ import { format } from "date-fns";
 import OrderStatusBadge from "../../components/OrderStatusBadge";
 import CancelOrderDialog from "./components/CancelOrderDialog";
 import ProductDetailsCard from "./components/ProductDetailsCard";
+import useFinishOrderByUser from "@/hooks/api/transaction/useFinishOrderByUser";
+import FinishOrderDialog from "./components/FinishOrderDialog";
 
 const OrderDetails = ({ params }: { params: { id: string } }) => {
   const { order, isLoading: isLoadingOrder, refetch: refetchOrder } = useGetUserOrder({
@@ -13,8 +15,13 @@ const OrderDetails = ({ params }: { params: { id: string } }) => {
   });
   console.log(order);
   const {cancelOrderByUser} = useCancelOrderByUser()
+  const{finishOrderByUser}= useFinishOrderByUser()
   const handleCancelOrder = async()=>{
     await cancelOrderByUser(order?.id)
+    refetchOrder()
+  }
+  const handleFinishOrder = async()=>{
+    await finishOrderByUser(order?.id)
     refetchOrder()
   }
   const baseURL = process.env.NEXT_PUBLIC_BASE_API_URL;
@@ -64,8 +71,9 @@ const OrderDetails = ({ params }: { params: { id: string } }) => {
       <Separator className="h-1" />
       <div>Payment Details</div>
 
-      <div className="flex justify-center">
+      <div className="flex justify-center gap-x-4">
         <CancelOrderDialog order={order} handleDelete={handleCancelOrder}/>
+        <FinishOrderDialog order={order} handleFinish={handleFinishOrder}/>
       </div>
     </main>
   );
