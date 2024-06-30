@@ -29,6 +29,11 @@ export class CartRouter {
       verifyToken,
       this.cartController.removeItemController,
     );
+    this.router.post(
+      '/user/add-to-cart',
+      verifyToken,
+      this.cartController.addToCartController,
+    );
 
     this.router.get('/:id', this.cartController.getCartController);
   }

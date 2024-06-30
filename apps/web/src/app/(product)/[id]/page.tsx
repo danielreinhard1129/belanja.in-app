@@ -9,10 +9,23 @@ import { notFound } from "next/navigation";
 import ProductSkeleton from "./components/ProductSkeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import useGetCartsById from "@/hooks/api/cart/useGetCartById";
+import { useAppSelector } from "@/redux/hooks";
+import AddToCartButton from "./components/AddToCartButton";
+import useAddToCart from "@/hooks/api/cart/useAddToCart";
 
 const ProductPage = ({ params }: { params: { id: string } }) => {
+  const { id: userId } = useAppSelector((state) => state.user);
+  const { carts, refetch: refetchCart } = useGetCartsById(userId);
+  const { addToCart } = useAddToCart();
   const { product, isLoading } = useGetProduct(Number(params.id));
   const [selectedImage, setSelectedImage] = useState(0);
+
+  const handleAddToCart = async () => {
+    await addToCart(product?.id, 1);
+    refetchCart();
+  };
+  console.log(carts);
 
   if (isLoading) {
     return <ProductSkeleton />;
@@ -71,6 +84,11 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
             ).toFixed().length,
           }).format(Number(product?.price))}
         </p>
+        <AddToCartButton
+          carts={carts}
+          handleAddToCart={handleAddToCart}
+          productId={product?.id}
+        />
         <div>CIHUY</div>
         <div>CIHUY</div>
         <div>CIHUY</div>
