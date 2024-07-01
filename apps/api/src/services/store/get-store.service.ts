@@ -10,6 +10,11 @@ export const getStoreService = async (id: number) => {
             user: true,
           },
         },
+        City: {
+          include: {
+            province: true,
+          },
+        },
       },
     });
 

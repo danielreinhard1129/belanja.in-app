@@ -13,16 +13,32 @@ export class OrderRouter {
   }
 
   private initializeRoutes(): void {
-    this.router.get('/user',verifyToken, this.orderController.getOrdersByUserIdController);
+    this.router.get(
+      '/user',
+      verifyToken,
+      this.orderController.getOrdersByUserIdController,
+    );
     this.router.post(
       '/user/new-order',
       this.orderController.createOrderController,
     );
-    this.router.get('/user/order',verifyToken, this.orderController.getOrderController);
+    this.router.get(
+      '/user/order',
+      verifyToken,
+      this.orderController.getOrderController,
+    );
 
-    this.router.patch('/user/cancel-order',verifyToken, this.orderController.cancelOrderByUserController);
-    this.router.patch('/user/finish-order',verifyToken, this.orderController.finishOrderByUserController);
-
+    this.router.patch(
+      '/user/cancel-order',
+      verifyToken,
+      this.orderController.cancelOrderByUserController,
+    );
+    this.router.patch(
+      '/user/finish-order',
+      verifyToken,
+      this.orderController.finishOrderByUserController,
+    );
+    this.router.get('/reports', this.orderController.getOrderReportController);
   }
 
   getRouter(): Router {

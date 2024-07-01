@@ -14,6 +14,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
+      {
+        protocol: "https",
+        hostname:"jcwd031001.purwadhikabootcamp.com"
+      }
     ],
   },
   async headers() {
