@@ -3,17 +3,27 @@ import { PaginationQueryParams } from '@/types/pagination.type';
 
 interface GetUsersByParams extends PaginationQueryParams {
   search?: string;
+  role?: string;
 }
 
 export const getUsersService = async (query: GetUsersByParams) => {
-  const { take, page, search } = query;
+  const { take, page, search, role } = query;
 
-  const where: { name?: { contains: string } } = {};
+  const where: any = {
+    isDelete: false,
+    role: {
+      not: 'SUPERADMIN',
+    },
+  };
 
   if (search) {
     where.name = {
       contains: search,
     };
+  }
+
+  if (role && role !== 'all') {
+    where.role = role;
   }
 
   try {
@@ -27,12 +37,8 @@ export const getUsersService = async (query: GetUsersByParams) => {
         },
       },
       skip: (page - 1) * take,
-      take: take,
+      take,
     });
-
-    if (!users.length) {
-      throw new Error('No user found');
-    }
 
     const count = await prisma.user.count({ where });
 

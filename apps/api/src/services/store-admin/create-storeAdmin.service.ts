@@ -1,9 +1,10 @@
-import { NEXT_BASE_URL } from '@/config';
-import { transporter } from '@/libs/nodemailer';
+import { hashPassword } from '@/libs/bcrypt';
 import prisma from '@/prisma';
-import { StoreAdmin } from '@prisma/client';
+import { User } from '@prisma/client';
 
-interface CreateStoreAdmin extends Omit<StoreAdmin, 'id'> {}
+interface CreateStoreAdmin extends Omit<User, 'id'> {
+  nip: number;
+}
 
 interface UserToken {
   id: number;
@@ -13,63 +14,91 @@ export const createStoreAdminService = async (
   body: CreateStoreAdmin,
   user: UserToken,
 ) => {
-  try {
-    const { nip, userId } = body;
+  const { nip, name, email } = body;
 
-    // Cari user berdasarkan user.id
-    const checkUser = await prisma.user.findUnique({
-      where: {
-        id: Number(user.id),
+  // Cek apakah user yang melakukan aksi adalah SUPERADMIN
+  const checkUser = await prisma.user.findUnique({
+    where: {
+      id: Number(user.id),
+    },
+  });
+
+  if (!checkUser || checkUser.role !== 'SUPERADMIN') {
+    throw new Error('Unauthorized access');
+  }
+
+  // Cek apakah email sudah ada dalam database
+  let existingUser = await prisma.user.findFirst({
+    where: {
+      email,
+    },
+  });
+
+  if (existingUser) {
+    // Jika user dengan email tersebut sudah ada
+    if (existingUser.isDelete && existingUser.role === 'STOREADMIN') {
+      // Update user yang isDelete true dengan data baru
+      existingUser = await prisma.user.update({
+        where: {
+          id: existingUser.id,
+        },
+        data: {
+          name,
+          password: await hashPassword('Admin123'), // Ganti password jika diperlukan
+          isDelete: false,
+          isVerified: true, // Misalnya, aktifkan ulang jika perlu
+        },
+      });
+
+      // update storeAdmin  untuk user yang diaktifkan kembali
+      const createStoreAdmin = await prisma.storeAdmin.update({
+        where: { userId: existingUser.id },
+        data: {
+          nip: Number(nip),
+        },
+      });
+
+      return {
+        message: 'Store Admin has been created for reactivated user',
+        data: createStoreAdmin,
+      };
+    } else {
+      throw new Error('Email already exists');
+    }
+  }
+
+  // Jika tidak ada user dengan email tersebut, buat user baru dan storeAdmin
+  const hashedPassword = await hashPassword('Admin123'); // Ganti password jika perlu
+
+  const result = await prisma.$transaction(async (prisma) => {
+    const newUser = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        isVerified: true,
       },
     });
-
-    if (!checkUser) {
-      throw new Error("Can't find your account");
-    }
-
-    if (checkUser.role !== 'SUPERADMIN') throw new Error('Unauthorized access');
-
-    const userIdData = await prisma.user.findUnique({
-      where: {
-        id: Number(userId),
-      },
-    });
-
-    if (!userIdData) {
-      throw new Error("Can't find this user");
-    }
-
-    // const checkNip = await prisma.storeAdmin.findUnique({
-    //   where: {
-    //     nip: Number(nip),
-    //   },
-    // });
-
-    // if (checkNip) {
-    //   throw new Error('This NIP already exists for another user');
-    // }
 
     const createStoreAdmin = await prisma.storeAdmin.create({
       data: {
         nip: Number(nip),
-        userId: Number(userId),
+        userId: newUser.id,
       },
     });
 
-    const link = `${NEXT_BASE_URL}/login`;
-
-    await transporter.sendMail({
-      from: 'Admin',
-      to: userIdData.email,
-      subject: 'Now you are a store admin',
-      html: `<a href="${link}" target="_blank">Login</a>`,
+    await prisma.user.update({
+      where: { id: newUser.id },
+      data: {
+        role: 'STOREADMIN',
+      },
     });
 
-    return {
-      message: 'Store Admin has been created',
-      data: createStoreAdmin,
-    };
-  } catch (error) {
-    throw error;
-  }
+    return createStoreAdmin;
+  });
+
+  return {
+    message: 'Store Admin has been created',
+    data: result,
+  };
 };

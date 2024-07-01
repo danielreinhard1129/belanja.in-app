@@ -1,7 +1,8 @@
 import { getUserService } from '@/services/auth/get-user.service';
 import { deleteUserService } from '@/services/user/delete-user.service';
-import { getUserNotStoreAdminService } from '@/services/user/get-userNotStoreAdmin.service';
+import { getUserWithSuperAdminService } from '@/services/user/get-userWithStoreAdmin.service';
 import { getUsersService } from '@/services/user/get-users.service';
+import { updateUserService } from '@/services/user/update-user.service';
 import { NextFunction, Request, Response } from 'express';
 export class UserController {
   async getUsers(req: Request, res: Response, next: NextFunction) {
@@ -12,6 +13,7 @@ export class UserController {
         sortBy: (req.query.sortBy as string) || 'name',
         sortOrder: (req.query.sortOrder as string) || 'desc',
         search: (req.query.search as string) || '',
+        role: (req.query.role as string) || 'all',
       };
       const result = await getUsersService(query);
 
@@ -20,9 +22,9 @@ export class UserController {
       next(error);
     }
   }
-  async getUser(req: Request, res: Response, next: NextFunction) {
+  async getUserWithSuperAdmin(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await getUserService(Number(req.params.id));
+      const result = await getUserWithSuperAdminService(Number(req.params.id));
 
       return res.status(200).send(result);
     } catch (error) {
@@ -30,10 +32,12 @@ export class UserController {
     }
   }
 
-  async deleteUser(req: Request, res: Response, next: NextFunction) {
+  async updateUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await deleteUserService(
-        Number(req.params.id),
+      const id = req.params.id;
+      const result = await updateUserService(
+        Number(id),
+        req.body,
         res.locals.user,
       );
 
@@ -42,10 +46,12 @@ export class UserController {
       next(error);
     }
   }
-
-  async getUserNotStoreAdmin(req: Request, res: Response, next: NextFunction) {
+  async deleteUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await getUserNotStoreAdminService();
+      const result = await deleteUserService(
+        Number(req.params.id),
+        res.locals.user,
+      );
 
       return res.status(200).send(result);
     } catch (error) {

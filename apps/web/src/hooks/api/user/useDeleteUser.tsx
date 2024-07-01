@@ -1,22 +1,15 @@
 import { toast } from "sonner";
-import { axiosInstance } from "@/lib/axios";
-import { useAppSelector } from "@/redux/hooks";
+import { axiosInstance } from "@/libs/axios";
 import { AxiosError } from "axios";
 import { useState } from "react";
 
 const useDeleteUser = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { token } = useAppSelector((state) => state.user);
 
   const deleteUser = async (userId: number) => {
     try {
       setIsLoading(true);
-      await axiosInstance.delete(`/users/${userId}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await axiosInstance.delete(`/users/${userId}`);
       toast.success("User deleted successfully!");
     } catch (error) {
       if (error instanceof AxiosError) {

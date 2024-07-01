@@ -29,9 +29,6 @@ const DialogDeleteUser: React.FC<DialogDeleteUserProps> = ({
 }) => {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogTrigger>
-        <Trash2 />
-      </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>

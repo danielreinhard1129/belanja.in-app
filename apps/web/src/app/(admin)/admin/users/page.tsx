@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -13,18 +13,29 @@ import useGetUsers from "@/hooks/api/user/useGetUsers";
 import SearchInput from "../products/components/Search";
 import SortOrderSelect from "../products/components/SortOrderSelect";
 import Pagination from "@/components/Pagination";
-import DialogCreateUser from "./components/DialogCreateUser";
+import DialogCreateStoreAdmin from "./components/DialogCreateStoreAdmin";
 import DialogDeleteUser from "./components/DialogDeleteUser";
 import useDeleteUser from "@/hooks/api/user/useDeleteUser";
 import AuthGuardSuperAdmin from "@/hoc/AuthGuardSuperAdmin";
 import DialogEditUser from "./components/DialogEditUser";
+import DialogEditStoreAdmin from "./components/DialogEditStoreAdmin";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { FilePenLine, Trash2 } from "lucide-react";
 
 const Users = () => {
   const [isOpenDialogCreate, setIsOpenDialogCreate] = useState<boolean>(false);
-  const [isOpenDialogEdit, setIsOpenDialogEdit] = useState<boolean>(false);
-  const [isOpenDialogDelete, setIsOpenDialogDelete] = useState<boolean>(false);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [dialogType, setDialogType] = useState<string | null>(null);
+
   const { deleteUser, isLoading: isDeleting } = useDeleteUser();
   const [page, setPage] = useState<number>(1);
+  const [role, setRole] = useState<string>("all");
   const [search, setSearch] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<string>("asc");
   const {
@@ -34,11 +45,16 @@ const Users = () => {
     refetch,
   } = useGetUsers({
     page,
+    role,
     take: 5,
     sortBy: "name",
     sortOrder,
     search,
   });
+
+  useEffect(() => {
+    setPage(1);
+  }, [role]);
 
   const handleChangePaginate = ({ selected }: { selected: number }) => {
     setPage(selected + 1);
@@ -49,6 +65,11 @@ const Users = () => {
     refetch();
   };
 
+  const handleEdit = (userId: number, type: string) => {
+    setSelectedUserId(userId);
+    setDialogType(type);
+  };
+
   const total = meta?.total || 0;
   const take = meta?.take || 10;
 
@@ -57,9 +78,22 @@ const Users = () => {
       <div className="container my-20 max-w-6xl border-2 pb-10 shadow-xl">
         <div className="my-4 flex justify-between">
           <div className="flex justify-between gap-4">
+            <Select
+              onValueChange={(value) => setRole(value)}
+              defaultValue={role}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">ALL</SelectItem>
+                <SelectItem value="STOREADMIN">STOREADMIN</SelectItem>
+                <SelectItem value="USER">USER</SelectItem>
+              </SelectContent>
+            </Select>
             <SearchInput search={search} setSearch={setSearch} />
           </div>
-          <DialogCreateUser
+          <DialogCreateStoreAdmin
             refetch={refetch}
             open={isOpenDialogCreate}
             onOpenChange={setIsOpenDialogCreate}
@@ -73,31 +107,33 @@ const Users = () => {
                 <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Role</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {users && users.length > 0 ? (
                 users.map((user, index) => (
-                  <TableRow key={user.id}>
+                  <TableRow key={index}>
                     <TableCell>{(page - 1) * take + index + 1}</TableCell>
                     <TableCell>{user.name}</TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>{user.role}</TableCell>
                     <TableCell>
                       <div className="flex gap-2">
-                        <DialogEditUser
-                          userId={user.id}
-                          refetch={refetch}
-                          open={isOpenDialogEdit}
-                          onOpenChange={setIsOpenDialogEdit}
-                        />
-                        <DialogDeleteUser
-                          userId={user.id}
-                          isDeleting={isDeleting}
-                          handleDelete={handleDelete}
-                          open={isOpenDialogDelete}
-                          onOpenChange={setIsOpenDialogDelete}
-                        />
+                        {user.role === "STOREADMIN" ? (
+                          <button
+                            onClick={() => handleEdit(user.id, "STOREADMIN")}
+                          >
+                            <FilePenLine />
+                          </button>
+                        ) : user.role === "USER" ? (
+                          <button onClick={() => handleEdit(user.id, "USER")}>
+                            <FilePenLine />
+                          </button>
+                        ) : null}
+                        <button onClick={() => handleEdit(user.id, "DELETE")}>
+                          <Trash2 />
+                        </button>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -120,6 +156,46 @@ const Users = () => {
           />
         </div>
       </div>
+      {selectedUserId !== null && dialogType === "USER" && (
+        <DialogEditUser
+          userId={selectedUserId}
+          refetch={refetch}
+          open={selectedUserId !== null && dialogType === "USER"}
+          onOpenChange={(open) => {
+            if (!open) {
+              setSelectedUserId(null);
+              setDialogType(null);
+            }
+          }}
+        />
+      )}
+      {selectedUserId !== null && dialogType === "STOREADMIN" && (
+        <DialogEditStoreAdmin
+          userId={selectedUserId}
+          refetch={refetch}
+          open={selectedUserId !== null && dialogType === "STOREADMIN"}
+          onOpenChange={(open) => {
+            if (!open) {
+              setSelectedUserId(null);
+              setDialogType(null);
+            }
+          }}
+        />
+      )}
+      {selectedUserId !== null && dialogType === "DELETE" && (
+        <DialogDeleteUser
+          userId={selectedUserId}
+          isDeleting={isDeleting}
+          handleDelete={handleDelete}
+          open={selectedUserId !== null && dialogType === "DELETE"}
+          onOpenChange={(open) => {
+            if (!open) {
+              setSelectedUserId(null);
+              setDialogType(null);
+            }
+          }}
+        />
+      )}
     </main>
   );
 };

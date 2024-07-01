@@ -1,7 +1,7 @@
 import prisma from '@/prisma';
 import { Discount } from '@prisma/client';
 
-interface CreateDiscount extends Omit<Discount, 'id' | 'storeId'> {}
+interface CreateDiscount extends Omit<Discount, 'id'> {}
 
 interface UserToken {
   id: number;
@@ -20,6 +20,7 @@ export const createDiscountService = async (
       // discountLimit,
       productId,
       minPurchase,
+      storeId,
     } = body;
 
     // Cari user berdasarkan user.id
@@ -35,42 +36,49 @@ export const createDiscountService = async (
 
     if (checkUser.role === 'USER') throw new Error('Unauthorized access');
 
-    // Cari storeAdmin berdasarkan user.id
-    const storeAdmin = await prisma.storeAdmin.findUnique({
-      where: {
-        userId: Number(user.id),
-      },
-    });
+    let finalStoreId = storeId;
 
-    if (!storeAdmin) {
-      throw new Error("Can't find store admin associated with your account");
-    }
+    if (checkUser.role !== 'SUPERADMIN') {
+      // Cari storeAdmin berdasarkan user.id
+      const storeAdmin = await prisma.storeAdmin.findUnique({
+        where: {
+          userId: Number(user.id),
+        },
+      });
 
-    // Cari store berdasarkan storeAdmin.id
-    const store = await prisma.store.findUnique({
-      where: {
-        storeAdminId: storeAdmin.id,
-      },
-    });
+      if (!storeAdmin) {
+        throw new Error("Can't find store admin associated with your account");
+      }
 
-    if (!store) {
-      throw new Error("Can't find store associated with your account");
+      // Cari store berdasarkan storeAdmin.id
+      const store = await prisma.store.findUnique({
+        where: {
+          storeAdminId: storeAdmin.id,
+        },
+      });
+
+      if (!store) {
+        throw new Error("Can't find store associated with your account");
+      }
+
+      // Gunakan store.id jika body.storeId kosong
+      finalStoreId = finalStoreId || store.id;
     }
 
     // Buat discount baru
-    // const createDiscount = await prisma.discount.create({
-    //   data: {
-    //     title,
-    //     desc,
-    //     discountType: discountType,
-    //     discountvalue: Number(discountvalue),
-    //     discountLimit: Number(discountLimit),
-    //     minPurchase: Number(minPurchase),
-    //     isActive: true,
-    //     storeId: store.id,
-    //     productId: Number(productId),
-    //   },
-    // });
+    const createDiscount = await prisma.discount.create({
+      data: {
+        title,
+        desc,
+        discountType: discountType,
+        discountvalue: Number(discountvalue),
+        discountLimit: Number(discountLimit),
+        minPurchase: Number(minPurchase),
+        isActive: true,
+        storeId: finalStoreId,
+        productId: Number(productId),
+      },
+    });
 
     return {
       message: 'Discount has been created',

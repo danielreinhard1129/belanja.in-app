@@ -15,7 +15,7 @@ const useUpdateStore = (storeId: number) => {
     try {
       const payload = {
         name: data.name,
-        city: data.city,
+        cityId: data.cityId,
         lat: data.lat,
         long: String(data.long),
         storeAdminId: String(data.storeAdminId),
