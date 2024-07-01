@@ -1,6 +1,7 @@
 import prisma from '@/prisma';
+import { PaginationQueryParams } from '@/types/pagination.type';
 
-interface GetDiscountsByStore {
+interface GetDiscountsByStore extends PaginationQueryParams {
   storeId?: string;
 }
 
@@ -12,7 +13,7 @@ export const getDiscountsBySuperAdminService = async (
   query: GetDiscountsByStore,
   userToken: UserToken,
 ) => {
-  const { storeId } = query;
+  const { take, page, storeId } = query;
   const userId = Number(userToken.id);
 
   const user = await prisma.user.findFirst({
@@ -31,7 +32,7 @@ export const getDiscountsBySuperAdminService = async (
 
   let where: any = {};
 
-  if (storeId && storeId !== '') {
+  if (storeId && storeId !== 'all') {
     where.storeId = Number(storeId);
   }
 
@@ -42,9 +43,16 @@ export const getDiscountsBySuperAdminService = async (
         product: true,
         store: true,
       },
+      skip: (page - 1) * take,
+      take,
     });
 
-    return discounts;
+    const count = await prisma.discount.count({ where });
+
+    return {
+      data: discounts,
+      meta: { page, take, total: count },
+    };
   } catch (error) {
     throw error;
   }

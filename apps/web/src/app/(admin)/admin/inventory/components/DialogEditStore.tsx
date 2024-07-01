@@ -51,7 +51,7 @@ export function DialogEditStore({
     if (store) {
       reset({
         name: store.name,
-        city: store.city,
+        cityId: store.cityId,
         lat: store.lat,
         long: store.long,
         storeAdminId: store.storeAdmin.user.name,
@@ -90,7 +90,7 @@ export function DialogEditStore({
                 placeholder="Your name store"
               />
               <FormInput<SchemaEditStore>
-                name="city"
+                name="cityId"
                 label="City"
                 type="text"
                 placeholder="Your city store"

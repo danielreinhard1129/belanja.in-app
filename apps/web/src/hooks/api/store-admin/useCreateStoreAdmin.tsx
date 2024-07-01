@@ -1,33 +1,34 @@
 "use client";
 
 import { toast } from "sonner";
-import { axiosInstance } from "@/lib/axios";
+import { axiosInstance } from "@/libs/axios";
 import { AxiosError } from "axios";
 import { useState } from "react";
 
 interface CreateStoreAdmin {
   nip: number;
-  userId: string;
+  name: string;
+  email: string;
 }
 
 const useCreateStoreAdmin = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const token = localStorage.getItem("Authorization")?.split(" ")[1];
   const createStoreAdmin = async (data: CreateStoreAdmin) => {
     setIsLoading(true);
     try {
       const payload = {
         nip: data.nip,
-        userId: Number(data.userId),
+        name: data.name,
+        email: data.email,
       };
 
-      await axiosInstance.post("/store-admin", payload, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      toast.success("Store created successfully!");
+      // Lakukan permintaan POST
+      const response = await axiosInstance.post("/store-admins", payload);
+
+      // Jika berhasil, tampilkan pesan toast success dengan pesan dari server
+      toast.success(
+        response.data.message || "Store Admin created successfully!",
+      );
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError) {
@@ -37,6 +38,7 @@ const useCreateStoreAdmin = () => {
       setIsLoading(false);
     }
   };
+
   return { createStoreAdmin, isLoading };
 };
 

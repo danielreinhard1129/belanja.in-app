@@ -1,14 +1,13 @@
 "use client";
 
 import { toast } from "sonner";
-import { axiosInstance } from "@/lib/axios";
+import { axiosInstance } from "@/libs/axios";
 import { AxiosError } from "axios";
 import { useState } from "react";
 import { IFormDiscount } from "@/types/discount.type";
 
 const useCreateDiscount = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const token = localStorage.getItem("Authorization")?.split(" ")[1];
   const createDiscount = async (data: IFormDiscount) => {
     setIsLoading(true);
     try {
@@ -20,15 +19,11 @@ const useCreateDiscount = () => {
         discountLimit: data.discountLimit,
         minPurchase: data.minPurchase,
         productId: Number(data.productId),
+        storeId: Number(data.storeId),
       };
 
-      await axiosInstance.post("/discounts", payload, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      toast.success("Store created successfully!");
+      await axiosInstance.post("/discounts", payload);
+      toast.success("discount has been created!");
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError) {

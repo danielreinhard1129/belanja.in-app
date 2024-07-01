@@ -25,6 +25,7 @@ export const getStoresByParamsService = async (query: GetStoresByParams) => {
             user: true,
           },
         },
+        City: true,
       },
       skip: (page - 1) * take,
       take: take,

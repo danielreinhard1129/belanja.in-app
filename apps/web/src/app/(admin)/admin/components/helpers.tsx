@@ -5,7 +5,6 @@ import {
   Home,
   NotepadText,
   Users,
-  TicketPercent,
   Percent,
   DollarSign,
 } from "lucide-react";
@@ -25,11 +24,6 @@ export const listsSuper = [
   },
   { name: "Users", url: "/admin/users", icon: <Users size={20} /> },
   { name: "Discounts", url: "/admin/discounts", icon: <Percent size={20} /> },
-  {
-    name: "Vouchers",
-    url: "/admin/vouchers",
-    icon: <TicketPercent size={20} />,
-  },
   {
     name: "Journals",
     url: "/admin/journals",

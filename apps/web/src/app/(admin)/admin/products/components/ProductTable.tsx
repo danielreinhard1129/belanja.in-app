@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import DialogSettingsCategory from "./DialogSettingsCategory";
 import PopoverProductMenu from "./PopoverProductMenu";
+import { BASE_API_URL } from "@/utils/config";
 
 interface ProductTableProps {
   products: any[];
@@ -82,6 +83,12 @@ const ProductTable: React.FC<ProductTableProps> = ({
               Loading...
             </TableCell>
           </TableRow>
+        ) : products.length === 0 ? (
+          <TableRow>
+            <TableCell colSpan={6} className="text-center text-xs">
+              Data not found
+            </TableCell>
+          </TableRow>
         ) : (
           products.map((product, index) => (
             <TableRow key={product.id}>
@@ -107,7 +114,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
                     {product.images?.map((image: any, imgIndex: number) => (
                       <div className="flex" key={imgIndex}>
                         <Image
-                          src={`http://localhost:8000/api/assets${image.images}`}
+                          src={`${BASE_API_URL}/assets${image.images}`}
                           alt={`${product.name} image ${imgIndex + 1}`}
                           width={200}
                           height={200}

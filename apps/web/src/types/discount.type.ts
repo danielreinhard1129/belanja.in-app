@@ -39,4 +39,5 @@ export interface IFormDiscount {
   discountLimit: number;
   minPurchase?: number;
   productId: string;
+  storeId?: string;
 }

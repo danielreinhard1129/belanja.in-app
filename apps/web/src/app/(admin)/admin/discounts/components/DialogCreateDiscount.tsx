@@ -13,10 +13,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
 import {
-  CreateStore,
-  createStore,
+  SchemaDiscount,
+  schemaDiscount,
   defaultValues,
-} from "./validationSchema/createDiscount";
+} from "./validationSchema/schemaDiscount";
 import { FormInput } from "@/components/FormInput";
 import { FormSelect } from "@/components/FormSelect";
 import { Button } from "@/components/ui/button";
@@ -36,9 +36,9 @@ const DialogCreateDiscount: React.FC<DialogCreateDiscountProps> = ({
 }) => {
   const { createDiscount, isLoading } = useCreateDiscount();
   const { products } = useGetProducts();
-  const methods = useForm<CreateStore>({
+  const methods = useForm<SchemaDiscount>({
     mode: "all",
-    resolver: zodResolver(createStore),
+    resolver: zodResolver(schemaDiscount),
     defaultValues,
   });
   const { reset, handleSubmit } = methods;
@@ -61,7 +61,7 @@ const DialogCreateDiscount: React.FC<DialogCreateDiscountProps> = ({
     reset(defaultValues);
   };
 
-  const onSubmit: SubmitHandler<CreateStore> = async (data) => {
+  const onSubmit: SubmitHandler<SchemaDiscount> = async (data) => {
     console.log(data);
     await createDiscount(data);
     refetch();
@@ -86,43 +86,43 @@ const DialogCreateDiscount: React.FC<DialogCreateDiscountProps> = ({
               </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col gap-4 py-4">
-              <FormInput<CreateStore>
+              <FormInput<SchemaDiscount>
                 name="title"
                 label="Title"
                 type="text"
                 placeholder="Title"
               />
-              <FormInput<CreateStore>
+              <FormInput<SchemaDiscount>
                 name="desc"
                 label="Description"
                 type="text"
                 placeholder="Description"
               />
-              <FormSelect<CreateStore>
+              <FormSelect<SchemaDiscount>
                 name="discountType"
                 label="Discount Type"
                 datas={discountTypeOptions}
               />
-              <FormSelect<CreateStore>
+              <FormSelect<SchemaDiscount>
                 name="productId"
                 label="Product"
                 datas={productsOptions}
               />
               <div className="flex justify-between gap-10">
-                <FormInput<CreateStore>
+                <FormInput<SchemaDiscount>
                   name="discountvalue"
                   label="Discount Value"
                   type="number"
                   placeholder=""
                 />
-                <FormInput<CreateStore>
+                <FormInput<SchemaDiscount>
                   name="minPurchase"
                   label="Minimal Purchase"
                   type="number"
                   placeholder=""
                 />
               </div>
-              <FormInput<CreateStore>
+              <FormInput<SchemaDiscount>
                 name="discountLimit"
                 label="Discount Limit"
                 type="number"

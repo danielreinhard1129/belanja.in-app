@@ -1,3 +1,4 @@
+import { City } from "./city.type";
 import { StoreAdmin } from "./storeAdmin.type";
 
 export interface Store {
@@ -10,6 +11,7 @@ export interface Store {
   createdAt: string;
   updatedAt: string;
   cityId: string;
+  City: City;
   storeAdminId: number;
   storeAdmin: StoreAdmin;
 }

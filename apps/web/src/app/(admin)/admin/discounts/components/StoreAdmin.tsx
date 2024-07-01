@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -9,19 +9,73 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import DialogEditDiscount from "./DialogEditDiscount";
 import DialogCreateDiscount from "./DialogCreateDiscount";
 import useGetDiscountsByStoreAdmin from "@/hooks/api/discounts/useGetDiscountsByStoreAdmin";
-import { Ban, Check, CheckIcon } from "lucide-react";
+import { Ban, Check } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Pagination from "@/components/Pagination";
+import PopoverDiscountMenu from "./PopoverMenu";
+import useDeleteDiscount from "@/hooks/api/discounts/useDeleteDiscount";
 
 const DiscountsStoreAdmin = () => {
-  const [isOpenDialogEdit, setIsOpenDialogEdit] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
+  const [sortOrder, setSortOrder] = useState<string>("asc");
+  const [selectedType, setSelectedType] = useState<string>("all");
   const [isOpenDialogCreate, setIsOpenDialogCreate] = useState<boolean>(false);
-  const { discounts, refetch } = useGetDiscountsByStoreAdmin();
+  const { deleteDiscount, isLoading: isDeleting } = useDeleteDiscount();
+  const {
+    data: discounts,
+    refetch,
+    meta,
+  } = useGetDiscountsByStoreAdmin({
+    page,
+    take: 5,
+    sortBy: "title",
+    sortOrder,
+    discountType: selectedType,
+  });
+
+  useEffect(() => {
+    setPage(1);
+  }, [selectedType]);
+
+  const handleChangePaginate = ({ selected }: { selected: number }) => {
+    setPage(selected + 1);
+  };
+
+  const handleTypeChange = (value: string) => {
+    setSelectedType(value);
+  };
+
+  const handleDelete = async (id: number) => {
+    await deleteDiscount(id);
+    refetch();
+  };
+
+  const total = meta?.total || 0;
+  const take = meta?.take || 10;
+
   return (
     <main className="container mx-auto">
       <div className="container my-20 max-w-6xl border-2 pb-10 shadow-xl">
-        <div className="my-4 flex justify-end">
+        <div className="my-4 flex justify-between">
+          <Select onValueChange={handleTypeChange} defaultValue="all">
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select Discount Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="BOGO">BOGO</SelectItem>
+              <SelectItem value="PRODUCT">PRODUCT</SelectItem>
+              <SelectItem value="MIN_PURCHASE">MIN_PURCHASE</SelectItem>
+            </SelectContent>
+          </Select>
           <DialogCreateDiscount
             refetch={refetch}
             open={isOpenDialogCreate}
@@ -33,11 +87,10 @@ const DiscountsStoreAdmin = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>No</TableHead>
-                <TableHead>Name</TableHead>
+                <TableHead>Title</TableHead>
                 <TableHead>Discount Type</TableHead>
                 <TableHead>Discount Value</TableHead>
                 <TableHead>Discount Limit</TableHead>
-                <TableHead>Store</TableHead>
                 <TableHead>Product</TableHead>
                 <TableHead>Minimal Purchase</TableHead>
                 <TableHead>Status</TableHead>
@@ -52,7 +105,6 @@ const DiscountsStoreAdmin = () => {
                     <TableCell>{discount.discountType}</TableCell>
                     <TableCell>{discount.discountvalue}</TableCell>
                     <TableCell>{discount.discountLimit}</TableCell>
-                    <TableCell>{discount.store.name}</TableCell>
                     <TableCell>{discount.product.name}</TableCell>
                     <TableCell>{discount.minPurchase}</TableCell>
                     <TableCell>
@@ -64,11 +116,11 @@ const DiscountsStoreAdmin = () => {
                     </TableCell>
 
                     <TableCell>
-                      <DialogEditDiscount
-                        storeId={discount.storeId}
+                      <PopoverDiscountMenu
+                        discountId={discount.id}
+                        isDeleting={isDeleting}
+                        handleDelete={handleDelete}
                         refetch={refetch}
-                        open={isOpenDialogEdit}
-                        onOpenChange={setIsOpenDialogEdit}
                       />
                     </TableCell>
                   </TableRow>
@@ -82,6 +134,13 @@ const DiscountsStoreAdmin = () => {
               )}
             </TableBody>
           </Table>
+        </div>
+        <div className="mx-auto w-fit">
+          <Pagination
+            total={total}
+            take={take}
+            onChangePage={handleChangePaginate}
+          />
         </div>
       </div>
     </main>

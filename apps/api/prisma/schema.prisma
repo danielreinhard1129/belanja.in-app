@@ -99,6 +99,7 @@ model User {
   UserVoucher  UserVoucher[]
   referrer     ReferralHistory[] @relation(name: "referrer")
   referred     ReferralHistory[] @relation(name: "referred")
+  Cart         Cart[]
 
   @@map("users")
 }
@@ -124,7 +125,6 @@ model StoreAdmin {
   id        Int      @id @default(autoincrement())
   userId    Int      @unique
   nip       Int
-  isDelete  Boolean?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id])
@@ -152,6 +152,7 @@ model Store {
   Order         Order[]
   Delivery      Delivery[]
   City          City            @relation(fields: [cityId], references: [id])
+  Cart          Cart[]
 
   @@map("stores")
 }
@@ -211,6 +212,22 @@ model JournalDetail {
   @@map("journal_detail")
 }
 
+model Cart {
+  id       Int     @id @default(autoincrement())
+  qty      Int
+  isActive Boolean @default(true)
+
+  productId Int
+  storeId   Int
+  userId    Int
+
+  products Product @relation(fields: [productId], references: [id])
+  stores   Store   @relation(fields: [storeId], references: [id])
+  users    User    @relation(fields: [userId], references: [id])
+
+  @@map("carts")
+}
+
 model Product {
   id            Int                    @id @default(autoincrement())
   name          String                 @unique
@@ -227,6 +244,7 @@ model Product {
   stockJournals StockJournal[]
   Voucher       Voucher[]
   OrderItems    OrderItems[]
+  Cart          Cart[]
 
   @@map("products")
 }
@@ -265,9 +283,9 @@ model Discount {
   desc          String
   discountType  DiscountType
   discountvalue Float
+  discountLimit Float
   minPurchase   Float?
-  startDate     DateTime
-  endDate       DateTime
+  isActive      Boolean      @default(true)
   storeId       Int
   productId     Int?
 
@@ -362,14 +380,14 @@ model Order {
   @@map("orders")
 }
 
- enum OrderStatus {
-    WAITING_FOR_PAYMENT @map("WAITING_FOR_PAYMENT")
-    WAITING_ADMIN_CONFIRMATION @map("WAITING_ADMIN_CONFIRMATION")
-    ORDER_PROCESSED @map("ORDER_PROCESSED")
-    ORDER_SHIPPED @map("ORDER_SHIPPED")
-    ORDER_RECEIVED @map("ORDER_RECEIVED")
-    ORDER_CANCELLED @map("ORDER_CANCELLED")
-  }
+enum OrderStatus {
+  WAITING_FOR_PAYMENT        @map("WAITING_FOR_PAYMENT")
+  WAITING_ADMIN_CONFIRMATION @map("WAITING_ADMIN_CONFIRMATION")
+  ORDER_PROCESSED            @map("ORDER_PROCESSED")
+  ORDER_SHIPPED              @map("ORDER_SHIPPED")
+  ORDER_RECEIVED             @map("ORDER_RECEIVED")
+  ORDER_CANCELLED            @map("ORDER_CANCELLED")
+}
 
 model OrderItems {
   id            Int  @id @default(autoincrement())

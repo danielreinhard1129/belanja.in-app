@@ -1,17 +1,25 @@
 import prisma from '@/prisma';
+import { PaginationQueryParams } from '@/types/pagination.type';
+
+interface GetDiscountsByDiscountType extends PaginationQueryParams {
+  discountType?: string;
+}
 
 interface UserToken {
   id: number;
 }
 
-export const getDiscountsByStoreAdminService = async (userToken: UserToken) => {
+export const getDiscountsByStoreAdminService = async (
+  query: GetDiscountsByDiscountType,
+  userToken: UserToken,
+) => {
   try {
+    const { take, page, discountType } = query;
     const userId = Number(userToken.id);
 
+    // Cari user beserta informasi storeAdmin dan stores-nya
     const user = await prisma.user.findFirst({
-      where: {
-        id: userId,
-      },
+      where: { id: userId },
       include: {
         storeAdmin: {
           include: {
@@ -45,17 +53,30 @@ export const getDiscountsByStoreAdminService = async (userToken: UserToken) => {
       throw new Error('store is not found');
     }
 
+    const where: any = {
+      storeId: store.id,
+    };
+
+    if (discountType && discountType !== 'all') {
+      where.discountType = discountType;
+    }
+
     const discounts = await prisma.discount.findMany({
-      where: {
-        storeId: store.id,
-      },
+      where,
       include: {
         store: true,
         product: true,
       },
+      skip: (page - 1) * take,
+      take,
     });
 
-    return discounts;
+    const count = await prisma.discount.count({ where });
+
+    return {
+      data: discounts,
+      meta: { page, take, total: count },
+    };
   } catch (error) {
     throw error;
   }

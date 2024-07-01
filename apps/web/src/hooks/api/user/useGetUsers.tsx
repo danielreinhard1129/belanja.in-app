@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 interface IGetUsersQuery extends IPaginationQueries {
   search?: string;
+  role?: string;
 }
 
 const useGetUsers = (queries: IGetUsersQuery) => {
@@ -32,7 +33,7 @@ const useGetUsers = (queries: IGetUsersQuery) => {
 
   useEffect(() => {
     getUsers();
-  }, [queries?.page, queries?.search, queries?.sortOrder]);
+  }, [queries?.page, queries?.search, queries?.sortOrder, queries?.role]);
 
   return { data, isLoading, meta, refetch: getUsers };
 };

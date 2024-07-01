@@ -14,7 +14,8 @@ export class UserRouter {
 
   private initializeRoutes(): void {
     this.router.get('/', this.userController.getUsers);
-    this.router.get('/:id', this.userController.getUser);
+    this.router.get('/:id', this.userController.getUserWithSuperAdmin);
+    this.router.patch('/:id', verifyToken, this.userController.updateUser);
     this.router.delete('/:id', verifyToken, this.userController.deleteUser);
   }
 
