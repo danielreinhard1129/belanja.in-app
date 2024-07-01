@@ -1,31 +1,33 @@
 "use client";
 
-import { ICart } from "@/types/order.type";
-import { Address } from "@/types/user.type";
+import axiosInstance from "@/libs/axios";
+import { AddressData } from "@/types/address.type";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
-import useAxios from "../useAxios";
 
-const useGetUserAddress = (userId: number) => {
-  const {axiosInstance} = useAxios()
-  const [addresses, setAddresses] = useState<Address[]>([]);
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
-  const getAddresses = async () => {
+const useGetUserAddress = (id: number) => {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [address, setAddress] = useState<AddressData>([]);
+
+  const getUserAddress = async () => {
     try {
-      const { data } = await axiosInstance.get(`/address/user-address`);
-      setAddresses(data);
+      setIsLoading(true);
+      const { data } = await axiosInstance.get<AddressData>(`/address/${id}`);
+
+      setAddress(data);
     } catch (error) {
       if (error instanceof AxiosError) {
-        console.error("Error fetching address:", error.message);
+        console.log(error);
       }
     } finally {
       setIsLoading(false);
     }
   };
+
   useEffect(() => {
-    getAddresses();
-  }, []);
-  return { addresses, isLoading, refetch: getAddresses, setAddresses };
+    getUserAddress();
+  }, [id]);
+  return { isLoading, address, refetch: getUserAddress };
 };
 
 export default useGetUserAddress;
