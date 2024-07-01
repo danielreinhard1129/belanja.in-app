@@ -12,7 +12,7 @@ export class AddressRouter {
   }
 
   private initializeRoutes(): void {
-    this.router.get('/user-address', this.addressController.getAddressController);
+    this.router.get('/:id', this.addressController.getAddressController);
     this.router.post(
       '/add-address',
       this.addressController.addAddressController,
