@@ -17,7 +17,7 @@ export const createDiscountService = async (
       desc,
       discountType,
       discountvalue,
-      discountLimit,
+      // discountLimit,
       productId,
       minPurchase,
       storeId,
@@ -82,7 +82,7 @@ export const createDiscountService = async (
 
     return {
       message: 'Discount has been created',
-      data: createDiscount,
+      // data: createDiscount,
     };
   } catch (error) {
     throw error;
