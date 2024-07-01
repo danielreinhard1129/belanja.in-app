@@ -1,5 +1,6 @@
 import { createOrderService } from '@/services/transactions/order/create-order.service';
 import { finishOrderService } from '@/services/transactions/order/finish-order.service';
+import { getAllOrdersService } from '@/services/transactions/order/get-all-orders.service';
 import { getOrderService } from '@/services/transactions/order/get-order.service';
 import { getOrdersByUserId } from '@/services/transactions/order/get-orders-byUserId.service';
 import { updateOrderByUserService } from '@/services/transactions/order/update-order-by-user.service';
@@ -24,6 +25,29 @@ export class OrderController {
         category: (req.query.category as string) || '',
       };
       const result = await getOrdersByUserId(query);
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async getAllOrdersController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const query = {
+        take: parseInt(req.query.take as string) || 10,
+        page: parseInt(req.query.page as string) || 1,
+        sortBy: (req.query.sortBy as string) || 'updatedAt',
+        sortOrder: (req.query.sortOrder as string) || 'desc',
+        search: (req.query.search as string) || '',
+        status: req.query.status as OrderStatus,
+        category: (req.query.category as string) || '',
+        // startDate: (req.query.startDate as Date) 
+      };
+      const result = await getAllOrdersService(query);
 
       return res.status(200).send(result);
     } catch (error) {
