@@ -14,6 +14,7 @@ export const schemaDiscount = z.object({
     .positive("Discount Limit must be a positive number"),
   minPurchase: z.number().optional(),
   productId: z.string().min(1, "Product is required"),
+  isActive: z.boolean().optional(),
 });
 
 export type SchemaDiscount = z.infer<typeof schemaDiscount>;

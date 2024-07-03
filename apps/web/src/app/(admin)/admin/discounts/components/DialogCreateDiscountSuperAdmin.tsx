@@ -10,7 +10,12 @@ import {
 } from "@/components/ui/dialog";
 import { ClipboardPlus, Loader2 } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import {
+  FormProvider,
+  SubmitHandler,
+  useForm,
+  useFormState,
+} from "react-hook-form";
 
 import {
   CreateStore,
@@ -23,6 +28,7 @@ import { Button } from "@/components/ui/button";
 import useGetProducts from "@/hooks/api/product/useGetProducts";
 import useCreateDiscount from "@/hooks/api/discounts/useCreateDiscount";
 import useGetStores from "@/hooks/api/store/useGetStores";
+import { toast } from "sonner";
 
 interface DialogCreateDiscountSuperAdminProps {
   open: boolean;
@@ -41,7 +47,10 @@ const DialogCreateDiscountSuperAdmin: React.FC<
     resolver: zodResolver(createStore),
     defaultValues,
   });
-  const { reset, handleSubmit } = methods;
+  const { reset, handleSubmit, control } = methods;
+  const { isDirty, isValid } = useFormState({
+    control,
+  });
 
   const productsOptions = products.map((product) => ({
     value: product.id.toString(),
@@ -67,11 +76,20 @@ const DialogCreateDiscountSuperAdmin: React.FC<
   };
 
   const onSubmit: SubmitHandler<CreateStore> = async (data) => {
-    // console.log(data);
-    await createDiscount(data);
-    refetch();
-    reset(defaultValues);
-    onOpenChange(false);
+    try {
+      await createDiscount(data);
+      refetch();
+      reset(defaultValues);
+      onOpenChange(false);
+    } catch (error) {
+      if (typeof error === "string") {
+        toast.error(error);
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unknown error occurred");
+      }
+    }
   };
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -141,13 +159,18 @@ const DialogCreateDiscountSuperAdmin: React.FC<
             </div>
             <DialogFooter>
               <Button
+                type="button"
                 variant="secondary"
                 onClick={handleReset}
                 className="px-4 py-2"
               >
                 Reset
               </Button>
-              <Button disabled={isLoading} type="submit" className="px-4 py-2">
+              <Button
+                disabled={!isDirty || !isValid || isLoading}
+                type="submit"
+                className="px-4 py-2"
+              >
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {isLoading ? "Loading" : "Add"}
               </Button>

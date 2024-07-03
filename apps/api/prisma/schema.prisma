@@ -26,6 +26,7 @@ model Address {
   lat           Float
   long          Float
   isPrimary     Boolean @default(false)
+  postalCode    Int
   provinceId    Int
   cityId        Int
   subdistrictId Int
@@ -142,6 +143,7 @@ model Store {
   isPrimary     Boolean         @default(false)
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
+  isDelete      Boolean?        @default(false)
   cityId        Int
   storeAdminId  Int?            @unique
   storeAdmin    StoreAdmin?     @relation(fields: [storeAdminId], references: [id])
@@ -198,8 +200,10 @@ enum JournalType {
 
 enum JournalStatus {
   WAITING_ADMIN_CONFIRMATION
+  ON_PURCHASE
   SUCCESS
-  CANCELLED
+  REJECTED
+  ON_PROGRESS
 }
 
 model JournalDetail {
@@ -374,7 +378,7 @@ model Order {
   userDiscounts userDiscount? @relation(fields: [userDiscountId], references: [id])
   userVouchers  UserVoucher?  @relation(fields: [userVoucherId], references: [id])
   OrderItems    OrderItems[]
-  Payment       Payment[]
+  Payment       Payment?
   Delivery      Delivery[]
 
   @@map("orders")
@@ -419,7 +423,7 @@ model Payment {
   snapToken       String?
   snapRedirectUrl String?
 
-  orderId Int
+  orderId Int @unique
 
   orders Order @relation(fields: [orderId], references: [id])
 

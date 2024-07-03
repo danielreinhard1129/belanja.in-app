@@ -64,8 +64,8 @@ const DiscountsSuperAdmin = () => {
 
   // console.log(discounts);
   return (
-    <main className="container mx-auto mb-10 max-w-6xl border-2 py-5 shadow-xl">
-      <div className="flex justify-between">
+    <main className="container mx-auto mb-10 max-w-6xl border-2 pb-6 shadow-xl">
+      <div className="my-4 flex justify-between">
         <div>
           <Select onValueChange={handleStoreChange} defaultValue="all">
             <SelectTrigger className="w-[180px]">
@@ -92,7 +92,7 @@ const DiscountsSuperAdmin = () => {
           <TableHeader>
             <TableRow>
               <TableHead>No</TableHead>
-              <TableHead>Name</TableHead>
+              <TableHead>Title</TableHead>
               <TableHead>Discount Type</TableHead>
               <TableHead>Discount Value</TableHead>
               <TableHead>Discount Limit</TableHead>

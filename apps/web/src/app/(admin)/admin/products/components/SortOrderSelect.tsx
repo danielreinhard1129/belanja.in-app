@@ -29,8 +29,8 @@ const SortOrderSelect: React.FC<SortOrderSelectProps> = ({
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectItem value="asc">Newest</SelectItem>
-          <SelectItem value="desc">Latest</SelectItem>
+          <SelectItem value="asc">A - Z</SelectItem>
+          <SelectItem value="desc">Z - A</SelectItem>
         </SelectGroup>
       </SelectContent>
     </Select>

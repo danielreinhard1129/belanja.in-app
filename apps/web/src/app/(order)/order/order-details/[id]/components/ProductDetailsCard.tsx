@@ -33,7 +33,7 @@ const ProductDetailsCard: FC<OrderCardProps> = ({
                   <Image
                     alt="Product"
                     fill
-                    src={`${url}assets/${item.products.images[0].images}`}
+                    src={`${url}/assets${item.products.images[0].images}`}
                     className="object-cover"
                   />
                 </div>

@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [20.x]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -20,6 +20,7 @@ jobs:
       - name: Build Project
         run: |
           npm install
+          npx prisma generate --schema=./apps/api/prisma/schema.prisma
           npm run build
       - name: Deploy to Linode
         uses: appleboy/scp-action@master
@@ -28,7 +29,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT }}
-          source: './apps/web/.next, ./apps/web/*, ./apps/web/.*, ./apps/api, ./deploy.config.js, ./package*.json, ./turbo.json'
+          source: './apps/web/.next, ./apps/web/*, ./apps/web/.*, ./apps/api, ./deploy.config.js, ./package*.json, ./turbo.json, ./.husky'
           target: '${{ secrets.SSH_FOLDER }}'
       - name: Run App
         uses: appleboy/ssh-action@master
@@ -38,7 +39,9 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT }}
           script: |
+            export NVM_DIR=~/.nvm
+            source ~/.nvm/nvm.sh
             cd ${{ secrets.SSH_FOLDER }}
             npm install
-            npx prisma migrate dev --schema=./apps/api/prisma/schema.prisma
-            pm2 start npm --name "${{ secrets.PROJECT_NAME }}" -- run serve
+            npx prisma generate --schema=./apps/api/prisma/schema.prisma
+            pm2 start deploy.config.js

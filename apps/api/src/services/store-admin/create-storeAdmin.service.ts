@@ -34,6 +34,18 @@ export const createStoreAdminService = async (
     },
   });
 
+  if (nip) {
+    const existingNip = await prisma.storeAdmin.findFirst({
+      where: {
+        nip,
+      },
+    });
+
+    if (existingNip) {
+      throw new Error('Nip already in use');
+    }
+  }
+
   if (existingUser) {
     // Jika user dengan email tersebut sudah ada
     if (existingUser.isDelete && existingUser.role === 'STOREADMIN') {

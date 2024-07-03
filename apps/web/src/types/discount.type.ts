@@ -40,4 +40,5 @@ export interface IFormDiscount {
   minPurchase?: number;
   productId: string;
   storeId?: string;
+  isActive?: boolean;
 }

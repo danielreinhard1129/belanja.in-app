@@ -59,7 +59,7 @@ const Cart = () => {
                   <Image
                     alt="Product"
                     fill
-                    src={`${baseURL}assets/${cart.products.images[0].images}`}
+                    src={`${baseURL}/assets${cart.products.images[0].images}`}
                     className="object-cover"
                   />
                 </div>

@@ -4,9 +4,11 @@ import { useAppSelector } from "@/redux/hooks";
 import Image from "next/image";
 import { useState } from "react";
 import ImageChooseStore from "../../../../../public/superAdminCS.svg";
-import StoreAdmin from "./components/StoreAdmin";
-import StoreInventoryTable from "./components/StoreInventoryTable";
-import Stores from "./components/Stores";
+import ImageNotFoundStore from "../../../../../public/no-store.svg";
+import StoreAdmin from "./components/storeAdmin/StoreAdmin";
+import StoreInventoryTable from "./components/superAdmin/StoreInventoryTable";
+import Stores from "./components/superAdmin/Stores";
+import { debounce } from "lodash";
 
 const Inventory = () => {
   const { role } = useAppSelector((state) => state.user);
@@ -19,6 +21,10 @@ const Inventory = () => {
     search,
     storeId: activeStoreId,
   });
+
+  const handleSearch = debounce((value: string) => {
+    setSearch(value);
+  }, 1500);
 
   const handleStoreClick = (storeId: number) => {
     setActiveStoreId(storeId.toString());
@@ -41,7 +47,23 @@ const Inventory = () => {
     : stocks?.storeProducts?.data;
 
   if (!stocks) {
-    return <div>Data Not Found</div>;
+    return (
+      <div className="mx-auto flex flex-col items-center justify-center gap-7">
+        <div className="text-center text-xl font-bold">
+          You don&#39;t have any store
+        </div>
+        <div>
+          <Image
+            src={ImageNotFoundStore}
+            alt="ImageNotFoundStore"
+            width={600}
+            height={600}
+            style={{ width: "auto", height: "auto" }}
+            priority
+          />
+        </div>
+      </div>
+    );
   }
 
   // console.log(stocks);
@@ -59,13 +81,12 @@ const Inventory = () => {
             <>
               <StoreInventoryTable
                 storeId={Number(activeStoreId)}
-                search={search}
-                setSearch={setSearch}
                 filteredStocks={filteredStocks}
                 takeStock={takeStock}
                 handleChangePaginateStock={handleChangePaginateStock}
                 stocks={stocks}
                 refetch={refetch}
+                handleSearch={handleSearch}
               />
             </>
           ) : (
@@ -79,6 +100,8 @@ const Inventory = () => {
                   alt="ImageChooseStore"
                   width={600}
                   height={600}
+                  style={{ width: "auto", height: "auto" }}
+                  priority
                 />
               </div>
             </div>
@@ -89,8 +112,7 @@ const Inventory = () => {
       {role === "STOREADMIN" && (
         <StoreAdmin
           stocks={stocks}
-          search={search}
-          setSearch={setSearch}
+          handleSearch={handleSearch}
           stockPage={stockPage}
           handleChangePaginateStock={handleChangePaginateStock}
           refetch={refetch}

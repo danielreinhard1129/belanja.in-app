@@ -1,6 +1,6 @@
 "use client";
 
-import axiosInstance from "@/libs/axios";
+import { axiosInstance } from "@/lib/axios";
 import { Subdistrict } from "@/types/address.type";
 import { IPaginationMeta, IPaginationQueries } from "@/types/pagination.type";
 import { AxiosError } from "axios";

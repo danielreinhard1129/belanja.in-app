@@ -1,7 +1,7 @@
 "use client";
 import { useAppSelector } from "@/redux/hooks";
-import StoreAdmin from "./components/StoreAdmin";
-import SuperAdmin from "./components/SuperAdmin";
+import StoreAdmin from "./components/storeAdmin/StoreAdmin";
+import SuperAdmin from "./components/superAdmin/SuperAdmin";
 
 const Product = () => {
   const { role } = useAppSelector((state) => state.user);

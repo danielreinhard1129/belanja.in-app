@@ -5,6 +5,7 @@ import {
   Home,
   NotepadText,
   Users,
+  User,
   Percent,
   DollarSign,
 } from "lucide-react";
@@ -36,6 +37,12 @@ export const listsSuper = [
   },
 ];
 
+export const listsNoStore = [
+  { name: "Home", url: "/admin", icon: <Home size={20} /> },
+  { name: "Products", url: "/admin/products", icon: <Box size={20} /> },
+  { name: "Profile", url: "/admin/users/profile", icon: <User size={20} /> },
+];
+
 export const lists = [
   { name: "Home", url: "/admin", icon: <Home size={20} /> },
   { name: "Products", url: "/admin/products", icon: <Box size={20} /> },
@@ -55,6 +62,7 @@ export const lists = [
     url: "/admin/journals",
     icon: <BookMarked size={20} />,
   },
+  { name: "Profile", url: "/admin/users/profile", icon: <User size={20} /> },
   {
     name: "Sales & Report",
     url: "/admin/reports",

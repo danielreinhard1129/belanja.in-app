@@ -1,6 +1,6 @@
 "use client";
 
-import axiosInstance from "@/libs/axios";
+import { axiosInstance } from "@/lib/axios";
 import { useState, useEffect } from "react";
 
 interface OpenCageResult {

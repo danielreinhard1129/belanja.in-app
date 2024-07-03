@@ -2,19 +2,21 @@
 import { axiosInstance } from "@/lib/axios";
 import { IOrder, OrderStatus } from "@/types/order.type";
 import { IPaginationMeta, IPaginationQueries } from "@/types/pagination.type";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface IGetOrdersQuery extends IPaginationQueries {
   id: number;
   search?: string;
   status?: OrderStatus | null ;
   category?: string
+  fromDate?: string
+  toDate?: string
 }
 
 const useGetUserOrders = (queries: IGetOrdersQuery) => {
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [meta, setMeta] = useState<IPaginationMeta | null>(null);
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const getUserOrders = async () => {
     try {
         await new Promise<void>((res)=>setTimeout(res, 500))
@@ -33,7 +35,7 @@ const useGetUserOrders = (queries: IGetOrdersQuery) => {
 
   useEffect(() => {
     getUserOrders();
-  }, [queries?.page, queries?.search, queries.status, queries.category]);
+  }, [queries?.page, queries?.search, queries.status, queries.category, queries.fromDate, queries.toDate]);
   return {orders, meta, isLoading};
 };
 

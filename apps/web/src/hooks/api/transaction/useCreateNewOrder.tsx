@@ -9,7 +9,7 @@ const useCreateNewOrder = () => {
   const createNewOrder = async (payload: IOrderArgs) => {
     try {
       const { data } = await axiosInstance.post(
-        "orders/user/new-order",
+        "/orders/user/new-order",
         payload,
       );
     } catch (error) {

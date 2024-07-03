@@ -19,6 +19,11 @@ export class StoreAdminRouter {
       verifyToken,
       this.storeAdminController.createStoreAdmin,
     );
+    this.router.post(
+      '/reset/:id',
+      verifyToken,
+      this.storeAdminController.updateResetPasswordStoreAdmin,
+    );
     this.router.get(
       '/no-store',
       this.storeAdminController.getStoreAdminsNoStore,

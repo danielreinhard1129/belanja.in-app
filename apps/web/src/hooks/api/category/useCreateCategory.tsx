@@ -18,8 +18,8 @@ const useCreateCategory = () => {
         userId: id,
       };
 
-      await axiosInstance.post("/categories/", payload);
-      toast.success("Category created succesfully");
+      const response = await axiosInstance.post("/categories/", payload);
+      toast.success(response.data.message);
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError) {
