@@ -1,15 +1,15 @@
 import prisma from '@/prisma';
 interface GetOrderQeuery {
   orderId: number;
-  userId: number;
+
   
 }
 
-export const getOrderService = async (query: GetOrderQeuery) => {
+export const getOrderDetailsByAdminService = async (query: GetOrderQeuery) => {
   try {
-    const { orderId, userId } = query;
+    const { orderId } = query;
     const order = await prisma.order.findFirst({
-      where: { id: orderId, userId },
+      where: { id: orderId },
       include: {
         OrderItems: {
           include: {
@@ -20,7 +20,10 @@ export const getOrderService = async (query: GetOrderQeuery) => {
         Payment: true,
       },
     });
-    return { data: order, message: 'Get order success' };
+    if(!order){
+        throw new Error("Order not found")
+    }
+    return { data: order, message: 'Get order successsssssss' };
   } catch (error) {
     throw error;
   }

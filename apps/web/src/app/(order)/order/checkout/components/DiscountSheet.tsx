@@ -5,12 +5,12 @@ import {
     SheetHeader,
     SheetTitle
   } from "@/components/ui/sheet";
-import { Address } from '@/types/user.type';
+import { AddressData } from '@/types/address.type';
 
   interface DiscountSheetProps{
     openState: boolean;
     setOpenState: Dispatch<SetStateAction<boolean>>;
-    addresses: Address[]
+    addresses: AddressData
   }
 
 const DiscountSheet:FC<DiscountSheetProps> = ({openState,setOpenState,addresses}) => {
@@ -23,7 +23,7 @@ const DiscountSheet:FC<DiscountSheetProps> = ({openState,setOpenState,addresses}
       {addresses.map((address, index)=>{
           return (
             <div key={index}></div>
-        //   <AddressCard key={index} data={address} closeDrawer={()=> handleSelectAddress(index)} />
+          // <AddressCard key={index} data={address} closeDrawer={()=> handleSelectAddress(index)} />
         )
       })}
       

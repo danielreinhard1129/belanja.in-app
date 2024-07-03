@@ -6,18 +6,30 @@ interface GetOrdersQuery extends PaginationQueryParams {
   search: string;
   status: OrderStatus | undefined;
   category: string;
-//   startDate : Date
-
+  toDate: string;
+  fromDate: string;
 }
 
 export const getAllOrdersService = async (query: GetOrdersQuery) => {
   try {
-    const { page, search, sortBy, sortOrder, take, status, category } =
-      query;
+    const {
+      page,
+      search,
+      sortBy,
+      sortOrder,
+      take,
+      status,
+      category,
+      fromDate,
+      toDate,
+    } = query;
 
-      
-      const categoryArgs = category && category === "all" ? undefined : category
-      
+    const categoryArgs = category && category === 'all' ? undefined : category;
+    const dateRangeArgs = {
+      from: !fromDate ? undefined : new Date(fromDate),
+      to: !toDate ? undefined : new Date(toDate),
+    };
+
     const whereClause: Prisma.OrderWhereInput = {
       status: status,
       OrderItems: {
@@ -30,6 +42,7 @@ export const getAllOrdersService = async (query: GetOrdersQuery) => {
           },
         },
       },
+      updatedAt: { gte: dateRangeArgs.from, lte: dateRangeArgs.to },
     };
 
     const orders = await prisma.order.findMany({
@@ -45,6 +58,9 @@ export const getAllOrdersService = async (query: GetOrdersQuery) => {
             products: { include: { images: true } },
           },
         },
+        stores: { include: { City: true } },
+        Payment: true,
+        users: true
       },
     });
     if (!orders) {

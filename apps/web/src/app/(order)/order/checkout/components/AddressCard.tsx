@@ -7,8 +7,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Address } from "@/types/user.type";
 import { Badge } from "@/components/ui/badge";
+import { Address } from "@/types/address.type";
 
 interface AddressCardProps {
   data: Address;
@@ -40,7 +40,7 @@ const AddressCard: FC<AddressCardProps> = ({ data, closeDrawer }) => {
           <p>
             <span>{data.subdistricts.subdistrictName}, </span>
             <span>{data.cities.citName}, </span>
-            <span>{data.cities.province?.provinceName}</span>
+            <span>{data.cities.province.provinceName}</span>
           </p>
         </CardContent>
       </Card>

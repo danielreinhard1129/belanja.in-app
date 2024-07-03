@@ -29,9 +29,9 @@ const Checkout = () => {
 
   const { id } = useAppSelector((state) => state.user);
   const { carts, setCarts } = useGetCartsById(id);
-  const { addresses, setAddresses } = useGetUserAddress(id);
+  const { address, setAddress } = useGetUserAddress(id);
   const totalWeight = calculateTotalWeight(carts);
-  const selectedAddress = addresses.find((address) => address.isSelected);
+  const selectedAddress = address.find((address) => address.isSelected);
   const [weight, setWeight] = useState<number>(0);
   const [addressId, setAddressId] = useState<number>(0);
 
@@ -70,6 +70,9 @@ const Checkout = () => {
   //   }
   // }, 2000);
   // console.log("ini totalweight", totalWeight);
+
+  console.log(address);
+  
 
   if (!carts || !carts.length) {
     return (
@@ -112,7 +115,7 @@ const Checkout = () => {
             className="flex cursor-pointer items-center justify-between gap-y-1 px-4 pb-2 pt-1"
             onClick={() => setOpenAddressDrawer(true)}
           >
-            {addresses.map((address, index) => {
+            {address.map((address, index) => {
               return address.isSelected ? (
                 <div key={index} className="w-64">
                   <div className="flex items-center gap-2">
@@ -139,8 +142,8 @@ const Checkout = () => {
           <AddressSheet
             openState={openAddressDrawer}
             setOpenState={setOpenAddressDrawer}
-            addresses={addresses}
-            closeDrawer={setAddresses}
+            addresses={address}
+            closeDrawer={setAddress}
             refetch={refetchDeliveryFee}
           />
           <Separator className="h-0.5" />
@@ -188,7 +191,7 @@ const Checkout = () => {
         </div>
       </div>
       <DiscountSheet
-        addresses={addresses}
+        addresses={address}
         openState={openDiscountDrawer}
         setOpenState={setOpenDiscountDrawer}
       />

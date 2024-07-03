@@ -4,17 +4,17 @@ import {
   SheetHeader,
   SheetTitle
 } from "@/components/ui/sheet";
-import { Address } from "@/types/user.type";
 import { Dispatch, FC, SetStateAction } from "react";
 import AddressCard from "./AddressCard";
+import { AddressData } from "@/types/address.type";
 
 
 
 interface AddressSheetProps {
   openState: boolean;
   setOpenState: Dispatch<SetStateAction<boolean>>;
-  addresses:Address[]
-  closeDrawer: (addresses:Address[])=>void
+  addresses:AddressData
+  closeDrawer: (addresses:AddressData)=>void
   refetch : ()=>void
 }
 

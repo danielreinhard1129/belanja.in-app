@@ -1,16 +1,14 @@
 import { AxiosError } from "axios";
-import React, { useEffect } from "react";
 import useAxios from "../useAxios";
 import { toast } from "sonner";
 
-const useFinishOrderByUser = () => {
+const useCancelOrderByAdmin = () => {
   const { axiosInstance } = useAxios();
 
-  const finishOrderByUser = async (orderId: number|undefined) => {
+  const cancelOrderByAdmin = async (orderId: number|undefined) => {
     try {
-      // const token =localStorage.getItem("Authorization")
       const { data } = await axiosInstance.patch<{ message: string }>(
-        "/orders/user/finish-order",
+        "/orders/admin/cancel-order",
         {orderId},
         
       );
@@ -21,7 +19,7 @@ const useFinishOrderByUser = () => {
       }
     }
   };
-  return {finishOrderByUser};
+  return {cancelOrderByAdmin};
 };
 
-export default useFinishOrderByUser;
+export default useCancelOrderByAdmin;

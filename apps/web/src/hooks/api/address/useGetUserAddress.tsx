@@ -27,7 +27,7 @@ const useGetUserAddress = (id: number) => {
   useEffect(() => {
     getUserAddress();
   }, [id]);
-  return { isLoading, address, refetch: getUserAddress };
+  return { isLoading, address, setAddress, refetch: getUserAddress };
 };
 
 export default useGetUserAddress;
