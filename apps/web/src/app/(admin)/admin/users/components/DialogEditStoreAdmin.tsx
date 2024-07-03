@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FilePenLine, Loader2 } from "lucide-react";
 import {
   Dialog,
@@ -25,6 +25,9 @@ import {
 import { FormInput } from "@/components/FormInput";
 import { Button } from "@/components/ui/button";
 import useUpdateStoreAdmin from "@/hooks/api/store-admin/useUpdateStoreAdmin";
+import DialogResetPasswordStoreAdmin from "./DialogResetPasswordStoreAdmin";
+import useResetPasswordStoreAdmin from "@/hooks/api/store-admin/useResetPasswordStoreAdmin";
+import { toast } from "sonner";
 
 interface DialogEditStoreAdminProps {
   userId: number;
@@ -41,6 +44,9 @@ const DialogEditStoreAdmin: React.FC<DialogEditStoreAdminProps> = ({
 }) => {
   const { user, refetch: refetchUser } = useGetUser(userId);
   const { updateStoreAdmin, isLoading } = useUpdateStoreAdmin();
+  const { resetPasswordStoreAdmin, isReseting } = useResetPasswordStoreAdmin();
+  const [isOpenDialogResetPassword, setIsOpenDialogResetPassword] =
+    useState<boolean>(false);
 
   const methods = useForm<EditStoreAdmin>({
     mode: "all",
@@ -51,6 +57,10 @@ const DialogEditStoreAdmin: React.FC<DialogEditStoreAdminProps> = ({
   const { isDirty, isValid } = useFormState({
     control,
   });
+
+  const handleResetPasswordStoreAdmin = async (id: number) => {
+    await resetPasswordStoreAdmin(id);
+  };
 
   useEffect(() => {
     if (user) {
@@ -63,11 +73,21 @@ const DialogEditStoreAdmin: React.FC<DialogEditStoreAdminProps> = ({
   }, [user, reset]);
 
   const onSubmit: SubmitHandler<EditStoreAdmin> = async (data) => {
-    // console.log(data);
-    await updateStoreAdmin(data, userId);
-    refetchUser();
-    refetch();
-    onOpenChange(false);
+    try {
+      await updateStoreAdmin(data, userId);
+      refetchUser();
+      refetch();
+      reset(defaultValues);
+      onOpenChange(false);
+    } catch (error) {
+      if (typeof error === "string") {
+        toast.error(error);
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unknown error occurred");
+      }
+    }
   };
 
   return (
@@ -104,6 +124,13 @@ const DialogEditStoreAdmin: React.FC<DialogEditStoreAdminProps> = ({
               </div>
             </DialogHeader>
             <DialogFooter className="mt-4">
+              <DialogResetPasswordStoreAdmin
+                userId={userId}
+                isReseting={isReseting}
+                handleResetPasswordStoreAdmin={handleResetPasswordStoreAdmin}
+                open={isOpenDialogResetPassword}
+                onOpenChange={setIsOpenDialogResetPassword}
+              />
               <Button
                 disabled={!isDirty || !isValid || isLoading}
                 type="submit"

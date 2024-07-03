@@ -18,8 +18,6 @@ export interface Store {
 
 export interface IFormStore {
   name: string;
-  lat: string;
-  long: string;
   cityId: string;
   storeAdminId?: string;
 }

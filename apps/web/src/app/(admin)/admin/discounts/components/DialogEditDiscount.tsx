@@ -17,7 +17,7 @@ import {
   useForm,
   useFormState,
 } from "react-hook-form";
-
+import { Switch } from "@/components/ui/switch";
 import {
   SchemaDiscount,
   schemaDiscount,
@@ -29,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import useGetProducts from "@/hooks/api/product/useGetProducts";
 import useGetDiscount from "@/hooks/api/discounts/useGetDiscount";
 import useUpdateDiscount from "@/hooks/api/discounts/useUpdateDiscount";
+import { toast } from "sonner";
 
 interface DialogEditDiscountProps {
   discountId: number;
@@ -80,17 +81,29 @@ const DialogEditDiscount: React.FC<DialogEditDiscountProps> = ({
         discountLimit: discount.discountLimit || 0,
         minPurchase: discount.minPurchase || 0,
         productId: discount.productId.toString() || "",
+        isActive: discount.isActive,
       });
     }
   }, [discount, reset]);
 
   const onSubmit: SubmitHandler<SchemaDiscount> = async (data) => {
     const payload = { ...data, storeId: String(discount?.storeId) };
-    await updateDiscount(payload, discountId);
-    refetch();
-    refetchDiscount();
-    reset(defaultValues);
-    onOpenChange(false);
+    // console.log(payload);
+    try {
+      await updateDiscount(payload, discountId);
+      refetchDiscount();
+      refetch();
+      reset(defaultValues);
+      onOpenChange(false);
+    } catch (error) {
+      if (typeof error === "string") {
+        toast.error(error);
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unknown error occurred");
+      }
+    }
   };
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -105,9 +118,7 @@ const DialogEditDiscount: React.FC<DialogEditDiscountProps> = ({
           <form onSubmit={handleSubmit(onSubmit)}>
             <DialogHeader>
               <DialogTitle>Edit Discount</DialogTitle>
-              <DialogDescription>
-                Edit a this discount {discount?.product.name}
-              </DialogDescription>
+              <DialogDescription>Edit a this discount</DialogDescription>
             </DialogHeader>
             <div className="flex flex-col gap-4 py-4">
               <FormInput<SchemaDiscount>
@@ -164,7 +175,20 @@ const DialogEditDiscount: React.FC<DialogEditDiscountProps> = ({
                 placeholder=""
               />
             </div>
-            <DialogFooter>
+            <div className="flex items-center justify-between">
+              <Controller
+                control={control}
+                name="isActive"
+                render={({ field }) => (
+                  <div className="flex items-center gap-4">
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                    <div className="text-xs">Is Still Active ?</div>
+                  </div>
+                )}
+              />
               <Button
                 disabled={!isDirty || !isValid || isLoading}
                 type="submit"
@@ -173,7 +197,7 @@ const DialogEditDiscount: React.FC<DialogEditDiscountProps> = ({
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {isLoading ? "Loading" : "Update"}
               </Button>
-            </DialogFooter>
+            </div>
           </form>
         </FormProvider>
       </DialogContent>

@@ -14,18 +14,15 @@ const useCreateStore = () => {
       const payload = {
         name: data.name,
         cityId: data.cityId,
-        lat: data.lat,
-        long: data.long,
         storeAdminId: String(data.storeAdminId),
       };
 
-      await axiosInstance.post("/stores", payload);
-      toast.success("Store created successfully!");
+      const response = await axiosInstance.post("/stores", payload);
+      toast.success(response.data.message);
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError) {
-        toast.error(error?.response?.data);
-        toast.error(error?.response?.data);
+        throw error.response?.data;
       }
     } finally {
       setIsLoading(false);

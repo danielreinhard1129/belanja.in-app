@@ -4,6 +4,7 @@ import { getStoreAdminsNoStoreService } from '@/services/store-admin/get-store-a
 import { createStoreAdminService } from '@/services/store-admin/create-storeAdmin.service';
 import { NextFunction, Request, Response } from 'express';
 import { updateStoreAdminService } from '@/services/store-admin/update-storeAdmin.service';
+import { updateResetPasswordStoreAdminService } from '@/services/store-admin/update-resetPasswordStoreAdmin.service';
 
 export class StoreAdminController {
   async getStoreAdmins(req: Request, res: Response, next: NextFunction) {
@@ -51,6 +52,23 @@ export class StoreAdminController {
       const result = await updateStoreAdminService(
         Number(id),
         req.body,
+        res.locals.user,
+      );
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updateResetPasswordStoreAdmin(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const id = req.params.id;
+      const result = await updateResetPasswordStoreAdminService(
+        Number(id),
         res.locals.user,
       );
       return res.status(200).send(result);

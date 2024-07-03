@@ -20,14 +20,15 @@ const useUpdateDiscount = () => {
         minPurchase: data.minPurchase,
         productId: Number(data.productId),
         storeId: Number(data.storeId),
+        isActive: data.isActive,
       };
 
-      await axiosInstance.patch(`/discounts/${id}`, payload);
-      toast.success("discount has been updated!");
+      const response = await axiosInstance.patch(`/discounts/${id}`, payload);
+      toast.success(response.data.message);
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError) {
-        toast.error(error?.response?.data);
+        throw error.response?.data;
       }
     } finally {
       setIsLoading(false);

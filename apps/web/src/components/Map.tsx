@@ -24,10 +24,11 @@ const Map = ({
   province: string;
   onLocationSelect: (locationData: any) => void;
 }) => {
-  const [currentPosition, setCurrentPosition] = useState<[number, number] | null>(
-    null
-  );
-  const { getCoordinates, data: coordinatesData } = useGetCoordinatesByLocation();
+  const [currentPosition, setCurrentPosition] = useState<
+    [number, number] | null
+  >(null);
+  const { getCoordinates, data: coordinatesData } =
+    useGetCoordinatesByLocation();
 
   useEffect(() => {
     if (city && province) {

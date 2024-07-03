@@ -23,12 +23,18 @@ export const deleteStoreService = async (storeId: number, user: UserToken) => {
     });
 
     if (!store) {
-      throw new Error('invalid store id');
+      throw new Error('Invalid store id');
     }
 
-    await prisma.store.delete({
+    await prisma.store.update({
       where: { id: storeId },
+      data: {
+        isDelete: true,
+        storeAdminId: null,
+      },
     });
+
+    return { message: 'Delete Store Success' };
   } catch (error) {
     throw error;
   }
