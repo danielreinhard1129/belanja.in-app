@@ -16,7 +16,7 @@ export const UpdateUserDetailsSchema = z.object({
     })
     .optional(),
   email: z.string().email({ message: "Invalid email address" }).optional(),
-  gender: z.string().optional(),
+  gender: z.enum(["Male", "Female", "Prefer not to say"]).optional(),
   birthDate: z.date().optional(),
   avatarUrl: z
     .any()

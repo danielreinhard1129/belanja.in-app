@@ -1,6 +1,6 @@
 "use client";
 
-import axiosInstance from "@/libs/axios";
+import { axiosInstance } from "@/lib/axios";
 import { Address } from "@/types/address.type";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";

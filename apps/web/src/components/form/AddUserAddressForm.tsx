@@ -76,9 +76,6 @@ const AddUserAddressForm: React.FC<AddUserAddressFormProps> = ({ userId }) => {
 
   const handleLocationSelect = (loc: any) => {
     setLocationData(loc);
-    if (locationData) {
-      console.log("locationData", locationData.lat, locationData.long);
-    }
   };
 
   const onSubmit = (values: any) => {
@@ -86,7 +83,6 @@ const AddUserAddressForm: React.FC<AddUserAddressFormProps> = ({ userId }) => {
       const { lat, long } = locationData;
       const dataToSubmit = { ...values, userId, lat, long };
       addUserAddress(dataToSubmit);
-      console.log(dataToSubmit);
     }
   };
 

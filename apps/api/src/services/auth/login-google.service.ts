@@ -58,7 +58,7 @@ export const loginWithGoogleService = async (code: string) => {
     );
 
     return {
-      message: 'Success login by google',
+      message: `Hello ${userInfo.name}`,
       data: newUser || user,
       token,
     };

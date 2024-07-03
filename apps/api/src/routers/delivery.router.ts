@@ -15,7 +15,7 @@ export class DeliveryRouter {
 
   private initializeRoutes(): void {
     this.router.post(
-      '/delivery-fee',
+      '/fee',
       verifyToken,
       this.deliveryController.getDeliveryFeeController,
     );

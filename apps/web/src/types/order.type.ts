@@ -1,6 +1,7 @@
+import { Address } from "./address.type";
 import { Product } from "./product.type";
 import { Store } from "./store.type";
-import { Address, User } from "./user.type";
+import { User } from "./user.type";
 
 export interface IProductArg {
   productId: number;
@@ -54,7 +55,7 @@ export interface IOrder {
   userDiscounts?: UserDiscount;
   userVouchers?: UserVoucher;
   OrderItems: IOrderItem[];
-  payment: IPayment[];
+  Payment: IPayment;
   delivery: IDelivery[];
 }
 

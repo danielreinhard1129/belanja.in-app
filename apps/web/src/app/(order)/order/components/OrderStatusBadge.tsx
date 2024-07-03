@@ -9,7 +9,7 @@ const OrderStatusBadge:FC<{orderStatus: string}> = ({orderStatus}) => {
             {orderStatus == "WAITING_FOR_PAYMENT" ? (
               <Badge
                 variant="outline"
-                className={`flex min-w-[56px] justify-center rounded-sm bg-orange-100 px-1 py-0.5 align-middle text-xs text-orange-600 border-none`}
+                className={`flex min-w-[56px] justify-center rounded-sm bg-amber-100 px-1 py-0.5 align-middle text-xs text-amber-600 border-none`}
               >
                 <p>Waiting for payment</p>
               </Badge>
@@ -30,14 +30,14 @@ const OrderStatusBadge:FC<{orderStatus: string}> = ({orderStatus}) => {
             ) : orderStatus == "ORDER_PROCESSED" ? (
                 <Badge
                 variant="outline"
-                className={`flex min-w-[56px] justify-center rounded-sm bg-orange-100 px-1 py-0.5 align-middle text-xs  text-orange-600 border-none`}
+                className={`flex min-w-[56px] justify-center rounded-sm bg-teal-100 px-1 py-0.5 align-middle text-xs  text-teal-600 border-none`}
               >
                 <p>In packing</p>
               </Badge>
             ) : orderStatus == "ORDER_SHIPPED" ? (
                 <Badge
                 variant="outline"
-                className={`flex min-w-[56px] justify-center rounded-sm bg-orange-100 px-1 py-0.5 align-middle text-xs  text-orange-600 border-none`}
+                className={`flex min-w-[56px] justify-center rounded-sm bg-teal-100 px-1 py-0.5 align-middle text-xs  text-teal-600 border-none`}
               >
                 <p>In delivery</p>
               </Badge>
