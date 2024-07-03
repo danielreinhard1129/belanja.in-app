@@ -1,5 +1,5 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import { persistReducer, persistStore } from "redux-persist";
+import { persistReducer, persistStore, PERSIST } from "redux-persist";
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 import userReducer from "./slices/userSlice";
 
@@ -47,7 +47,9 @@ export const makeStore = () => {
       reducer: persistedReducer,
       middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
-          serializableCheck: false,
+          serializableCheck: {
+            ignoredActions: ["persist/PERSIST"],
+          },
         }),
     });
     (store as any).__persistor = persistStore(store);

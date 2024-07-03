@@ -21,12 +21,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { useState } from "react";
 import Image from "next/image";
 import { appConfig } from "@/utils/config";
+import avatarDefault from "../../../public/default-avatar.png";
+import useGetUser from "@/hooks/api/auth/useGetUser";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 5;
 const ACCEPTED_IMAGE_MIME_TYPES = [
@@ -62,9 +65,10 @@ const FormSchema = z.object({
 type FormData = z.infer<typeof FormSchema>;
 
 const UpdateUserDetailsForm = ({ params }: { params: { id: string } }) => {
-  const { name, email, birthDate, gender, avatarUrl } = useAppSelector(
+  const { name, email, birthDate, gender, id } = useAppSelector(
     (state) => state.user,
   );
+  const { user } = useGetUser(id);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
   const { isLoading, updateUserDetails } = useUpdateUserDetails(
@@ -99,15 +103,28 @@ const UpdateUserDetailsForm = ({ params }: { params: { id: string } }) => {
             />
           </div>
         ) : (
-          <div className="inline-flex items-center justify-between">
-            <div className="flex items-center justify-center bg-slate-200 p-3">
-              <Image
-                src={`${appConfig.baseUrl}/assets${avatarUrl}`}
-                alt="avatar"
-                fill
-                className="object-cover"
-              />
-            </div>
+          <div>
+            {user?.avatarUrl ? (
+              <div className="md:max-w-[200px]">
+                <Image
+                  src={`${appConfig.baseUrl}/assets${user.avatarUrl}`}
+                  alt="avatar"
+                  width={200}
+                  height={200}
+                  className="object-cover"
+                />
+              </div>
+            ) : (
+              <div className="md:max-w-[200px]">
+                <Image
+                  src={avatarDefault}
+                  alt="avatar"
+                  width={200}
+                  height={200}
+                  className="object-cover"
+                />
+              </div>
+            )}
           </div>
         )}
         <FormField
@@ -173,10 +190,35 @@ const UpdateUserDetailsForm = ({ params }: { params: { id: string } }) => {
           control={form.control}
           name="gender"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="space-y-3">
               <FormLabel>Gender</FormLabel>
               <FormControl>
-                <Input type="text" placeholder="Enter your gender" {...field} />
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  defaultValue={field.value || gender}
+                  className="flex flex-col space-y-1"
+                >
+                  <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="Male" />
+                    </FormControl>
+                    <FormLabel className="font-normal">Male</FormLabel>
+                  </FormItem>
+                  <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="Female" />
+                    </FormControl>
+                    <FormLabel className="font-normal">Female</FormLabel>
+                  </FormItem>
+                  <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="Prefer not to say" />
+                    </FormControl>
+                    <FormLabel className="font-normal">
+                      Prefer not to say
+                    </FormLabel>
+                  </FormItem>
+                </RadioGroup>
               </FormControl>
               <FormMessage />
             </FormItem>
