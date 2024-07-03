@@ -24,7 +24,7 @@ const StatusSelect:FC<StatusSelectProps>= ({setValueStatus}) => {
       };
   return (
     <Select onValueChange={(value) => handleSelectStatus(value)}>
-          <SelectTrigger className="w-fit px-4 items-center">
+          <SelectTrigger className=" w-fit px-4 items-center">
             <SelectValue placeholder="Order Status" />
           </SelectTrigger>
           <SelectContent

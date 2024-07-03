@@ -375,7 +375,7 @@ model Order {
   userDiscounts userDiscount? @relation(fields: [userDiscountId], references: [id])
   userVouchers  UserVoucher?  @relation(fields: [userVoucherId], references: [id])
   OrderItems    OrderItems[]
-  Payment       Payment[]
+  Payment       Payment?
   Delivery      Delivery[]
 
   @@map("orders")
@@ -420,7 +420,7 @@ model Payment {
   snapToken       String?
   snapRedirectUrl String?
 
-  orderId Int
+  orderId Int @unique
 
   orders Order @relation(fields: [orderId], references: [id])
 

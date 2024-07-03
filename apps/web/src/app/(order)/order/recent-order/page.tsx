@@ -8,11 +8,14 @@ import useGetCategories from "@/hooks/api/category/useGetCategories";
 import { OrderStatus } from "@/types/order.type";
 import FilterComponent from "./components/FilterComponent";
 import SkeletonOrderCard from "./components/SkeletonOrderCard";
+import { DateRange } from "react-day-picker";
+import { addDays, toDate } from "date-fns";
 
 const RecentOrders = () => {
   const [page, setPage] = useState<number>(1);
   const [orderStatus, setOrderStatus] = useState<OrderStatus | null>(null);
   const [category, setCategory] = useState<string>("all");
+  const [date, setDate] = useState<DateRange | undefined>();
   const { categories } = useGetCategories();
   const { id } = useAppSelector((state) => state.user);
   const {
@@ -24,14 +27,16 @@ const RecentOrders = () => {
     page,
     take: 10,
     status: orderStatus,
-    category
+    category,
+    fromDate: date?.from?.toISOString(),
+    toDate: date?.to?.toISOString()
   });
   const handleChangePaginate = ({ selected }: { selected: number }) => {
     setPage(selected + 1);
   };
   const baseURL = process.env.NEXT_PUBLIC_BASE_API_URL;
 
-  console.log(orders);
+  console.log("ini date", date);
 
   return isLoadingOrders ? (
     // <p className="">Loading...</p>
@@ -45,6 +50,8 @@ const RecentOrders = () => {
         setCategory={setCategory}
         category={category}
         categories={categories}
+        date={date}
+        setDate={setDate}
       />
       <div className="z-0 flex flex-col items-center gap-y-2 p-4">
         Nothing to see here...
@@ -57,6 +64,8 @@ const RecentOrders = () => {
         setCategory={setCategory}
         category={category}
         categories={categories}
+        date={date}
+        setDate={setDate}
       />
       <div className="z-0 flex flex-col gap-y-2 p-4">
         {orders.map((order, i) => {

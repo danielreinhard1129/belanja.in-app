@@ -1,10 +1,8 @@
 import prisma from '@/prisma';
-import { DateRange } from '@/types/date-range.type';
 import { PaginationQueryParams } from '@/types/pagination.type';
 import { OrderStatus, Prisma } from '@prisma/client';
 
 interface GetOrdersQuery extends PaginationQueryParams {
-  id: number;
   search: string;
   status: OrderStatus | undefined;
   category: string;
@@ -12,7 +10,7 @@ interface GetOrdersQuery extends PaginationQueryParams {
   fromDate: string;
 }
 
-export const getOrdersByUserId = async (query: GetOrdersQuery) => {
+export const getAllOrdersService = async (query: GetOrdersQuery) => {
   try {
     const {
       page,
@@ -20,7 +18,6 @@ export const getOrdersByUserId = async (query: GetOrdersQuery) => {
       sortBy,
       sortOrder,
       take,
-      id,
       status,
       category,
       fromDate,
@@ -32,11 +29,9 @@ export const getOrdersByUserId = async (query: GetOrdersQuery) => {
       from: !fromDate ? undefined : new Date(fromDate),
       to: !toDate ? undefined : new Date(toDate),
     };
-    // console.log("ini dari getOrdersService", categoryArgs);
 
     const whereClause: Prisma.OrderWhereInput = {
       status: status,
-      userId: id,
       OrderItems: {
         some: {
           products: {
@@ -65,6 +60,7 @@ export const getOrdersByUserId = async (query: GetOrdersQuery) => {
         },
         stores: { include: { City: true } },
         Payment: true,
+        users: true
       },
     });
     if (!orders) {
