@@ -3,16 +3,17 @@ import { Address } from '@prisma/client';
 
 export const addUserAddressService = async (body: Omit<Address, 'id'>) => {
   try {
-    const { userId } = body;
+    const { userId, postalCode } = body;
     const findAddress = await prisma.address.findMany({
       where: { userId },
     });
 
-    const isPrimary = !findAddress.length
+    const isPrimary = !findAddress.length;
 
     const newAddress = await prisma.address.create({
       data: {
         ...body,
+        postalCode: Number(postalCode),
         isPrimary,
       },
     });

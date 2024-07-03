@@ -13,19 +13,42 @@ export const registerService = async (body: Omit<User, 'id'>) => {
       where: { email },
     });
 
-    if (user) {
+    const checkIsDelete = await prisma.user.findFirst({
+      where: { email, isDelete: true },
+    });
+
+    if (user && !checkIsDelete) {
       throw new Error('email already exist');
     }
 
-    const newUser = await prisma.user.create({
+    let newUser;
+
+    if (!user) {
+      newUser = await prisma.user.create({
       data: {
         ...body,
       },
     });
+    }
 
-    const token = sign({ id: newUser.id || user!.id }, appConfig.jwtSecretKey, {
-      expiresIn: '30m'
-    });
+    if (checkIsDelete) {
+      newUser = await prisma.user.update({
+        where: { id: user?.id },
+        data: {
+          ...body,
+          isDelete: false,
+          isVerified: false,
+        },
+      });
+    }
+
+    const token = sign(
+      { id: Number(newUser!.id) || user!.id },
+      appConfig.jwtSecretKey,
+      {
+        expiresIn: '30m',
+      },
+    );
 
     const link = NEXT_BASE_URL + `/verification?token=${token}`;
 

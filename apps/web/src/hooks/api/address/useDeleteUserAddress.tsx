@@ -1,12 +1,13 @@
 "use client";
 
-import axiosInstance from "@/libs/axios";
 import { AxiosError } from "axios";
 import { useState } from "react";
 import { toast } from "sonner";
+import useAxios from "../useAxios";
 
 const useDeleteUserAddress = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { axiosInstance } = useAxios();
 
   const deleteAddress = async (addressId: number) => {
     try {

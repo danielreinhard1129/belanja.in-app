@@ -26,6 +26,7 @@ model Address {
   lat           Float
   long          Float
   isPrimary     Boolean @default(false)
+  postalCode    Int
   provinceId    Int
   cityId        Int
   subdistrictId Int

@@ -10,7 +10,9 @@ export const getUserService = async (id: number) => {
       throw new Error('user not found');
     }
 
-    return user;
+    const { password, ...userWithoutPassword } = user;
+
+    return userWithoutPassword;
   } catch (error) {
     throw error;
   }

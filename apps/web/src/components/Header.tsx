@@ -78,8 +78,8 @@ export const Header = () => {
                 <Avatar>
                   <AvatarImage
                     src={
-                      (avatarUrl
-                        ? `${appConfig.baseUrl}/assets${avatarUrl}`
+                      (user.avatarUrl
+                        ? `${appConfig.baseUrl}/assets${user.avatarUrl}`
                         : defaultAvatar) as string
                     }
                     alt="avatar"
@@ -129,8 +129,8 @@ export const Header = () => {
                           <div className="relative h-12 w-12 overflow-hidden rounded-full">
                             <Image
                               src={
-                                (avatarUrl
-                                  ? `${appConfig.baseUrl}/assets${avatarUrl}`
+                                (user.avatarUrl
+                                  ? `${appConfig.baseUrl}/assets${user.avatarUrl}`
                                   : defaultAvatar) as string
                               }
                               alt="pfp"
