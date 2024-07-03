@@ -1,7 +1,7 @@
 "use client";
 import Pagination from "@/components/Pagination";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
@@ -17,13 +17,13 @@ import {
 } from "@/components/ui/table";
 import useGetCategories from "@/hooks/api/category/useGetCategories";
 import useGetProductsByFilter from "@/hooks/api/product/useGetProductsByFilter";
-import { ImageIcon } from "lucide-react";
+import { debounce } from "lodash";
+import { Eye, ImageIcon } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import CategorySelect from "./CategorySelect";
-import SearchInput from "./Search";
-import SortOrderSelect from "./SortOrderSelect";
+import React, { useState, useEffect } from "react";
+import CategorySelect from "../CategorySelect";
+import SortOrderSelect from "../SortOrderSelect";
+import DialogDetailProduct from "./DialogDetailProduct";
 
 const StoreAdmin: React.FC = () => {
   const [page, setPage] = useState<number>(1);
@@ -31,6 +31,12 @@ const StoreAdmin: React.FC = () => {
   const [category, setCategory] = useState<string>("all");
   const { categories } = useGetCategories();
   const [sortOrder, setSortOrder] = useState<string>("asc");
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(
+    null,
+  );
+  const [dialogDetailProduct, setDialogDetailProduct] =
+    useState<boolean>(false);
+
   const {
     data: products,
     isLoading,
@@ -45,19 +51,40 @@ const StoreAdmin: React.FC = () => {
     search,
   });
 
+  const handleSearch = debounce((value: string) => {
+    setSearch(value);
+  }, 1500);
+
   const handleChangePaginate = ({ selected }: { selected: number }) => {
     setPage(selected + 1);
   };
 
-  const router = useRouter();
   const total = meta?.total || 0;
   const take = meta?.take || 10;
 
+  const handleOpenDialog = (productId: number) => {
+    setSelectedProductId(productId);
+    setDialogDetailProduct(true);
+  };
+
+  useEffect(() => {
+    if (dialogDetailProduct) {
+      // Logic to fetch or prepare data based on selectedProductId if necessary
+    }
+  }, [selectedProductId, dialogDetailProduct]);
+
   return (
-    <main className="container mx-auto mb-10 max-w-6xl border-2 shadow-xl">
+    <main className="container mx-auto mb-10 max-w-6xl border-2 pb-6 shadow-xl">
       <div className="my-4 flex justify-between">
         <div className="flex gap-4">
-          <SearchInput search={search} setSearch={setSearch} />
+          <Input
+            type="text"
+            placeholder="Search"
+            name="search"
+            onChange={(e) => {
+              handleSearch(e.target.value);
+            }}
+          />
           <CategorySelect
             category={category}
             setCategory={setCategory}
@@ -74,13 +101,21 @@ const StoreAdmin: React.FC = () => {
             <TableHead>Name</TableHead>
             <TableHead>Categories</TableHead>
             <TableHead>Price</TableHead>
+            <TableHead>Weight</TableHead>
+            <TableHead></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {isLoading ? (
             <TableRow>
-              <TableCell colSpan={6} className="text-center text-xs">
+              <TableCell colSpan={7} className="text-center text-xs">
                 Loading...
+              </TableCell>
+            </TableRow>
+          ) : products.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={7} className="text-center text-xs">
+                Data Not Found
               </TableCell>
             </TableRow>
           ) : (
@@ -117,11 +152,22 @@ const StoreAdmin: React.FC = () => {
                 <TableCell>
                   {product.categories.map((categories: any, cti: any) => (
                     <div className="my-1" key={cti}>
-                      <Badge>{categories.category.name}</Badge>
+                      <div className="inline-block rounded-full bg-slate-300 px-2 py-1 text-black">
+                        {categories.category.name}
+                      </div>
                     </div>
                   ))}
                 </TableCell>
                 <TableCell>{product.price}</TableCell>
+                <TableCell>{product.weight}</TableCell>
+                <TableCell>
+                  <div
+                    onClick={() => handleOpenDialog(product.id)}
+                    className="cursor-pointer"
+                  >
+                    <Eye size={18} />
+                  </div>
+                </TableCell>
               </TableRow>
             ))
           )}
@@ -134,6 +180,13 @@ const StoreAdmin: React.FC = () => {
           onChangePage={handleChangePaginate}
         />
       </div>
+      {dialogDetailProduct && selectedProductId !== null && (
+        <DialogDetailProduct
+          open={dialogDetailProduct}
+          onOpenChange={setDialogDetailProduct}
+          productId={selectedProductId}
+        />
+      )}
     </main>
   );
 };

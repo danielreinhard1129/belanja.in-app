@@ -1,24 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import useGetUsers from "@/hooks/api/user/useGetUsers";
-import SearchInput from "../products/components/Search";
-import SortOrderSelect from "../products/components/SortOrderSelect";
 import Pagination from "@/components/Pagination";
-import DialogCreateStoreAdmin from "./components/DialogCreateStoreAdmin";
-import DialogDeleteUser from "./components/DialogDeleteUser";
-import useDeleteUser from "@/hooks/api/user/useDeleteUser";
-import AuthGuardSuperAdmin from "@/hoc/AuthGuardSuperAdmin";
-import DialogEditUser from "./components/DialogEditUser";
-import DialogEditStoreAdmin from "./components/DialogEditStoreAdmin";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -26,7 +8,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import AuthGuardSuperAdmin from "@/hoc/AuthGuardSuperAdmin";
+import useDeleteUser from "@/hooks/api/user/useDeleteUser";
+import useGetUsers from "@/hooks/api/user/useGetUsers";
+import { debounce } from "lodash";
 import { FilePenLine, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import DialogCreateStoreAdmin from "./components/DialogCreateStoreAdmin";
+import DialogDeleteUser from "./components/DialogDeleteUser";
+import DialogEditStoreAdmin from "./components/DialogEditStoreAdmin";
+import DialogEditUser from "./components/DialogEditUser";
 
 const Users = () => {
   const [isOpenDialogCreate, setIsOpenDialogCreate] = useState<boolean>(false);
@@ -51,6 +50,10 @@ const Users = () => {
     sortOrder,
     search,
   });
+
+  const handleSearch = debounce((value: string) => {
+    setSearch(value);
+  }, 1500);
 
   useEffect(() => {
     setPage(1);
@@ -91,7 +94,14 @@ const Users = () => {
                 <SelectItem value="USER">USER</SelectItem>
               </SelectContent>
             </Select>
-            <SearchInput search={search} setSearch={setSearch} />
+            <Input
+              type="text"
+              placeholder="Search"
+              name="search"
+              onChange={(e) => {
+                handleSearch(e.target.value);
+              }}
+            />
           </div>
           <DialogCreateStoreAdmin
             refetch={refetch}
@@ -159,7 +169,6 @@ const Users = () => {
       {selectedUserId !== null && dialogType === "USER" && (
         <DialogEditUser
           userId={selectedUserId}
-          refetch={refetch}
           open={selectedUserId !== null && dialogType === "USER"}
           onOpenChange={(open) => {
             if (!open) {

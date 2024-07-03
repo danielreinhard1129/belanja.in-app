@@ -14,13 +14,20 @@ import useCreateStore from "@/hooks/api/store/useCreateStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Plus } from "lucide-react";
 import { useState } from "react";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import {
-  SchemaCreateStore,
+  FormProvider,
+  SubmitHandler,
+  useForm,
+  useFormState,
+} from "react-hook-form";
+import {
+  SchemaStore,
   defaultValues,
-  schemaCreateStore,
-} from "./schemaCreateStore";
+  schemaStore,
+} from "../validationSchema/schemaStore";
 import useGetStoreAdminNoStore from "@/hooks/api/store-admin/useGetStoreAdminNoStore";
+import useGetCities from "@/hooks/api/store/useGetCities";
+import { toast } from "sonner";
 
 interface AddStoreModalProps {
   refetch: () => void;
@@ -30,27 +37,44 @@ export function AddStoreModal({ refetch }: AddStoreModalProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { createStore, isLoading } = useCreateStore();
   const { storeAdmins } = useGetStoreAdminNoStore();
+  const { cities } = useGetCities();
+  const citiesOptions = cities.map((city) => ({
+    value: city.id.toString(),
+    label: city.citName,
+  }));
   const storeAdminsOptions = storeAdmins.map((storeAdmin) => ({
     value: storeAdmin.id.toString(),
     label: storeAdmin.user.name,
   }));
-  const methods = useForm<SchemaCreateStore>({
+  const methods = useForm<SchemaStore>({
     mode: "all",
-    resolver: zodResolver(schemaCreateStore),
+    resolver: zodResolver(schemaStore),
     defaultValues,
   });
-  const { reset, handleSubmit } = methods;
+  const { reset, handleSubmit, control } = methods;
+  const { isDirty, isValid } = useFormState({
+    control,
+  });
 
   const handleReset = () => {
     reset(defaultValues);
   };
 
-  const onSubmit: SubmitHandler<SchemaCreateStore> = async (data) => {
-    console.log(data);
-    await createStore(data);
-    refetch();
-    reset(defaultValues);
-    setIsOpen(false);
+  const onSubmit: SubmitHandler<SchemaStore> = async (data) => {
+    try {
+      await createStore(data);
+      refetch();
+      reset(defaultValues);
+      setIsOpen(false);
+    } catch (error) {
+      if (typeof error === "string") {
+        toast.error(error);
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unknown error occurred");
+      }
+    }
   };
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -69,31 +93,18 @@ export function AddStoreModal({ refetch }: AddStoreModalProps) {
               </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col gap-4 py-4">
-              <FormInput<SchemaCreateStore>
+              <FormInput<SchemaStore>
                 name="name"
                 label="Name"
                 type="text"
                 placeholder="Your name store"
               />
-              <FormInput<SchemaCreateStore>
+              <FormSelect<SchemaStore>
                 name="cityId"
                 label="City"
-                type="text"
-                placeholder="Your city store"
+                datas={citiesOptions}
               />
-              <FormInput<SchemaCreateStore>
-                name="lat"
-                label="Lat"
-                type="text"
-                placeholder="your store location - lat"
-              />
-              <FormInput<SchemaCreateStore>
-                name="long"
-                label="Long"
-                type="text"
-                placeholder="your store location - long"
-              />
-              <FormSelect<SchemaCreateStore>
+              <FormSelect<SchemaStore>
                 name="storeAdminId"
                 label="Store Admin"
                 datas={storeAdminsOptions}
@@ -101,13 +112,18 @@ export function AddStoreModal({ refetch }: AddStoreModalProps) {
             </div>
             <DialogFooter>
               <Button
+                type="button"
                 variant="secondary"
                 onClick={handleReset}
                 className="px-4 py-2"
               >
                 Reset
               </Button>
-              <Button disabled={isLoading} type="submit" className="px-4 py-2">
+              <Button
+                disabled={!isDirty || !isValid || isLoading}
+                type="submit"
+                className="px-4 py-2"
+              >
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {isLoading ? "Loading" : "Add"}
               </Button>

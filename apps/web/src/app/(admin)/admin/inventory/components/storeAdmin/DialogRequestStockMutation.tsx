@@ -5,43 +5,48 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import useCreateStockMutation from "@/hooks/api/store-product/useCreateStockMutation";
 import useGetProductsByStore from "@/hooks/api/store-product/useGetStoreProductByStore";
+import useRequestStockMutation from "@/hooks/api/store-product/useRequestStockMutation";
 import useGetStores from "@/hooks/api/store/useGetStores";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightLeft, Loader2, SquarePlus, Trash2 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   FormProvider,
-  SubmitHandler,
   useFieldArray,
   useForm,
+  useFormState,
 } from "react-hook-form";
 import {
   SchemaCreateStockMutation,
   defaultValues,
   schemaCreateStockMutation,
-} from "./schemaCreateStockMutation";
+} from "../validationSchema/schemaCreateStockMutation";
+import { toast } from "sonner";
 
-interface DialogStockMutationStoreAdminProps {
+interface DialogRequestStockMutationProps {
   storeId: number;
   refetch: () => void;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-const DialogStockMutationStoreAdmin: React.FC<
-  DialogStockMutationStoreAdminProps
-> = ({ storeId, refetch, open, onOpenChange }) => {
+const DialogRequestStockMutation: React.FC<DialogRequestStockMutationProps> = ({
+  storeId,
+  refetch,
+  open,
+  onOpenChange,
+}) => {
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
   const { products } = useGetProductsByStore(storeId);
-  const { createStockMutation, isLoading } = useCreateStockMutation();
+  const { requestStockMutation, isLoading } = useRequestStockMutation();
   const { stores } = useGetStores();
   const methods = useForm<SchemaCreateStockMutation>({
     mode: "all",
@@ -49,20 +54,17 @@ const DialogStockMutationStoreAdmin: React.FC<
     defaultValues,
   });
   const { reset, handleSubmit, control } = methods;
-
-  const { append, fields, remove } = useFieldArray({
+  const { isDirty, isValid } = useFormState({
     control,
-    name: "stocks",
   });
+  const { append, fields, remove } = useFieldArray({ control, name: "stocks" });
 
   const handleReset = () => {
     reset(defaultValues);
     setSelectedProductIds([]);
   };
 
-  const handleAddStock = () => {
-    append({ productId: "", qty: 0 });
-  };
+  const handleAddStock = () => append({ productId: "", qty: 0 });
 
   const storeOptions = stores.map((store) => ({
     value: store.id.toString(),
@@ -84,7 +86,7 @@ const DialogStockMutationStoreAdmin: React.FC<
 
   const handleRemoveStock = (index: number) => {
     const updatedSelectedProductIds = selectedProductIds.filter(
-      (id, idx) => idx !== index,
+      (_, idx) => idx !== index,
     );
     setSelectedProductIds(updatedSelectedProductIds);
     remove(index);
@@ -94,16 +96,23 @@ const DialogStockMutationStoreAdmin: React.FC<
     (product) => !product.disabled,
   );
 
-  const onSubmit: SubmitHandler<SchemaCreateStockMutation> = async (data) => {
-    console.log(data);
-    await createStockMutation(data, storeId);
-    onOpenChange(false);
-    refetch();
-    reset(defaultValues);
-    setSelectedProductIds([]);
+  const onSubmit = async (data: SchemaCreateStockMutation) => {
+    const payload = { ...data, type: "MUTATION" };
+    try {
+      await requestStockMutation(payload, storeId);
+      refetch();
+      handleReset();
+      onOpenChange(false);
+    } catch (error) {
+      if (typeof error === "string") {
+        toast.error(error);
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unknown error occurred");
+      }
+    }
   };
-
-  console.log(products);
 
   if (!products) {
     return <div>Data Not Found</div>;
@@ -113,14 +122,17 @@ const DialogStockMutationStoreAdmin: React.FC<
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger>
         <div className="flex items-center gap-2">
-          <ArrowRightLeft size={16} /> <span> Mutation</span>
+          <ArrowRightLeft size={16} /> <span>Mutation</span>
         </div>
       </DialogTrigger>
       <DialogContent>
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <DialogHeader>
-              <DialogTitle>Choose store you need to transfer</DialogTitle>
+              <DialogTitle>Request Stock Mutation</DialogTitle>
+              <DialogDescription>
+                Choose store you need to request
+              </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col gap-4 py-4">
               <FormSelect<SchemaCreateStockMutation>
@@ -182,16 +194,20 @@ const DialogStockMutationStoreAdmin: React.FC<
                 </div>
               ))}
             </div>
-
             <DialogFooter>
               <Button
+                type="button"
                 variant="secondary"
                 onClick={handleReset}
                 className="px-4 py-2"
               >
                 Reset
               </Button>
-              <Button disabled={isLoading} type="submit" className="px-4 py-2">
+              <Button
+                disabled={!isDirty || !isValid || isLoading}
+                type="submit"
+                className="px-4 py-2"
+              >
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {isLoading ? "Loading" : "Submit"}
               </Button>
@@ -203,4 +219,4 @@ const DialogStockMutationStoreAdmin: React.FC<
   );
 };
 
-export default DialogStockMutationStoreAdmin;
+export default DialogRequestStockMutation;

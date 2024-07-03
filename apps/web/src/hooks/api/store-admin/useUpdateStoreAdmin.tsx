@@ -27,7 +27,7 @@ const useUpdateStoreAdmin = () => {
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError) {
-        toast.error(error?.response?.data);
+        throw error.response?.data;
       }
     } finally {
       setIsLoading(false);

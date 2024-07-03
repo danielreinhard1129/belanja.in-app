@@ -1,3 +1,16 @@
+interface OrderItem {
+  id: number;
+  qty: number;
+  total: number;
+  discValue: number;
+  originalPrice: number;
+  totalWeight: number | null;
+  orderId: number;
+  productId: number;
+  userDiscountId: number | null;
+  userVoucherId: number | null;
+}
+
 interface Product {
   id: number;
   name: string;
@@ -7,48 +20,22 @@ interface Product {
   isDelete: boolean;
   createdAt: string;
   updatedAt: string;
+  categories?: Category[];
 }
 
-interface City {
-  id: number;
-  provinceId: number;
-  citName: string;
-  postal_code: string;
-  storeId: number | null;
-}
-
-interface Store {
-  id: number;
-  name: string;
-  qty: number;
-  lat: number;
-  long: number;
-  isPrimary: boolean;
-  createdAt: string;
-  updatedAt: string;
-  cityId: number;
-  storeAdminId: number;
-  City: City;
-}
-
-interface OrderItem {
-  id: number;
-  qty: number;
-  total: number;
-  discValue: number;
-  originalPrice: number;
-  totalWeight: number;
-  orderId: number;
+interface Category {
+  categoryId: number;
   productId: number;
-  userDiscountId: number | null;
-  userVoucherId: number | null;
+}
+
+interface OrderItemWithProduct extends OrderItem {
   products: Product;
 }
 
 interface Order {
   id: number;
   totalAmount: number;
-  totalWeight: number;
+  totalWeight: number | null;
   createdAt: string;
   updatedAt: string;
   status: string;
@@ -57,11 +44,17 @@ interface Order {
   userVoucherId: number | null;
   userDiscountId: number | null;
   OrderItems: OrderItem[];
-  stores: Store;
 }
 
-export interface OrderReportResponse {
-  data: Order[];
-  totalSales: number;
-  message: string;
+interface OrderWithProduct extends Order {
+  OrderItems: OrderItemWithProduct[];
+}
+
+export interface SalesReportResponse {
+  salesReport: Order[];
+  salesReportByCategory: OrderWithProduct[];
+  salesReportByProduct: OrderWithProduct[];
+  totalAmountSalesReport: number;
+  totalAmountSalesReportByCategory: number;
+  totalAmountSalesReportByProduct: number;
 }

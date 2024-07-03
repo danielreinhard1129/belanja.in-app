@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -14,13 +13,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { BASE_API_URL } from "@/utils/config";
 import { ImageIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
-import DialogSettingsCategory from "./DialogSettingsCategory";
 import PopoverProductMenu from "./PopoverProductMenu";
-import { BASE_API_URL } from "@/utils/config";
 
 interface ProductTableProps {
   products: any[];
@@ -67,25 +65,22 @@ const ProductTable: React.FC<ProductTableProps> = ({
           <TableHead>No</TableHead>
           <TableHead>Image</TableHead>
           <TableHead>Name</TableHead>
-          <TableHead>
-            <div className="flex items-center gap-2">
-              <DialogSettingsCategory refetch={refetch} />{" "}
-              <span>Categories</span>
-            </div>
-          </TableHead>
+          <TableHead>Categories</TableHead>
           <TableHead>Price</TableHead>
+          <TableHead>Weight</TableHead>
+          <TableHead></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {isLoading ? (
           <TableRow>
-            <TableCell colSpan={6} className="text-center text-xs">
+            <TableCell colSpan={8} className="text-center text-xs">
               Loading...
             </TableCell>
           </TableRow>
         ) : products.length === 0 ? (
           <TableRow>
-            <TableCell colSpan={6} className="text-center text-xs">
+            <TableCell colSpan={8} className="text-center text-xs">
               Data not found
             </TableCell>
           </TableRow>
@@ -129,11 +124,14 @@ const ProductTable: React.FC<ProductTableProps> = ({
               <TableCell>
                 {product.categories.map((categories: any, cti: any) => (
                   <div className="my-1" key={cti}>
-                    <Badge>{categories.category.name}</Badge>
+                    <div className="inline-block rounded-full bg-slate-300 px-2 py-1 text-black">
+                      {categories.category.name}
+                    </div>
                   </div>
                 ))}
               </TableCell>
               <TableCell>{product.price}</TableCell>
+              <TableCell>{product.weight}</TableCell>
               <TableCell>
                 <PopoverProductMenu
                   productId={product.id}

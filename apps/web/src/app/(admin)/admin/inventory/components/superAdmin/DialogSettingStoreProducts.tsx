@@ -1,5 +1,4 @@
 import { FormInput } from "@/components/FormInput";
-import { FormSelect } from "@/components/FormSelect";
 import { FormSelectStock } from "@/components/FormSelectStock";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,43 +19,52 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import useGetProducts from "@/hooks/api/product/useGetProducts";
 import useGetProductsByStore from "@/hooks/api/store-product/useGetStoreProductByStore";
-import useRequestStockMutation from "@/hooks/api/store-product/useRequestStockMutation";
-import useGetStores from "@/hooks/api/store/useGetStores";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRightLeft, Loader2, SquarePlus, Trash2 } from "lucide-react";
-import React, { useState } from "react";
-import { FormProvider, useFieldArray, useForm } from "react-hook-form";
+import { Loader2, Settings2, SquarePlus, Trash2 } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import {
-  SchemaCreateStockMutation,
+  FormProvider,
+  useFieldArray,
+  useForm,
+  useFormState,
+} from "react-hook-form";
+import {
+  SchemaCreateStoreProducts,
   defaultValues,
-  schemaCreateStockMutation,
-} from "./schemaCreateStockMutation";
+  schemaCreateStoreProducts,
+} from "../validationSchema/schemaCreateStoreProducts";
+import { toast } from "sonner";
+import useCreateStockSuperAdmin from "@/hooks/api/store-product/useCreateStockSuperAdmin";
 
-interface DialogStockMutationProps {
+interface DialogSettingStoreProductsProps {
   storeId: number;
   refetch: () => void;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-const DialogStockMutation: React.FC<DialogStockMutationProps> = ({
+const DialogSettingStoreProducts: React.FC<DialogSettingStoreProductsProps> = ({
   storeId,
   refetch,
   open,
   onOpenChange,
 }) => {
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
-  const [activeTab, setActiveTab] = useState("export");
-  const { products } = useGetProductsByStore(storeId);
-  const { requestStockMutation, isLoading } = useRequestStockMutation();
-  const { stores } = useGetStores();
-  const methods = useForm<SchemaCreateStockMutation>({
+  const [activeTab, setActiveTab] = useState("increase");
+  const { products: productsReduce } = useGetProductsByStore(storeId);
+  const { products } = useGetProducts();
+  const { createStockSuperAdmin, isLoading } = useCreateStockSuperAdmin();
+  const methods = useForm<SchemaCreateStoreProducts>({
     mode: "all",
-    resolver: zodResolver(schemaCreateStockMutation),
+    resolver: zodResolver(schemaCreateStoreProducts),
     defaultValues,
   });
   const { reset, handleSubmit, control } = methods;
+  const { isDirty, isValid } = useFormState({
+    control,
+  });
   const { append, fields, remove } = useFieldArray({ control, name: "stocks" });
 
   const handleReset = () => {
@@ -64,15 +72,20 @@ const DialogStockMutation: React.FC<DialogStockMutationProps> = ({
     setSelectedProductIds([]);
   };
 
+  useEffect(() => {
+    reset(defaultValues);
+    setSelectedProductIds([]);
+  }, [storeId, activeTab, reset]);
+
   const handleAddStock = () => append({ productId: "", qty: 0 });
 
-  const storeOptions = stores.map((store) => ({
-    value: store.id.toString(),
-    label: store.name,
-    disabled: store.id === storeId,
+  const productsOptions = products.map((product) => ({
+    value: product.id.toString(),
+    label: product.name,
+    disabled: selectedProductIds.includes(product.id.toString()),
   }));
 
-  const productsOptions = products.map((product) => ({
+  const productsReduceOptions = productsReduce.map((product) => ({
     value: product.id.toString(),
     label: product.name,
     disabled: selectedProductIds.includes(product.id.toString()),
@@ -96,16 +109,29 @@ const DialogStockMutation: React.FC<DialogStockMutationProps> = ({
     (product) => !product.disabled,
   );
 
-  const onSubmit = async (data: SchemaCreateStockMutation) => {
-    const payload = { ...data, type: activeTab };
-    // console.log(payload, storeId);
-    await requestStockMutation(payload, storeId);
-    onOpenChange(false);
-    refetch();
-    handleReset();
+  const isProductsReduceAvailable = productsReduceOptions.some(
+    (product) => !product.disabled,
+  );
+
+  const onSubmit = async (data: SchemaCreateStoreProducts) => {
+    const payload = { ...data, type: activeTab, storeId: String(storeId) };
+    try {
+      await createStockSuperAdmin(payload, storeId);
+      refetch();
+      handleReset();
+      onOpenChange(false);
+    } catch (error) {
+      if (typeof error === "string") {
+        toast.error(error);
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unknown error occurred");
+      }
+    }
   };
 
-  if (!products) {
+  if (!products || !productsReduce) {
     return <div>Data Not Found</div>;
   }
 
@@ -113,43 +139,35 @@ const DialogStockMutation: React.FC<DialogStockMutationProps> = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger>
         <div className="flex items-center gap-2">
-          <ArrowRightLeft size={16} /> <span>Mutation</span>
+          <Settings2 size={16} /> <span>Products</span>
         </div>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-          <DialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </DialogDescription>
+          <DialogTitle>Management Your Store</DialogTitle>
+          <DialogDescription>stock action for your product</DialogDescription>
         </DialogHeader>
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Tabs
-              defaultValue="export"
-              className="mt-4 w-full"
+              defaultValue="increase"
+              className="w-full"
               onValueChange={(value) => setActiveTab(value)}
             >
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="export">Export</TabsTrigger>
-                <TabsTrigger value="import">Import</TabsTrigger>
+                <TabsTrigger value="increase">Increase</TabsTrigger>
+                <TabsTrigger value="decrease">Decrease</TabsTrigger>
               </TabsList>
-              <TabsContent value="export">
+              <TabsContent value="increase">
                 <Card className="p-4">
                   <CardHeader className="ml-4">
-                    <CardTitle>Export</CardTitle>
+                    <CardTitle>Increase</CardTitle>
                     <CardDescription>
-                      Choose store you need to transfer
+                      Choose product you need to increase or add
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="flex flex-col gap-4 py-4">
-                      <FormSelect<SchemaCreateStockMutation>
-                        name="storeId"
-                        label="Store"
-                        datas={storeOptions}
-                      />
                       <div className="flex items-center justify-between gap-4">
                         <Button
                           type="button"
@@ -176,7 +194,7 @@ const DialogStockMutation: React.FC<DialogStockMutationProps> = ({
                           className="grid grid-cols-5 items-center gap-4"
                         >
                           <div className="col-span-2">
-                            <FormSelectStock<SchemaCreateStockMutation>
+                            <FormSelectStock<SchemaCreateStoreProducts>
                               name={`stocks.${index}.productId`}
                               label="Product"
                               datas={productsOptions}
@@ -186,7 +204,7 @@ const DialogStockMutation: React.FC<DialogStockMutationProps> = ({
                             />
                           </div>
                           <div className="col-span-2">
-                            <FormInput<SchemaCreateStockMutation>
+                            <FormInput<SchemaCreateStoreProducts>
                               name={`stocks.${index}.qty`}
                               label=""
                               type="number"
@@ -209,6 +227,7 @@ const DialogStockMutation: React.FC<DialogStockMutationProps> = ({
                   </CardContent>
                   <CardFooter className="flex justify-end gap-2">
                     <Button
+                      type="button"
                       variant="secondary"
                       onClick={handleReset}
                       className="px-4 py-2"
@@ -216,7 +235,7 @@ const DialogStockMutation: React.FC<DialogStockMutationProps> = ({
                       Reset
                     </Button>
                     <Button
-                      disabled={isLoading}
+                      disabled={!isDirty || !isValid || isLoading}
                       type="submit"
                       className="px-4 py-2"
                     >
@@ -228,27 +247,22 @@ const DialogStockMutation: React.FC<DialogStockMutationProps> = ({
                   </CardFooter>
                 </Card>
               </TabsContent>
-              <TabsContent value="import">
+              <TabsContent value="decrease">
                 <Card className="p-4">
                   <CardHeader className="ml-4">
-                    <CardTitle>Import</CardTitle>
+                    <CardTitle>Decrease</CardTitle>
                     <CardDescription>
-                      Choose store you need to request transfer
+                      Choose product you need to decrease
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="flex flex-col gap-4 py-4">
-                      <FormSelect<SchemaCreateStockMutation>
-                        name="storeId"
-                        label="Store"
-                        datas={storeOptions}
-                      />
                       <div className="flex items-center justify-between gap-4">
                         <Button
                           type="button"
                           onClick={handleAddStock}
                           className="px-4 py-2"
-                          disabled={!isProductsAvailable}
+                          disabled={!isProductsReduceAvailable}
                         >
                           <div className="flex items-center justify-between gap-1">
                             <SquarePlus size={20} /> <p>Stock</p>
@@ -258,7 +272,7 @@ const DialogStockMutation: React.FC<DialogStockMutationProps> = ({
                           Select the product and fill in how much you need
                         </Label>
                       </div>
-                      {!isProductsAvailable && (
+                      {!isProductsReduceAvailable && (
                         <div className="text-xs text-red-500">
                           Products are out of stock
                         </div>
@@ -269,17 +283,17 @@ const DialogStockMutation: React.FC<DialogStockMutationProps> = ({
                           className="grid grid-cols-5 items-center gap-4"
                         >
                           <div className="col-span-2">
-                            <FormSelectStock<SchemaCreateStockMutation>
+                            <FormSelectStock<SchemaCreateStoreProducts>
                               name={`stocks.${index}.productId`}
                               label="Product"
-                              datas={productsOptions}
+                              datas={productsReduceOptions}
                               onChange={(productId: string) =>
                                 handleProductChange(productId, index)
                               }
                             />
                           </div>
                           <div className="col-span-2">
-                            <FormInput<SchemaCreateStockMutation>
+                            <FormInput<SchemaCreateStoreProducts>
                               name={`stocks.${index}.qty`}
                               label=""
                               type="number"
@@ -302,6 +316,7 @@ const DialogStockMutation: React.FC<DialogStockMutationProps> = ({
                   </CardContent>
                   <CardFooter className="flex justify-end gap-2">
                     <Button
+                      type="button"
                       variant="secondary"
                       onClick={handleReset}
                       className="px-4 py-2"
@@ -309,7 +324,7 @@ const DialogStockMutation: React.FC<DialogStockMutationProps> = ({
                       Reset
                     </Button>
                     <Button
-                      disabled={isLoading}
+                      disabled={!isDirty || !isValid || isLoading}
                       type="submit"
                       className="px-4 py-2"
                     >
@@ -329,4 +344,4 @@ const DialogStockMutation: React.FC<DialogStockMutationProps> = ({
   );
 };
 
-export default DialogStockMutation;
+export default DialogSettingStoreProducts;

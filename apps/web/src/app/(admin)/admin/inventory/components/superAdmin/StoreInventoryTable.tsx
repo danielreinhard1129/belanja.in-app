@@ -8,48 +8,43 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Stock } from "@/types/stock.type";
 import React from "react";
+import DialogStockActionSuperAdmin from "./DialogStockActionSuperAdmin";
 import PopoverStockRequest from "./PopoverStockRequest";
-import useGetStoreByStoreAdmin from "@/hooks/api/store/useGetStoreByStoreAdmin";
-import { useAppSelector } from "@/redux/hooks";
 
-interface StoreAdminProps {
-  stocks: Stock;
-  stockPage: number;
+interface StoreInventoryTableProps {
+  storeId: number;
+  filteredStocks: any;
+  takeStock: number;
   handleChangePaginateStock: ({ selected }: { selected: number }) => void;
-  search: string;
+  stocks: any;
   refetch: () => void;
-  setSearch: React.Dispatch<React.SetStateAction<string>>;
+  handleSearch: (value: string) => void;
 }
 
-const StoreAdmin: React.FC<StoreAdminProps> = ({
-  stocks,
-  stockPage,
+const StoreInventoryTable: React.FC<StoreInventoryTableProps> = ({
+  storeId,
+  filteredStocks,
+  takeStock,
   handleChangePaginateStock,
-  search,
+  stocks,
   refetch,
-  setSearch,
+  handleSearch,
 }) => {
-  const filteredStocks = stocks?.storeProducts?.data;
-  const { id } = useAppSelector((state) => state.user);
-  const { store } = useGetStoreByStoreAdmin(id);
-  const storeId = store?.id;
-  // console.log(storeId);
-
   return (
-    <main className="container mx-auto my-10 max-w-6xl">
+    <main>
       <h3 className="text-xl font-bold">Store Inventory</h3>
       <div className="mt-4 flex items-center justify-between">
         <Input
           type="text"
           placeholder="Search"
           name="search"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => handleSearch(e.target.value)}
           className="w-[300px]"
         />
-        <PopoverStockRequest refetch={refetch} storeId={Number(storeId)} />
+        <div className="flex justify-between gap-4">
+          <PopoverStockRequest refetch={refetch} storeId={storeId} />
+        </div>
       </div>
       <div className="my-4 mb-10 border-2 p-5 shadow-xl">
         <Table>
@@ -57,22 +52,24 @@ const StoreAdmin: React.FC<StoreAdminProps> = ({
             <TableRow>
               <TableHead className="w-[100px]">No</TableHead>
               <TableHead>Product</TableHead>
+              <TableHead>Product ID</TableHead>
               <TableHead>Quantity</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredStocks && filteredStocks.length > 0 ? (
-              filteredStocks.map((store, index) => (
-                <TableRow key={index}>
-                  <TableCell className="font-medium">{index + 1}</TableCell>
-                  <TableCell>{store.product.name}</TableCell>
-                  <TableCell>{store.qty}</TableCell>
+              filteredStocks.map((data: any, istore: any) => (
+                <TableRow key={istore}>
+                  <TableCell className="font-medium">{istore + 1}</TableCell>
+                  <TableCell>{data.product.name}</TableCell>
+                  <TableCell>{data.product.id}</TableCell>
+                  <TableCell>{data.qty}</TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={3}
+                  colSpan={4}
                   className="border-b px-4 py-2 text-center"
                 >
                   Data Not Found
@@ -90,7 +87,7 @@ const StoreAdmin: React.FC<StoreAdminProps> = ({
         <div className="mx-auto w-fit">
           <Pagination
             total={filteredStocks?.length || 0}
-            take={5}
+            take={takeStock}
             onChangePage={handleChangePaginateStock}
           />
         </div>
@@ -99,4 +96,4 @@ const StoreAdmin: React.FC<StoreAdminProps> = ({
   );
 };
 
-export default StoreAdmin;
+export default StoreInventoryTable;

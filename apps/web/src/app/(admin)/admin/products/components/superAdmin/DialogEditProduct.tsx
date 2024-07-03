@@ -23,9 +23,14 @@ import {
   FormProvider,
   SubmitHandler,
   useForm,
+  useFormState,
 } from "react-hook-form";
-import { TEditProductSchema, editProductSchema } from "./EditProductSchema";
+import {
+  TEditProductSchema,
+  editProductSchema,
+} from "../validationSchema/EditProductSchema";
 import { BASE_API_URL } from "@/utils/config";
+import { toast } from "sonner";
 const Select = dynamic(() => import("react-select"), { ssr: false });
 interface DialogEditProductProps {
   productId: number;
@@ -54,10 +59,19 @@ const DialogEditProduct: React.FC<DialogEditProductProps> = ({
     control,
     formState: { errors },
   } = methods;
+
+  const { isDirty, isValid } = useFormState({
+    control,
+  });
+
   const handleFileChange = (files: FileList | null) => {
     if (files) {
       const newFiles = Array.from(files);
       const allFiles = [...(getValues("images") || []), ...newFiles];
+      if (allFiles.length > 4) {
+        toast.error("You can only upload up to 4 images");
+        return;
+      }
       setValue("images", allFiles);
       setImagePreviews([
         ...imagePreviews,
@@ -109,10 +123,19 @@ const DialogEditProduct: React.FC<DialogEditProductProps> = ({
     }
   }, [product, reset, setValue]);
   const onSubmit: SubmitHandler<TEditProductSchema> = async (data) => {
-    console.log(data);
-    await updateProduct(data);
-    onOpenChange(false);
-    refetch();
+    try {
+      await updateProduct(data);
+      refetch();
+      onOpenChange(false);
+    } catch (error) {
+      if (typeof error === "string") {
+        toast.error(error);
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unknown error occurred");
+      }
+    }
   };
   const { categories } = useGetCategories();
   const categoryOptions = categories.map((category) => ({
@@ -204,7 +227,11 @@ const DialogEditProduct: React.FC<DialogEditProductProps> = ({
               </div>
             </div>
             <DialogFooter className="mt-4 flex justify-end">
-              <Button disabled={isLoading} type="submit" className="px-4 py-2">
+              <Button
+                disabled={!isDirty || !isValid || isLoading}
+                type="submit"
+                className="px-4 py-2"
+              >
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {isLoading ? "Loading" : "Update"}
               </Button>

@@ -25,12 +25,18 @@ import useRequestStockMutation from "@/hooks/api/store-product/useRequestStockMu
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Settings2, SquarePlus, Trash2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { FormProvider, useFieldArray, useForm } from "react-hook-form";
+import {
+  FormProvider,
+  useFieldArray,
+  useForm,
+  useFormState,
+} from "react-hook-form";
 import {
   SchemaCreateStoreProducts,
   defaultValues,
   schemaCreateStoreProducts,
-} from "./schemaCreateStoreProducts";
+} from "../validationSchema/schemaCreateStoreProducts";
+import { toast } from "sonner";
 
 interface DialogSettingStoreProductsProps {
   storeId: number;
@@ -56,6 +62,9 @@ const DialogSettingStoreProducts: React.FC<DialogSettingStoreProductsProps> = ({
     defaultValues,
   });
   const { reset, handleSubmit, control } = methods;
+  const { isDirty, isValid } = useFormState({
+    control,
+  });
   const { append, fields, remove } = useFieldArray({ control, name: "stocks" });
 
   const handleReset = () => {
@@ -106,11 +115,20 @@ const DialogSettingStoreProducts: React.FC<DialogSettingStoreProductsProps> = ({
 
   const onSubmit = async (data: SchemaCreateStoreProducts) => {
     const payload = { ...data, type: activeTab, storeId: String(storeId) };
-    // console.log(payload);
-    await requestStockMutation(payload, storeId);
-    onOpenChange(false);
-    refetch();
-    handleReset();
+    try {
+      await requestStockMutation(payload, storeId);
+      refetch();
+      handleReset();
+      onOpenChange(false);
+    } catch (error) {
+      if (typeof error === "string") {
+        toast.error(error);
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unknown error occurred");
+      }
+    }
   };
 
   if (!products || !productsReduce) {
@@ -126,17 +144,14 @@ const DialogSettingStoreProducts: React.FC<DialogSettingStoreProductsProps> = ({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-          <DialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </DialogDescription>
+          <DialogTitle>Management Your Store</DialogTitle>
+          <DialogDescription>stock action for your product</DialogDescription>
         </DialogHeader>
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Tabs
               defaultValue="increase"
-              className="mt-4 w-full"
+              className="w-full"
               onValueChange={(value) => setActiveTab(value)}
             >
               <TabsList className="grid w-full grid-cols-2">
@@ -212,6 +227,7 @@ const DialogSettingStoreProducts: React.FC<DialogSettingStoreProductsProps> = ({
                   </CardContent>
                   <CardFooter className="flex justify-end gap-2">
                     <Button
+                      type="button"
                       variant="secondary"
                       onClick={handleReset}
                       className="px-4 py-2"
@@ -219,7 +235,7 @@ const DialogSettingStoreProducts: React.FC<DialogSettingStoreProductsProps> = ({
                       Reset
                     </Button>
                     <Button
-                      disabled={isLoading}
+                      disabled={!isDirty || !isValid || isLoading}
                       type="submit"
                       className="px-4 py-2"
                     >
@@ -236,7 +252,7 @@ const DialogSettingStoreProducts: React.FC<DialogSettingStoreProductsProps> = ({
                   <CardHeader className="ml-4">
                     <CardTitle>Decrease</CardTitle>
                     <CardDescription>
-                      Choose product you need to decrease or delete
+                      Choose product you need to decrease
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -253,7 +269,7 @@ const DialogSettingStoreProducts: React.FC<DialogSettingStoreProductsProps> = ({
                           </div>
                         </Button>
                         <Label>
-                          If you want to delete, reduce the quantity to 0
+                          Select the product and fill in how much you need
                         </Label>
                       </div>
                       {!isProductsReduceAvailable && (
@@ -300,6 +316,7 @@ const DialogSettingStoreProducts: React.FC<DialogSettingStoreProductsProps> = ({
                   </CardContent>
                   <CardFooter className="flex justify-end gap-2">
                     <Button
+                      type="button"
                       variant="secondary"
                       onClick={handleReset}
                       className="px-4 py-2"
@@ -307,7 +324,7 @@ const DialogSettingStoreProducts: React.FC<DialogSettingStoreProductsProps> = ({
                       Reset
                     </Button>
                     <Button
-                      disabled={isLoading}
+                      disabled={!isDirty || !isValid || isLoading}
                       type="submit"
                       className="px-4 py-2"
                     >

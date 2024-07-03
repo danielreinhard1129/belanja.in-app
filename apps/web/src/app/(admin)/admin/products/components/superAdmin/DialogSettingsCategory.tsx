@@ -16,14 +16,19 @@ import useDeleteCategory from "@/hooks/api/category/useDeleteCategory";
 import useGetCategories from "@/hooks/api/category/useGetCategories";
 import useUpdateCategory from "@/hooks/api/category/useUpdateCategory";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Edit, Loader2, Settings, Trash } from "lucide-react";
+import { Edit, Loader2, Plus, Trash } from "lucide-react";
 import React, { useState } from "react";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import {
+  FormProvider,
+  SubmitHandler,
+  useForm,
+  useFormState,
+} from "react-hook-form";
 import {
   SchemaCreateCategory,
   defaultValues,
   schemaCreateCategory,
-} from "./schemaCreateCategory";
+} from "../validationSchema/schemaCreateCategory";
 
 interface DialogSettingsCategoryProps {
   refetch: () => void;
@@ -47,7 +52,10 @@ const DialogSettingsCategory: React.FC<DialogSettingsCategoryProps> = ({
     resolver: zodResolver(schemaCreateCategory),
     defaultValues,
   });
-  const { reset, handleSubmit } = methods;
+  const { reset, handleSubmit, control } = methods;
+  const { isDirty, isValid } = useFormState({
+    control,
+  });
 
   const onSubmit: SubmitHandler<SchemaCreateCategory> = async (data) => {
     if (editingCategory && editingCategory.id !== undefined) {
@@ -80,8 +88,11 @@ const DialogSettingsCategory: React.FC<DialogSettingsCategoryProps> = ({
 
   return (
     <Dialog>
-      <DialogTrigger>
-        <Settings size={20} color="black" />
+      <DialogTrigger className="flex items-center justify-between gap-2">
+        <div className="inline-flex h-10 items-center justify-center whitespace-nowrap rounded-md bg-[#ff6100] px-4 py-2 text-sm font-medium text-white ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
+          <Plus />
+          Category
+        </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[350px]">
         <FormProvider {...methods}>
@@ -117,7 +128,7 @@ const DialogSettingsCategory: React.FC<DialogSettingsCategoryProps> = ({
                 Reset
               </Button>
               <Button
-                disabled={isCreating || isUpdating}
+                disabled={!isDirty || !isValid || isCreating || isUpdating}
                 type="submit"
                 className="px-4 py-2"
               >

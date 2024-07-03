@@ -4,14 +4,15 @@ import useGetCategories from "@/hooks/api/category/useGetCategories";
 import useDeleteProduct from "@/hooks/api/product/useDeleteProduct";
 import useDeleteProducts from "@/hooks/api/product/useDeleteProducts";
 import useGetProductsByFilter from "@/hooks/api/product/useGetProductsByFilter";
-import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import CategorySelect from "./CategorySelect";
+import CategorySelect from "../CategorySelect";
 import DeleteManyAlertDialog from "./DeleteManyAlertDialog";
 import DialogCreateProduct from "./DialogCreateProduct";
 import ProductTable from "./ProductTable";
-import SearchInput from "./Search";
-import SortOrderSelect from "./SortOrderSelect";
+import SortOrderSelect from "../SortOrderSelect";
+import { debounce } from "lodash";
+import { Input } from "@/components/ui/input";
+import DialogSettingsCategory from "./DialogSettingsCategory";
 
 const SuperAdmin: React.FC = () => {
   const [selectAll, setSelectAll] = useState<boolean>(false);
@@ -40,6 +41,11 @@ const SuperAdmin: React.FC = () => {
     category,
     search,
   });
+
+  const handleSearch = debounce((value: string) => {
+    setSearch(value);
+  }, 1500);
+
   useEffect(() => {
     // Reset pageCheckboxes when page changes
     setPageCheckboxes({});
@@ -95,15 +101,21 @@ const SuperAdmin: React.FC = () => {
     refetch();
   };
 
-  const router = useRouter();
   const total = meta?.total || 0;
   const take = meta?.take || 10;
 
   return (
-    <main className="container mx-auto mb-10 max-w-6xl border-2 pb-10 shadow-xl">
+    <main className="container mx-auto mb-10 max-w-6xl border-2 pb-6 shadow-xl">
       <div className="my-4 flex justify-between">
         <div className="flex gap-4">
-          <SearchInput search={search} setSearch={setSearch} />
+          <Input
+            type="text"
+            placeholder="Search"
+            name="search"
+            onChange={(e) => {
+              handleSearch(e.target.value);
+            }}
+          />
           <CategorySelect
             category={category}
             setCategory={setCategory}
@@ -111,7 +123,7 @@ const SuperAdmin: React.FC = () => {
           />
           <SortOrderSelect sortOrder={sortOrder} setSortOrder={setSortOrder} />
         </div>
-        <div className="ml-4 flex gap-2">
+        <div className="ml-4 flex items-center gap-2">
           {selectedItems.length > 0 && (
             <DeleteManyAlertDialog
               handleDeletes={handleDeletes}
@@ -119,6 +131,7 @@ const SuperAdmin: React.FC = () => {
               productId={selectedItems}
             />
           )}
+          <DialogSettingsCategory refetch={refetch} />
           <DialogCreateProduct refetch={refetch} />
         </div>
       </div>

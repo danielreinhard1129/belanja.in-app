@@ -11,7 +11,7 @@ export const getStoreBySuperAdminService = async (id: number) => {
     }
 
     const store = await prisma.store.findFirst({
-      where: { storeAdminId: storeAdmin.id },
+      where: { storeAdminId: storeAdmin.id, isDelete: false },
     });
 
     if (!store) {

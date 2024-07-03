@@ -1,20 +1,23 @@
 import { axiosInstance } from "@/libs/axios";
-import { OrderReportResponse } from "@/types/reports.type";
+import { SalesReportResponse } from "@/types/reports.type";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
 interface IGetReportsQuery {
-  year?: string;
+  filterDate?: Date;
+  storeId?: string;
+  productId?: string;
+  categoryId?: string;
 }
 
 const useGetReports = (queries: IGetReportsQuery) => {
-  const [data, setData] = useState<OrderReportResponse | null>(null);
+  const [data, setData] = useState<SalesReportResponse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const getReports = async () => {
     try {
-      const { data } = await axiosInstance.get<OrderReportResponse>(
-        "/orders/reports",
+      const { data } = await axiosInstance.get<SalesReportResponse>(
+        "/orders/reports/sales",
         {
           params: queries,
         },
@@ -32,7 +35,12 @@ const useGetReports = (queries: IGetReportsQuery) => {
 
   useEffect(() => {
     getReports();
-  }, [queries?.year]);
+  }, [
+    queries?.filterDate,
+    queries?.storeId,
+    queries?.productId,
+    queries?.categoryId,
+  ]);
 
   return {
     data,

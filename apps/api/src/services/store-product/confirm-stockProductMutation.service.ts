@@ -19,7 +19,7 @@ export const confirmStockProductMutationService = async (
       throw new Error("Can't find your account");
     }
 
-    if (checkUser.role !== 'SUPERADMIN') throw new Error('Unauthorized access');
+    if (checkUser.role === 'USER') throw new Error('Unauthorized access');
 
     const journal = await prisma.stockJournal.findFirst({
       where: { id },
@@ -49,69 +49,9 @@ export const confirmStockProductMutationService = async (
       : null;
 
     let updatedJournal;
-    if (journal.type === 'MUTATION_EXPORT') {
-      if (!fromStoreProduct) {
-        throw new Error("Can't find fromStoreProduct");
-      }
+    let message = '';
 
-      if (fromStoreProduct.qty < journal.quantity) {
-        throw new Error('Insufficient quantity in fromStore');
-      }
-
-      // Reduce qty from fromStore
-      await prisma.storeProduct.update({
-        where: {
-          id: fromStoreProduct.id,
-        },
-        data: {
-          qty: {
-            decrement: journal.quantity,
-          },
-        },
-      });
-
-      // Add qty to toStore
-      if (toStoreProduct) {
-        await prisma.storeProduct.update({
-          where: {
-            id: toStoreProduct.id,
-          },
-          data: {
-            qty: {
-              increment: journal.quantity,
-            },
-          },
-        });
-      } else {
-        await prisma.storeProduct.create({
-          data: {
-            qty: journal.quantity,
-            storeId: journal.toStoreId!,
-            productId: journal.productId,
-          },
-        });
-      }
-
-      // Update status of stockJournal to 'SUCCESS'
-      updatedJournal = await prisma.stockJournal.update({
-        where: {
-          id: journal.id,
-        },
-        data: {
-          status: 'SUCCESS',
-        },
-      });
-
-      // Optionally, update related JournalDetail records if needed
-      await prisma.journalDetail.updateMany({
-        where: {
-          stockJournalId: journal.id,
-        },
-        data: {
-          // Any specific updates needed for JournalDetail can be added here
-        },
-      });
-    } else if (journal.type === 'MUTATION_IMPORT') {
+    if (journal.type === 'MUTATION') {
       if (!toStoreProduct) {
         throw new Error("Can't find toStoreProduct");
       }
@@ -154,15 +94,17 @@ export const confirmStockProductMutationService = async (
         });
       }
 
-      // Update status of stockJournal to 'SUCCESS'
+      // Update status of stockJournal to 'ON_PROGRESS'
       updatedJournal = await prisma.stockJournal.update({
         where: {
           id: journal.id,
         },
         data: {
-          status: 'SUCCESS',
+          status: 'ON_PROGRESS',
         },
       });
+
+      message = 'Stock Mutation ON_PROGRESS';
     } else if (journal.type === 'INCREASE') {
       // Handle increase type
       const storeProduct = await prisma.storeProduct.findFirst({
@@ -195,15 +137,17 @@ export const confirmStockProductMutationService = async (
         });
       }
 
-      // Update status of stockJournal to 'SUCCESS'
+      // Update status of stockJournal to 'ON_PROGRESS'
       updatedJournal = await prisma.stockJournal.update({
         where: {
           id: journal.id,
         },
         data: {
-          status: 'SUCCESS',
+          status: 'ON_PROGRESS',
         },
       });
+
+      message = 'Stock Increase Product ON_PROGRESS';
     } else if (journal.type === 'DECREASE') {
       // Handle decrease type
       const storeProduct = await prisma.storeProduct.findFirst({
@@ -224,38 +168,31 @@ export const confirmStockProductMutationService = async (
       // Calculate new quantity
       const newQty = storeProduct.qty - journal.quantity;
 
-      if (newQty === 0) {
-        // Delete the storeProduct if quantity is 0
-        await prisma.storeProduct.delete({
-          where: {
-            id: storeProduct.id,
-          },
-        });
-      } else {
-        // Update the quantity of the storeProduct
-        await prisma.storeProduct.update({
-          where: {
-            id: storeProduct.id,
-          },
-          data: {
-            qty: newQty,
-          },
-        });
-      }
+      // Update the quantity of the storeProduct
+      await prisma.storeProduct.update({
+        where: {
+          id: storeProduct.id,
+        },
+        data: {
+          qty: newQty,
+        },
+      });
 
-      // Update status of stockJournal to 'SUCCESS'
+      // Update status of stockJournal to 'ON_PROGRESS'
       updatedJournal = await prisma.stockJournal.update({
         where: {
           id: journal.id,
         },
         data: {
-          status: 'SUCCESS',
+          status: 'ON_PROGRESS',
         },
       });
+
+      message = 'Stock DECREASE Product ON_PROGRESS';
     }
 
     return {
-      message: 'Stock journal updated successfully',
+      message,
       data: updatedJournal,
     };
   } catch (error) {

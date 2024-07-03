@@ -38,7 +38,6 @@ export class OrderRouter {
       verifyToken,
       this.orderController.finishOrderByUserController,
     );
-    this.router.get('/reports', this.orderController.getOrderReportController);
   }
 
   getRouter(): Router {

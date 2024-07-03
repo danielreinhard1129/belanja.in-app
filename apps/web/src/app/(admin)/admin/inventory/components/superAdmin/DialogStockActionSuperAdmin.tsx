@@ -139,13 +139,9 @@ const DialogStockActionSuperAdmin: React.FC<
                           </DialogTrigger>
                           <DialogContent className="sm:max-w-[600px]">
                             <DialogHeader>
-                              <DialogTitle>
-                                Are you absolutely sure?
-                              </DialogTitle>
+                              <DialogTitle>Stock Journal Detail</DialogTitle>
                               <DialogDescription>
-                                This action cannot be undone. This will
-                                permanently delete your account and remove your
-                                data from our servers.
+                                Details of the stock journal.
                               </DialogDescription>
                             </DialogHeader>
                             <div className="grid w-full grid-cols-11">

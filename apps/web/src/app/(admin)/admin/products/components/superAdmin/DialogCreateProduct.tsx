@@ -23,12 +23,14 @@ import {
   FormProvider,
   SubmitHandler,
   useForm,
+  useFormState,
 } from "react-hook-form";
 import {
   TCreateProductSchema,
   createProductSchema,
   defaultValues,
-} from "./CreateProductSchema";
+} from "../validationSchema/CreateProductSchema";
+import { toast } from "sonner";
 
 // Dynamic import for react-select
 const Select = dynamic(() => import("react-select"), { ssr: false });
@@ -56,6 +58,9 @@ const DialogCreateProduct: React.FC<DialogCreateProductProps> = ({
     control,
     formState: { errors },
   } = methods;
+  const { isDirty, isValid } = useFormState({
+    control,
+  });
 
   const handleFileChange = (files: FileList | null) => {
     if (files) {
@@ -63,8 +68,8 @@ const DialogCreateProduct: React.FC<DialogCreateProductProps> = ({
       const existingFiles = getValues("images") || [];
       const allFiles = existingFiles.concat(newFiles);
 
-      if (allFiles.length > 5) {
-        alert("You can only upload up to 5 images");
+      if (allFiles.length > 4) {
+        toast.error("You can only upload up to 4 images");
         return;
       }
       setValue("images", allFiles);
@@ -92,14 +97,21 @@ const DialogCreateProduct: React.FC<DialogCreateProductProps> = ({
     setImagePreviews([]);
   };
 
-  // console.log(getValues("images"));
-
   const onSubmit: SubmitHandler<TCreateProductSchema> = async (data) => {
-    // console.log(data);
-    await createProduct(data);
-    refetch();
-    handleReset();
-    setIsOpen(false);
+    try {
+      await createProduct(data);
+      refetch();
+      handleReset();
+      setIsOpen(false);
+    } catch (error) {
+      if (typeof error === "string") {
+        toast.error(error);
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unknown error occurred");
+      }
+    }
   };
 
   const { categories } = useGetCategories();
@@ -110,7 +122,7 @@ const DialogCreateProduct: React.FC<DialogCreateProductProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger className="flex items-center justify-between gap-2">
-        <div className="inline-flex h-10 items-center justify-center whitespace-nowrap rounded-md bg-orange-600 px-4 py-2 text-sm font-medium text-white ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
+        <div className="inline-flex h-10 items-center justify-center whitespace-nowrap rounded-md bg-[#ff6100] px-4 py-2 text-sm font-medium text-white ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
           <Plus />
           Product
         </div>
@@ -193,13 +205,18 @@ const DialogCreateProduct: React.FC<DialogCreateProductProps> = ({
             </div>
             <DialogFooter className="mt-4 flex justify-end">
               <Button
+                type="button"
                 variant="secondary"
                 onClick={handleReset}
                 className="px-4 py-2"
               >
                 Reset
               </Button>
-              <Button disabled={isLoading} type="submit" className="px-4 py-2">
+              <Button
+                disabled={!isDirty || !isValid || isLoading}
+                type="submit"
+                className="px-4 py-2"
+              >
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {isLoading ? "Loading" : "Create"}
               </Button>

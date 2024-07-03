@@ -1,6 +1,8 @@
+import { arriveStockProductMutationService } from '@/services/store-product/arrive-stockProductMutation.service';
 import { confirmStockProductMutationService } from '@/services/store-product/confirm-stockProductMutation.service';
 import { createRequestStockProductMutationService } from '@/services/store-product/create-requestStockMutation.service';
 import { createStockProductMutationService } from '@/services/store-product/create-stockProductMutation.service';
+import { createStockSuperAdminService } from '@/services/store-product/create-stockSuperAdmin.service';
 import { getProductsByStoreService } from '@/services/store-product/get-productsByStore.service';
 import { getStocksByStoreAdminService } from '@/services/store-product/get-stockByStoreAdmin.service';
 import { getStocksService } from '@/services/store-product/get-stocks.service';
@@ -63,7 +65,10 @@ export class StoreProductController {
     next: NextFunction,
   ) {
     try {
-      const result = await createRequestStockProductMutationService(req.body);
+      const result = await createRequestStockProductMutationService(
+        req.body,
+        res.locals.user,
+      );
 
       return res.status(200).send(result);
     } catch (error) {
@@ -94,6 +99,36 @@ export class StoreProductController {
     try {
       const result = await rejectStockProductMutationService(
         Number(req.params.id),
+        res.locals.user,
+      );
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async arriveStockProductMutation(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const result = await arriveStockProductMutationService(
+        Number(req.params.id),
+        res.locals.user,
+      );
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async createStockSuperAdmin(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await createStockSuperAdminService(
+        req.body,
         res.locals.user,
       );
 

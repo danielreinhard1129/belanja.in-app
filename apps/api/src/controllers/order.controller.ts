@@ -1,7 +1,6 @@
 import { createOrderService } from '@/services/transactions/order/create-order.service';
 import { finishOrderService } from '@/services/transactions/order/finish-order.service';
 import { getOrderService } from '@/services/transactions/order/get-order.service';
-import { getOrderReportService } from '@/services/transactions/order/get-orderReports.service';
 import { getOrdersByUserId } from '@/services/transactions/order/get-orders-byUserId.service';
 import { updateOrderByUserService } from '@/services/transactions/order/update-order-by-user.service';
 import { OrderStatus } from '@prisma/client';
@@ -80,27 +79,6 @@ export class OrderController {
         orderId: parseInt(req.query.orderId as string),
       };
       const result = await getOrderService(query);
-
-      return res.status(200).send(result);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async getOrderReportController(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
-    try {
-      const currentDate = new Date();
-      const query = {
-        year: parseInt(req.params.year as string) || currentDate.getFullYear(),
-        month:
-          parseInt(req.params.month as string) || currentDate.getMonth() + 1, // Bulan dimulai dari 0
-        day: parseInt(req.params.day as string) || currentDate.getDate(),
-      };
-      const result = await getOrderReportService(query);
 
       return res.status(200).send(result);
     } catch (error) {

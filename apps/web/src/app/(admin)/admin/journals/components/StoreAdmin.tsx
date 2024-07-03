@@ -8,6 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -31,12 +32,18 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import useGetStockJournalByStoreAdmin from "@/hooks/api/stock-journal/useGetStockJournalByStoreAdmin";
+import useGetStoreByStoreAdmin from "@/hooks/api/store/useGetStoreByStoreAdmin";
+import { useAppSelector } from "@/redux/hooks";
 import { format } from "date-fns";
+import { debounce } from "lodash";
 import { Eye } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
-import SearchInput from "../../products/components/Search";
+import ImageNotFoundStore from "../../../../../../public/no-store.svg";
 
 const StoreAdmin = () => {
+  const { id } = useAppSelector((state) => state.user);
+  const { store } = useGetStoreByStoreAdmin(id);
   const [page, setPage] = useState<number>(1);
   const [status, setStatus] = useState<string>("all");
   const [search, setSearch] = useState<string>("");
@@ -48,6 +55,10 @@ const StoreAdmin = () => {
       status,
     });
 
+  const handleSearch = debounce((value: string) => {
+    setSearch(value);
+  }, 1500);
+
   const handleChangePaginate = ({ selected }: { selected: number }) => {
     setPage(selected + 1);
   };
@@ -55,17 +66,38 @@ const StoreAdmin = () => {
   const total = meta?.total || 0;
   const take = meta?.take || 10;
 
-  if (!stockJournals) {
-    return <div>Data Not Found</div>;
+  if (!store) {
+    return (
+      <div className="mx-auto flex flex-col items-center justify-center gap-7">
+        <div className="text-center text-xl font-bold">
+          You don&#39;t have any store
+        </div>
+        <div>
+          <Image
+            src={ImageNotFoundStore}
+            alt="ImageNotFoundStore"
+            width={600}
+            height={600}
+            style={{ width: "auto", height: "auto" }}
+            priority
+          />
+        </div>
+      </div>
+    );
   }
 
-  console.log(stockJournals);
-
   return (
-    <main className="container mx-auto mb-10 max-w-6xl border-2 py-5 shadow-xl">
-      <div className="mb-4 flex justify-between">
+    <main className="container mx-auto mb-10 max-w-6xl border-2 pb-6 shadow-xl">
+      <div className="my-4 flex justify-between">
         <div className="w-[300px]">
-          <SearchInput search={search} setSearch={setSearch} />
+          <Input
+            type="text"
+            placeholder="Search"
+            name="search"
+            onChange={(e) => {
+              handleSearch(e.target.value);
+            }}
+          />
         </div>
         <div>
           <Select onValueChange={(value) => setStatus(value)}>
@@ -132,11 +164,9 @@ const StoreAdmin = () => {
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[600px]">
                           <AlertDialogHeader>
-                            <DialogTitle>Are you absolutely sure?</DialogTitle>
+                            <DialogTitle>Stock Journal Detail</DialogTitle>
                             <DialogDescription>
-                              This action cannot be undone. This will
-                              permanently delete your account and remove your
-                              data from our servers.
+                              Details of the stock journal.
                             </DialogDescription>
                           </AlertDialogHeader>
                           <div className="grid w-full grid-cols-11">

@@ -12,7 +12,8 @@ import React, { useState } from "react";
 import { AddStoreModal } from "./AddStoreModal";
 import NotificationIcon from "./NotificationStockSuperAdmin";
 import PopoverStoreMenu from "./PopoverStoreMenu";
-import SearchInput from "./Search";
+import { debounce } from "lodash";
+import { Input } from "@/components/ui/input";
 
 interface StoresProps {
   activeStoreId: string;
@@ -36,6 +37,10 @@ const Stores: React.FC<StoresProps> = ({ onStoreClick, activeStoreId }) => {
     sortOrder: "name",
     search,
   });
+
+  const handleSearch = debounce((value: string) => {
+    setSearch(value);
+  }, 1500);
 
   const handleChangePaginate = ({ selected }: { selected: number }) => {
     setPage(selected + 1);
@@ -65,7 +70,14 @@ const Stores: React.FC<StoresProps> = ({ onStoreClick, activeStoreId }) => {
       <div className="my-4">
         <div className="flex items-center justify-between">
           <div className="w-[300px]">
-            <SearchInput search={search} setSearch={setSearch} />
+            <Input
+              type="text"
+              placeholder="Search"
+              name="search"
+              onChange={(e) => {
+                handleSearch(e.target.value);
+              }}
+            />
           </div>
           <div className="flex items-center justify-between gap-4">
             <NotificationIcon />
