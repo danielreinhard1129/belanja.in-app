@@ -12,6 +12,16 @@ export class AddressRouter {
   }
 
   private initializeRoutes(): void {
+    this.router.get(
+      '/provinces',
+      this.addressController.getProvincesController,
+    );
+    this.router.get('/cities', this.addressController.getCitiesController);
+    this.router.get(
+      '/subdistricts',
+      this.addressController.getSubdistrictsController,
+    );
+    this.router.get('/get-address/:id', this.addressController.getAddressByIdController);
     this.router.get('/:id', this.addressController.getAddressController);
     this.router.post(
       '/add-address',

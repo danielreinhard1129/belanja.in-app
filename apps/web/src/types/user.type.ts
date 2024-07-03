@@ -24,6 +24,7 @@ export interface Address {
   lat: number;
   long: number;
   isPrimary: boolean;
+  postalCode: number;
   provinceId: number;
   cityId: number;
   subdistrictId: number;

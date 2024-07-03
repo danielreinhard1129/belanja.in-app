@@ -1,6 +1,6 @@
 "use client";
 
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
@@ -24,11 +24,10 @@ const Map = ({
   province: string;
   onLocationSelect: (locationData: any) => void;
 }) => {
-  const [currentPosition, setCurrentPosition] = useState<
-    [number, number] | null
-  >(null);
-  const { getCoordinates, data: coordinatesData } =
-    useGetCoordinatesByLocation();
+  const [currentPosition, setCurrentPosition] = useState<[number, number] | null>(
+    null
+  );
+  const { getCoordinates, data: coordinatesData } = useGetCoordinatesByLocation();
 
   useEffect(() => {
     if (city && province) {
@@ -49,6 +48,18 @@ const Map = ({
     const position = marker.getLatLng();
     setCurrentPosition([position.lat, position.lng]);
     onLocationSelect({ lat: position.lat, long: position.lng });
+  };
+
+  const MapUpdater = () => {
+    const map = useMap();
+
+    useEffect(() => {
+      if (currentPosition) {
+        map.setView(currentPosition, map.getZoom());
+      }
+    }, [currentPosition]);
+
+    return null;
   };
 
   return (
@@ -75,6 +86,7 @@ const Map = ({
               <Popup>Drag me to change location.</Popup>
             </Marker>
           )}
+          <MapUpdater />
         </MapContainer>
       )}
     </div>
