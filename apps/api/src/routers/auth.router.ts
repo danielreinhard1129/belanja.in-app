@@ -28,6 +28,7 @@ export class AuthRouter {
     );
     this.router.post(
       '/send-change-password',
+      verifyToken,
       this.authController.sendChangePasswordController,
     );
     this.router.patch(
