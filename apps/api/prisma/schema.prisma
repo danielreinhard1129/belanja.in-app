@@ -143,6 +143,7 @@ model Store {
   isPrimary     Boolean         @default(false)
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
+  isDelete      Boolean?        @default(false)
   cityId        Int
   storeAdminId  Int?            @unique
   storeAdmin    StoreAdmin?     @relation(fields: [storeAdminId], references: [id])
@@ -199,8 +200,10 @@ enum JournalType {
 
 enum JournalStatus {
   WAITING_ADMIN_CONFIRMATION
+  ON_PURCHASE
   SUCCESS
-  CANCELLED
+  REJECTED
+  ON_PROGRESS
 }
 
 model JournalDetail {

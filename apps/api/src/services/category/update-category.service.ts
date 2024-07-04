@@ -33,10 +33,11 @@ export const updateCategoryService = async (
     }
 
     // Update the category
-    await prisma.category.update({
+    const updateCategory = await prisma.category.update({
       where: { id },
       data: { name },
     });
+    return { message: 'Update Category Success', data: updateCategory };
   } catch (error) {
     throw error;
   }

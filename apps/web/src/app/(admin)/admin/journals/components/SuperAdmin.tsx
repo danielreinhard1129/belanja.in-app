@@ -8,6 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -33,9 +34,9 @@ import {
 import useGetStockJournalsByStoreWithParams from "@/hooks/api/stock-journal/useGetStockJournalsByStoreWithParams";
 import useGetStores from "@/hooks/api/store/useGetStores";
 import { format } from "date-fns";
+import { debounce } from "lodash";
 import { Eye } from "lucide-react";
 import { useEffect, useState } from "react";
-import SearchInput from "../../products/components/Search";
 
 const SuperAdmin = () => {
   const [page, setPage] = useState<number>(1);
@@ -56,6 +57,10 @@ const SuperAdmin = () => {
     setPage(1);
   }, [selectedStoreId]);
 
+  const handleSearch = debounce((value: string) => {
+    setSearch(value);
+  }, 1500);
+
   const handleStoreChange = (value: string) => {
     setSelectedStoreId(value);
   };
@@ -74,8 +79,8 @@ const SuperAdmin = () => {
   // console.log(stockJournals);
 
   return (
-    <main className="container mx-auto mb-10 max-w-6xl border-2 py-5 shadow-xl">
-      <div className="flex justify-between">
+    <main className="container mx-auto mb-10 max-w-6xl border-2 pb-6 shadow-xl">
+      <div className="my-4 flex justify-between">
         <div className="flex justify-between gap-4">
           <Select onValueChange={handleStoreChange} defaultValue="all">
             <SelectTrigger className="w-[180px]">
@@ -90,7 +95,14 @@ const SuperAdmin = () => {
               ))}
             </SelectContent>
           </Select>
-          <SearchInput search={search} setSearch={setSearch} />
+          <Input
+            type="text"
+            placeholder="Search"
+            name="search"
+            onChange={(e) => {
+              handleSearch(e.target.value);
+            }}
+          />
         </div>
         <div>
           <Select onValueChange={(value) => setStatus(value)}>
@@ -157,11 +169,9 @@ const SuperAdmin = () => {
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[600px]">
                           <DialogHeader>
-                            <DialogTitle>Are you absolutely sure?</DialogTitle>
+                            <DialogTitle>Stock Journal Detail</DialogTitle>
                             <DialogDescription>
-                              This action cannot be undone. This will
-                              permanently delete your account and remove your
-                              data from our servers.
+                              Details of the stock journal.
                             </DialogDescription>
                           </DialogHeader>
                           <div className="grid w-full grid-cols-11">

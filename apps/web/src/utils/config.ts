@@ -19,6 +19,6 @@ export const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD;
 export const MIDTRANS_PUBLIC_CLIENT = process.env.MIDTRANS_PUBLIC_CLIENT;
 
 export const appConfig = {
-    baseUrl: process.env.NEXT_PUBLIC_BASE_API_URL,
-    baseUrlNext: 'http://localhost:3000',
-  };
+  baseUrl: process.env.NEXT_PUBLIC_BASE_API_URL,
+  baseUrlNext: "http://localhost:3000",
+};

@@ -5,10 +5,14 @@ import { Store } from "@/types/store.type";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
-const useGetStoreByStoreAdmin = (id: number) => {
+const useGetStoreByStoreAdmin = (id: number | null) => {
   const [store, setStore] = useState<Store | null>(null);
 
   useEffect(() => {
+    if (id === null) {
+      return;
+    }
+
     const getStoreByStoreAdmin = async () => {
       try {
         const { data } = await axiosInstance.get<Store>(
@@ -17,7 +21,7 @@ const useGetStoreByStoreAdmin = (id: number) => {
         setStore(data);
       } catch (error) {
         if (error instanceof AxiosError) {
-          console.error("Error fetching product:", error.message);
+          console.error("Error fetching store:", error.message);
         }
       }
     };

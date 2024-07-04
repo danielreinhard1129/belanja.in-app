@@ -22,12 +22,12 @@ const useCreateDiscount = () => {
         storeId: Number(data.storeId),
       };
 
-      await axiosInstance.post("/discounts", payload);
-      toast.success("discount has been created!");
+      const response = await axiosInstance.post("/discounts", payload);
+      toast.success(response.data.message);
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError) {
-        toast.error(error?.response?.data);
+        throw error.response?.data;
       }
     } finally {
       setIsLoading(false);
