@@ -34,14 +34,14 @@ const useUpdateProduct = (productId: number) => {
         updateProductForm.append("images", file);
       });
 
-      await axiosInstance.patch<Product>(
+      const response = await axiosInstance.patch(
         `/products/${productId}`,
         updateProductForm,
       );
-      toast.success("Product updated successfully!");
+      toast.success(response.data.message);
     } catch (error) {
       if (error instanceof AxiosError) {
-        toast.error(error?.response?.data);
+        throw error.response?.data;
       }
     } finally {
       setIsLoading(false);

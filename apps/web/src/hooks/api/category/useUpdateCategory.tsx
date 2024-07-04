@@ -18,8 +18,11 @@ const useUpdateCategory = () => {
         userId: id,
       };
 
-      await axiosInstance.patch(`/categories/${categoryId}`, payload);
-      toast.success("Category updated succesfully");
+      const response = await axiosInstance.patch(
+        `/categories/${categoryId}`,
+        payload,
+      );
+      toast.success(response.data.message);
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError) {

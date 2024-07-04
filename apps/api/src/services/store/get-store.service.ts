@@ -3,11 +3,16 @@ import prisma from '@/prisma';
 export const getStoreService = async (id: number) => {
   try {
     const store = await prisma.store.findFirst({
-      where: { id },
+      where: { id, isDelete: false },
       include: {
         storeAdmin: {
           include: {
             user: true,
+          },
+        },
+        City: {
+          include: {
+            province: true,
           },
         },
       },

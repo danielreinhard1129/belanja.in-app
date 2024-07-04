@@ -17,13 +17,15 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { appConfig } from "@/utils/config";
 import { Separator } from "@/components/ui/separator";
 import defaultAvatar from "../../../../../public/default-avatar.png";
-import { lists, baseClass, listsSuper } from "./helpers";
+import { lists, baseClass, listsSuper, listsNoStore } from "./helpers";
 import Logo from "@/components/Logo";
+import useGetStoreByStoreAdmin from "@/hooks/api/store/useGetStoreByStoreAdmin";
 
 const Navbar = () => {
   const { provider, id, name, email, avatarUrl, role } = useAppSelector(
     (state) => state.user,
   );
+  const { store } = useGetStoreByStoreAdmin(role === "STOREADMIN" ? id : null);
   const router = useRouter();
   const pathname = usePathname();
   const dispatch = useAppDispatch();
@@ -47,31 +49,55 @@ const Navbar = () => {
           </div>
           {role === "STOREADMIN" ? (
             <React.Fragment>
-              {lists.map((item, index) => (
+              {!store
+                ? listsNoStore.map((item, index) => (
+                    <Button
+                      key={index}
+                      variant="secondary"
+                      className={`${baseClass} ${
+                        item.url === pathname
+                          ? "w-full justify-start px-4 py-3"
+                          : "w-full justify-start bg-white px-4 py-3 text-black/50"
+                      }`}
+                      onClick={() => router.replace(item.url)}
+                    >
+                      {item.icon}
+                      {item.name}
+                    </Button>
+                  ))
+                : lists.map((item, index) => (
+                    <Button
+                      key={index}
+                      variant="secondary"
+                      className={`${baseClass} ${
+                        item.url === pathname
+                          ? "w-full justify-start px-4 py-3"
+                          : "w-full justify-start bg-white px-4 py-3 text-black/50"
+                      }`}
+                      onClick={() => router.replace(item.url)}
+                    >
+                      {item.icon}
+                      {item.name}
+                    </Button>
+                  ))}
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              {listsSuper.map((item, index) => (
                 <Button
                   key={index}
                   variant="secondary"
-                  className={`${baseClass} ${item.url === pathname ? "w-full justify-start px-4 py-3" : "w-full justify-start bg-white px-4 py-3 text-black/50"}`}
+                  className={`${baseClass} ${
+                    item.url === pathname
+                      ? "w-full justify-start px-4 py-3"
+                      : "w-full justify-start bg-white px-4 py-3 text-black/50"
+                  }`}
                   onClick={() => router.replace(item.url)}
                 >
                   {item.icon}
                   {item.name}
                 </Button>
               ))}
-            </React.Fragment>
-          ) : (
-            <React.Fragment>
-              {listsSuper.map((item, index) => (
-            <Button
-              key={index}
-              variant="secondary"
-              className={`${baseClass} ${item.url === pathname ? "w-full justify-start px-4 py-3" : "w-full justify-start bg-white px-4 py-3 text-black/50"}`}
-              onClick={() => router.replace(item.url)}
-            >
-              {item.icon}
-              {item.name}
-            </Button>
-          ))}
             </React.Fragment>
           )}
         </div>

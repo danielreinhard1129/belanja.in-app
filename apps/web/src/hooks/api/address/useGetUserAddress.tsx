@@ -12,7 +12,9 @@ const useGetUserAddress = (userId: number) => {
   const getUserAddress = async () => {
     try {
       setIsLoading(true);
-      const { data } = await axiosInstance.get<AddressData>(`/address/${userId}`);
+      const { data } = await axiosInstance.get<AddressData>(
+        `/address/${userId}`,
+      );
 
       setAddresses(data);
     } catch (error) {
@@ -27,7 +29,7 @@ const useGetUserAddress = (userId: number) => {
   useEffect(() => {
     getUserAddress();
   }, [userId]);
-  return { isLoading, addresses, refetch: getUserAddress };
+  return { isLoading, addresses, refetch: getUserAddress, setAddresses };
 };
 
 export default useGetUserAddress;

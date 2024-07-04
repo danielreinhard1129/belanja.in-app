@@ -21,7 +21,10 @@ export class AddressRouter {
       '/subdistricts',
       this.addressController.getSubdistrictsController,
     );
-    this.router.get('/get-address/:id', this.addressController.getAddressByIdController);
+    this.router.get(
+      '/get-address/:id',
+      this.addressController.getAddressByIdController,
+    );
     this.router.get('/:id', this.addressController.getAddressController);
     this.router.post(
       '/add-address',

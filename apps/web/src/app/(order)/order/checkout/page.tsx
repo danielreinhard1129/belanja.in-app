@@ -71,6 +71,8 @@ const Checkout = () => {
   // }, 2000);
   // console.log("ini totalweight", totalWeight);
 
+  
+
   if (!carts || !carts.length) {
     return (
       <div className="container mx-auto flex flex-col h-screen items-center justify-center text-2xl font-semibold gap-y-2">

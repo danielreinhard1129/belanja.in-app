@@ -2,7 +2,7 @@
 
 import { axiosInstance } from "@/lib/axios";
 import { CourierService } from "@/types/rajaongkir-response.type";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
 interface DeliveryArgs {
@@ -19,7 +19,7 @@ const useGetDeliveryFee = (payload: DeliveryArgs) => {
       console.log("execute", payload);
 
       const { data } = await axiosInstance.post<CourierService[]>(
-        "delivery/delivery-fee", {payload}
+        "/delivery/fee", {payload}
 
       );
       setData(data);

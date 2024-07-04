@@ -19,7 +19,7 @@ export const rejectStockProductMutationService = async (
     }
 
     // Memeriksa apakah pengguna memiliki hak akses
-    if (checkUser.role !== 'SUPERADMIN') {
+    if (checkUser.role === 'USER') {
       throw new Error('Unauthorized access');
     }
 
@@ -42,7 +42,7 @@ export const rejectStockProductMutationService = async (
     });
 
     return {
-      message: 'Stock journal updated successfully',
+      message: 'Stock mutation rejected',
       data: updatedJournal,
     };
   } catch (error) {
