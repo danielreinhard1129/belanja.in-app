@@ -69,7 +69,7 @@ const Checkout = () => {
       userId: id,
       storeId: 1,
       deliveryFee: String(deliveryFee),
-      addressId: selectedAddress?.cityId!,
+      addressId: selectedAddress?.id!,
       paymentMethod: PaymentMethodArgs.DIGITAL_PAYMENT,
       deliveryCourier: selectedShipping?.name,
       deliveryService: selectedMethod?.description
