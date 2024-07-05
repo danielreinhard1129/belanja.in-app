@@ -11,6 +11,10 @@ interface IGetProductsQuery {
   page?: number;
   sortBy?: string;
   sortOrder?: string;
+  lat?: number;
+  long?: number;
+  search?: string;
+  category?: string;
 }
 
 const useGetProductsByLocation = (queries: IGetProductsQuery) => {
@@ -38,7 +42,7 @@ const useGetProductsByLocation = (queries: IGetProductsQuery) => {
 
   useEffect(() => {
     getProducts();
-  }, [queries.page, queries.sortOrder]);
+  }, [queries.page, queries.sortOrder, queries.lat, queries.long]);
   return { data, isLoading, meta, refetch: getProducts };
 };
 

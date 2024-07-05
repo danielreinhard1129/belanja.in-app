@@ -16,6 +16,7 @@ import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTrigger } from "@/co
 import { useEffect, useState } from "react";
 import Logo from "./Logo";
 import useGetUser from "@/hooks/api/auth/useGetUser";
+import { googleLogout } from "@react-oauth/google";
 
 export const Header = () => {
   const router = useRouter();
@@ -24,19 +25,30 @@ export const Header = () => {
   const [hideHeader, setHideHeader] = useState(false);
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const { user, isLoading } = useGetUser(id);
-
-  const { logout } = useGoogleAuth();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const userLogout = () => {
     dispatch(logoutAction());
     localStorage.removeItem("Authorization");
     localStorage.removeItem("token");
+    setIsLoggedIn(false);
     router.replace("/");
+  };
+
+  const logout = () => {
+    googleLogout();
+    localStorage.removeItem("Authorization");
+    dispatch(logoutAction());
+    setIsLoggedIn(false);
+    router.push("/");
   };
 
   const scrollThreshold = 40;
 
   useEffect(() => {
+    const checkHeader = localStorage.getItem("Authorization");
+    setIsLoggedIn(!!checkHeader);
+
     const handleScroll = () => {
       const currentScrollTop =
         window.pageYOffset || document.documentElement.scrollTop;
@@ -64,7 +76,7 @@ export const Header = () => {
       <div className="container mx-auto flex h-20 items-center justify-between p-0 px-6 py-2">
         <Logo />
         <div className="flex items-center gap-2 md:gap-6">
-          {user && !isLoading ? (
+          {isLoggedIn && user && !isLoading ? (
             <div className="flex items-center gap-10">
               <div
                 className="hidden cursor-pointer items-center gap-2 hover:underline md:flex"

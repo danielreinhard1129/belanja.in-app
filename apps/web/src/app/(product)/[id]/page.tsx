@@ -5,7 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import useGetProduct from "@/hooks/api/product/useGetProduct";
 import { appConfig } from "@/utils/config";
 import Image from "next/image";
-import { notFound } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import ProductSkeleton from "./components/ProductSkeleton";
 import { Badge } from "@/components/ui/badge";
 import useGetCartsById from "@/hooks/api/cart/useGetCartById";
@@ -15,7 +15,8 @@ import useAddToCart from "@/hooks/api/cart/useAddToCart";
 import { Card, CardContent } from "@/components/ui/card";
 import defaultStore from "../../../../public/default.png";
 import { Separator } from "@/components/ui/separator";
-import { MapPin } from "lucide-react";
+import { MapPin, ShoppingBag } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const ProductPage = ({ params }: { params: { id: string } }) => {
   const { id: userId } = useAppSelector((state) => state.user);
@@ -23,12 +24,15 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
   const { addToCart } = useAddToCart();
   const { product, isLoading } = useGetProduct(Number(params.id));
   const [selectedImage, setSelectedImage] = useState(0);
+  const router = useRouter();
 
   const handleAddToCart = async () => {
     await addToCart(product?.id, 1);
     refetchCart();
   };
-  console.log(carts);
+  const handleNonRegistered = () => {
+    router.push("/login");
+  };
 
   if (isLoading) {
     return <ProductSkeleton />;
@@ -40,8 +44,8 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
 
   return (
     <div className="container flex h-screen flex-col px-0 pt-20 md:flex-row md:pt-28">
-      <div className="relative w-full md:w-1/2">
-        <div className="relative aspect-square overflow-hidden rounded-none md:rounded-3xl">
+      <div className="relative flex w-full flex-col gap-4 md:w-3/5 md:flex-row">
+        <div className="relative aspect-square w-[100vw] overflow-hidden rounded-none md:h-[700px] md:w-[700px] md:rounded-3xl">
           {product ? (
             <Image
               src={`${appConfig.baseUrl}/assets${product?.images[selectedImage].images}`}
@@ -53,17 +57,18 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
             <Skeleton className="h-full w-full" />
           )}
         </div>
-        <div className="absolute right-3 top-3 grid h-80 w-20 grid-rows-4 gap-2 opacity-50 transition-opacity duration-500 hover:opacity-100 md:right-10 md:top-10 md:h-28 md:w-28 md:px-0">
+        <div className="flex w-fit flex-row gap-4 self-center md:w-40 md:flex-col md:self-start md:px-0">
           {product?.images.map((image, index) => (
             <div
               key={index}
-              className="relative col-span-1 aspect-square cursor-pointer overflow-hidden rounded-lg"
+              className="aspect-square w-20 cursor-pointer overflow-hidden rounded-lg opacity-50 transition-opacity duration-500 hover:opacity-100 md:rounded-3xl"
               onClick={() => setSelectedImage(index)}
             >
               <Image
                 src={`${appConfig.baseUrl}/assets${image.images}`}
                 alt={`product-${index + 1}`}
-                fill
+                height={1000}
+                width={1000}
                 className="object-cover"
               />
             </div>
@@ -73,11 +78,8 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
       <div className="w-full space-y-3 px-4 pt-4 md:w-1/2 md:px-0 md:pl-20 md:pt-0">
         {product?.categories
           .filter((category) => category.productId === product.id)
-          .map((category) => (
-            <Badge
-              key={category.categoryId}
-              className="bg-[#FF6100] text-xs font-normal"
-            >
+          .map((category, index) => (
+            <Badge key={index} className="bg-[#FF6100] text-xs font-normal">
               {category.category.name}
             </Badge>
           ))}
@@ -96,18 +98,20 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
         <div className="flex gap-3">
           {product?.storeProduct
             .filter((storeProduct) => storeProduct.productId === product.id)
-            .map((storeProduct) => (
-              <p className="text-sm text-black/60">Stock: {storeProduct.qty}</p>
+            .map((storeProduct, index) => (
+              <p key={index} className="text-sm text-black/60">
+                Stock: {storeProduct.qty}
+              </p>
             ))}
           <p className="text-sm text-black/60">Weight: {product?.weight}gr</p>
         </div>
-        <p className="line-clamp-2 text-sm text-black/60">
+        <p className="line-clamp-5 text-sm text-black/60">
           {product?.description}
         </p>
         {product?.storeProduct
           .filter((storeProduct) => storeProduct.productId === product.id)
-          .map((storeProduct) => (
-            <Card className="rounded-lg">
+          .map((storeProduct, index) => (
+            <Card key={index} className="rounded-lg">
               <CardContent className="space-y-4 p-3">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10">
@@ -122,7 +126,9 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
                   <MapPin size={16} className="mt-[2px]" />
                   <div>
                     <p className="text-sm">Store Location</p>
-                    <p className="text-sm font-medium">{storeProduct.store.City.citName}</p>
+                    <p key={index} className="text-sm font-medium">
+                      {storeProduct.store.City.citName}
+                    </p>
                   </div>
                 </div>
               </CardContent>
@@ -130,21 +136,41 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
           ))}
         <div className="pb-20 md:pb-10"></div>
         <div className="hidden md:flex">
-          <AddToCartButton
-            carts={carts}
-            handleAddToCart={handleAddToCart}
-            productId={product?.id}
-          />
+          {userId !== 0 ? (
+            <AddToCartButton
+              carts={carts}
+              handleAddToCart={handleAddToCart}
+              productId={product?.id}
+            />
+          ) : (
+            <Button
+              onClick={handleNonRegistered}
+              className="flex w-full gap-3 bg-[#FF6100] px-2 py-3 text-white"
+            >
+              <ShoppingBag size={20} />
+              Add to Cart
+            </Button>
+          )}
         </div>
       </div>
 
       {/* BOTTOM NAV */}
       <div className="fixed bottom-0 flex h-20 w-full items-center justify-between self-center rounded-none border-t bg-white px-3 md:hidden">
-        <AddToCartButton
-          carts={carts}
-          handleAddToCart={handleAddToCart}
-          productId={product?.id}
-        />
+        {userId !== 0 ? (
+          <AddToCartButton
+            carts={carts}
+            handleAddToCart={handleAddToCart}
+            productId={product?.id}
+          />
+        ) : (
+          <Button
+            onClick={handleNonRegistered}
+            className="flex w-full gap-3 bg-[#FF6100] px-2 py-3 text-white"
+          >
+            <ShoppingBag size={20} />
+            Add to Cart
+          </Button>
+        )}
       </div>
     </div>
   );
