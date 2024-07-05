@@ -1,6 +1,7 @@
 import { AxiosError } from "axios";
 import React, { useEffect } from "react";
 import useAxios from "../useAxios";
+import { toast } from "sonner";
 
 const useFinishOrderByUser = () => {
   const { axiosInstance } = useAxios();
@@ -13,10 +14,10 @@ const useFinishOrderByUser = () => {
         {orderId},
         
       );
-      alert(data.message);
+      toast.success(data.message);
     } catch (error) {
       if (error instanceof AxiosError) {
-        alert(error.message);
+        toast.error(error.message);
       }
     }
   };

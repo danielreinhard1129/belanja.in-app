@@ -17,6 +17,14 @@ export const deleteUserService = async (id: number, user: userToken) => {
 
     if (checkUser.role !== 'SUPERADMIN') throw new Error('Unauthorized access');
 
+    const checkUserExist = await prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!checkUserExist) {
+      throw new Error("Can't find this account");
+    }
+
     const users = await prisma.user.update({
       where: { id },
       data: {

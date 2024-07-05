@@ -8,7 +8,9 @@ interface GetStoresByParams extends PaginationQueryParams {
 export const getStoresByParamsService = async (query: GetStoresByParams) => {
   const { take, page, search } = query;
 
-  const where: { name?: { contains: string } } = {};
+  const where: { isDelete: boolean; name?: { contains: string } } = {
+    isDelete: false,
+  };
 
   if (search) {
     where.name = {

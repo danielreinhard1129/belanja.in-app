@@ -10,8 +10,8 @@ const useDeleteCategory = () => {
   const deleteCategory = async (categoryId: number) => {
     setIsLoading(true);
     try {
-      await axiosInstance.delete(`/categories/${categoryId}`);
-      toast.success("Category deleted succesfully");
+      const response = await axiosInstance.delete(`/categories/${categoryId}`);
+      toast.success(response.data.message);
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError) {

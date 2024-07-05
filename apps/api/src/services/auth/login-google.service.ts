@@ -50,7 +50,7 @@ export const loginWithGoogleService = async (code: string) => {
     }
 
     const token = sign(
-      { id: newUser ? Number(newUser.id) : undefined },
+      { id: newUser?.id || user?.id },
       appConfig.jwtSecretKey,
       {
         expiresIn: '2h',
@@ -58,7 +58,7 @@ export const loginWithGoogleService = async (code: string) => {
     );
 
     return {
-      message: 'Success login by google',
+      message: `Hello ${userInfo.name}`,
       data: newUser || user,
       token,
     };

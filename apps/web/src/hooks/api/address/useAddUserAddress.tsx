@@ -1,6 +1,6 @@
 "use client";
 
-import axiosInstance from "@/libs/axios";
+import { axiosInstance } from "@/lib/axios";
 import { Address } from "@/types/address.type";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
@@ -14,10 +14,7 @@ const useAddUserAddress = (userId: number) => {
   const addUserAddress = async (payload: Address) => {
     try {
       setIsLoading(true);
-      const { data } = await axiosInstance.post(
-        `/address/add-address`,
-        payload,
-      );
+      const { data } = await axiosInstance.post(`/addresses`, payload);
 
       toast.success(`${data.message}`);
       router.push(`/user/${userId}`);

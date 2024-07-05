@@ -1,18 +1,17 @@
 "use client";
 
-import axiosInstance from "@/libs/axios";
 import { AxiosError } from "axios";
 import { useState } from "react";
 import { toast } from "sonner";
+import useAxios from "../useAxios";
 
 const useDeleteUserAddress = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { axiosInstance } = useAxios();
 
   const deleteAddress = async (addressId: number) => {
     try {
-      setIsLoading(true);
-
-      await axiosInstance.delete(`/address/${addressId}`);
+      await axiosInstance.delete(`/addresses/${addressId}`);
       toast.success("Address deleted successfully!");
     } catch (error) {
       if (error instanceof AxiosError) {

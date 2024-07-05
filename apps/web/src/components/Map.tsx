@@ -1,6 +1,6 @@
 "use client";
 
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
@@ -51,6 +51,18 @@ const Map = ({
     onLocationSelect({ lat: position.lat, long: position.lng });
   };
 
+  const MapUpdater = () => {
+    const map = useMap();
+
+    useEffect(() => {
+      if (currentPosition) {
+        map.setView(currentPosition, map.getZoom());
+      }
+    }, [currentPosition]);
+
+    return null;
+  };
+
   return (
     <div className="h-96">
       {currentPosition && (
@@ -75,6 +87,7 @@ const Map = ({
               <Popup>Drag me to change location.</Popup>
             </Marker>
           )}
+          <MapUpdater />
         </MapContainer>
       )}
     </div>

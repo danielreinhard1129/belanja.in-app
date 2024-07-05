@@ -1,8 +1,8 @@
 "use client";
 
-import axiosInstance from "@/libs/axios";
+import { axiosInstance } from "@/lib/axios";
 import { Province } from "@/types/address.type";
-import { IPaginationMeta, IPaginationQueries } from "@/types/pagination.type";
+import { IPaginationQueries } from "@/types/pagination.type";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
@@ -15,7 +15,7 @@ const useGetProvinces = (queries: IGetProvincesQuery) => {
   const getProvinces = async () => {
     try {
       setIsLoading(true);
-      const { data } = await axiosInstance.get("/address/provinces", {
+      const { data } = await axiosInstance.get("/addresses/provinces", {
         params: queries,
       });
 

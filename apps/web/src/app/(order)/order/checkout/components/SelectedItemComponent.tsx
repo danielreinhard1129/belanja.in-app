@@ -53,7 +53,7 @@ const SelectedItemComponent: FC<SelectedItemsProps> = ({
           <Image
             alt="Product"
             fill
-            src={`${url}assets/${cart.products.images[0].images}`}
+            src={`${url}/assets${cart.products.images[0].images}`}
             className="object-cover"
           />
         </div>

@@ -12,19 +12,20 @@ export class AddressRouter {
   }
 
   private initializeRoutes(): void {
-    this.router.get('/:id', this.addressController.getAddressController);
-    this.router.post(
-      '/add-address',
-      this.addressController.addAddressController,
+    this.router.get(
+      '/provinces',
+      this.addressController.getProvincesController,
     );
-    this.router.patch(
-      '/update-address/:id',
-      this.addressController.updateAddressController,
+    this.router.get('/cities', this.addressController.getCitiesController);
+    this.router.get(
+      '/subdistricts',
+      this.addressController.getSubdistrictsController,
     );
-    this.router.delete(
-      '/delete-address/:id',
-      this.addressController.deleteAddressController,
-    );
+    this.router.get('/:id', this.addressController.getAddressByIdController);
+    this.router.get('/user/:id', this.addressController.getAddressesController);
+    this.router.post('/', this.addressController.addAddressController);
+    this.router.patch('/:id', this.addressController.updateAddressController);
+    this.router.delete('/:id', this.addressController.deleteAddressController);
   }
 
   getRouter(): Router {

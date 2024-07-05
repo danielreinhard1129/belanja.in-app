@@ -1,6 +1,6 @@
 "use client";
 
-import axiosInstance from "@/libs/axios";
+import { axiosInstance } from "@/lib/axios";
 import { City } from "@/types/address.type";
 import { IPaginationMeta, IPaginationQueries } from "@/types/pagination.type";
 import { AxiosError } from "axios";
@@ -16,7 +16,7 @@ const useGetCities = (queries: IGetCitiesQuery) => {
 
   const getCities = async () => {
     try {
-      const { data } = await axiosInstance.get("/address/cities", {
+      const { data } = await axiosInstance.get("/addresses/cities", {
         params: queries,
       });
 

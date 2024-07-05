@@ -8,8 +8,8 @@ export const FormSchema = z.object({
     .min(2, {
       message: "Address must be at least 2 characters.",
     }),
-  postalCode: z.number({
-    required_error: "City is required",
+  postalCode: z.string({
+    required_error: "Postal code is required",
   }),
   cityId: z.number({
     required_error: "City is required",
