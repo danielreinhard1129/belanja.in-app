@@ -75,8 +75,8 @@ export class AuthController {
     next: NextFunction,
   ) {
     try {
-      const userId = Number(res.locals.user.id);
-      const result = await sendChangePasswordService(userId);
+      const id = Number(res.locals.user.id);
+      const result = await sendChangePasswordService(id);
 
       return res.status(200).send(result);
     } catch (error) {

@@ -9,7 +9,7 @@ import { updateUserAddressService } from '@/services/address/update-user-address
 import { NextFunction, Request, Response } from 'express';
 
 export class AddressController {
-  async getAddressController(req: Request, res: Response, next: NextFunction) {
+  async getAddressesController(req: Request, res: Response, next: NextFunction) {
     try {
       const id = req.params.id;
       const result = await getUserAddressService(Number(id));

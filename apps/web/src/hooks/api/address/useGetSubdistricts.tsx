@@ -16,7 +16,7 @@ const useGetSubdistricts = (queries: IGetSubdistrictsQuery) => {
 
   const getSubdistricts = async () => {
     try {
-      const { data } = await axiosInstance.get("/address/subdistricts", {
+      const { data } = await axiosInstance.get("/addresses/subdistricts", {
         params: queries,
       });
 

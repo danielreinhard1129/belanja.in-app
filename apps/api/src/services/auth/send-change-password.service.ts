@@ -4,10 +4,10 @@ import prisma from '@/prisma';
 import { appConfig } from '@/utils/config';
 import { sign } from 'jsonwebtoken';
 
-export const sendChangePasswordService = async (userId: number) => {
+export const sendChangePasswordService = async (id: number) => {
   try {
     const user = await prisma.user.findFirst({
-      where: { id: userId },
+      where: { id },
     });
 
     if (!user) {

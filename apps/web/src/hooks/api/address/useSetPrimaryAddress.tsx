@@ -14,7 +14,7 @@ const useSetPrimaryAddress = (addressId: number, userId: number) => {
     try {
       setIsLoading(true);
       const response = await axiosInstance.patch(
-        `/address/update-address/${addressId}`,
+        `/addresses/${addressId}`,
         payload,
       );
 

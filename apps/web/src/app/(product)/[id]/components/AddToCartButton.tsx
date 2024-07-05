@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { ICart, IOrder, OrderStatus } from "@/types/order.type";
+import { ShoppingBag } from "lucide-react";
 
 interface AddToCartButtonProps {
   carts: ICart[];
@@ -25,11 +26,16 @@ const AddToCartButton: FC<AddToCartButtonProps> = ({ carts, handleAddToCart, pro
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button
-          className="h-8 bg-orange-200 px-4 py-2 text-orange-600  "
+          className="bg-[#FF6100] px-2 py-3 w-full text-white "
           variant={"outline"}
           disabled={isProductExist}
         >
-          {!isProductExist ? "+ Cart" : "Product is in cart"}
+          {!isProductExist ? (
+            <div className="flex gap-4">
+              <ShoppingBag size={20} />
+              Add to Cart
+            </div>
+          ) : "Product is in cart"}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
