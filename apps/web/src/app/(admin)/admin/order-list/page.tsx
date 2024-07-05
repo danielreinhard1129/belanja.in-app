@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import OrderTable from "./components/OrderTable";
 import useGetAllUserOrders from "@/hooks/api/transaction/useGetAllUserOrders";
 import useGetOrderDetailsByAdmin from "@/hooks/api/transaction/useGetOrderDetailsByAdmin";
-import FilterComponent from "@/app/(order)/order/recent-order/components/FilterComponent";
+import FilterComponent from "@/app/(order)/recent-orders/components/FilterComponent";
 import { OrderStatus } from "@/types/order.type";
 import useGetCategories from "@/hooks/api/category/useGetCategories";
 import { DateRange } from "react-day-picker";

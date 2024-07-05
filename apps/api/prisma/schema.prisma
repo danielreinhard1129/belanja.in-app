@@ -197,6 +197,7 @@ enum JournalType {
   INCREASE @map("INCREASE")
   DECREASE @map("DECREASE")
   PURCHASE @map("PURCHASE")
+  REFUND @map("REFUND")
 }
 
 enum JournalStatus {

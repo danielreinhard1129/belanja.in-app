@@ -1,7 +1,19 @@
+import {
+  MIDTRANS_CLIENT_KEY,
+  MIDTRANS_SERVER_KEY,
+  NEXT_BASE_URL,
+} from '@/config';
 import { calculateProductDiscount } from '@/lib/calculateProductDiscount';
 import prisma from '@/prisma';
 import { IOrderArgs, PaymentMethodArgs } from '@/types/order.type';
-import { Discount, Product, UserVoucher, userDiscount } from '@prisma/client';
+import {
+  Discount,
+  Prisma,
+  Product,
+  UserVoucher,
+  userDiscount,
+} from '@prisma/client';
+import { MidtransClient } from 'midtrans-node-client';
 
 export const createOrderService = async (body: IOrderArgs) => {
   const {
@@ -14,7 +26,7 @@ export const createOrderService = async (body: IOrderArgs) => {
     deliveryFee,
     paymentMethod,
     deliveryService,
-    deliveryCourier
+    deliveryCourier,
   } = body;
 
   try {
@@ -270,25 +282,56 @@ export const createOrderService = async (body: IOrderArgs) => {
         storeId,
         status: 'PENDING',
         deliveryService,
-        deliveryCourier
+        deliveryCourier,
       },
     });
 
-    const newInvoice = await prisma.payment.create({
-      data: {
-        amount: order.totalAmount,
-        invoiceNumber,
-        paymentMethod:
-          paymentMethod === PaymentMethodArgs.DIGITAL_PAYMENT
-            ? null
-            : paymentMethod === PaymentMethodArgs.MANUAL_TRANSFER
-              ? 'MANUAL_TRANSFER'
-              : null,
-        orderId: order.id,
-      },
-    });
+    if (paymentMethod === PaymentMethodArgs.DIGITAL_PAYMENT) {
+      const snap = new MidtransClient.Snap({
+        isProduction: false,
+        clientKey: MIDTRANS_CLIENT_KEY,
+        serverKey: MIDTRANS_SERVER_KEY,
+      });
+      const payload: {
+        transaction_details: {
+          order_id: string;
+          gross_amount: number;
+        };
+        callback: { finish: string; error: string; pending: string };
+      } = {
+        transaction_details: {
+          order_id: order.orderNumber,
+          gross_amount: order.totalAmount + newDelivery.deliveryFee,
+        },
+        callback: {
+          finish: `${NEXT_BASE_URL}/order/order-details/${order.id}`,
+          error: `${NEXT_BASE_URL}/order/order-details/${order.id}`,
+          pending: `${NEXT_BASE_URL}/order/order-details/${order.id}`,
+        },
+      };
+      const transaction = await snap.createTransaction(payload);
 
-    
+      const newInvoice = await prisma.payment.create({
+        data: {
+          amount: order.totalAmount + newDelivery.deliveryFee,
+          invoiceNumber,
+          paymentMethod: null,
+          orderId: order.id,
+          snapToken: transaction.token,
+          snapRedirectUrl: transaction.redirect_url,
+        },
+      });
+    } else {
+      const newInvoice = await prisma.payment.create({
+        data: {
+          amount: order.totalAmount + newDelivery.deliveryFee,
+          invoiceNumber,
+          paymentMethod: 'MANUAL_TRANSFER',
+          orderId: order.id,
+        },
+      });
+    }
+
     const newJournal = await Promise.all(
       order.OrderItems.map(async (val) => {
         await prisma.stockJournal.create({
@@ -304,6 +347,34 @@ export const createOrderService = async (body: IOrderArgs) => {
         });
       }),
     );
+
+    for (const orderItem of order.OrderItems) {
+      // Find the storeProduct for the current productId and storeId
+      const storeProduct = await prisma.storeProduct.findUnique({
+        where: {
+          storeId_productId: {
+            storeId: order.storeId,
+            productId: orderItem.productId,
+          },
+        },
+      });
+
+      if (!storeProduct) {
+        throw new Error(
+          `StoreProduct not found for storeId: ${order.storeId} and productId: ${orderItem.productId}`,
+        );
+      }
+
+      // Update the storeProduct quantity
+      const updatedStoreProduct = await prisma.storeProduct.update({
+        where: { id: storeProduct.id },
+        data: {
+          qty: {
+            decrement: orderItem.qty, // Decrease qty by orderItem.qty
+          },
+        },
+      });
+    }
 
     await prisma.cart.updateMany({
       where: { userId },

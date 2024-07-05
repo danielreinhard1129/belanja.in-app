@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/table";
 import { EllipsisIcon } from "lucide-react";
 import { IOrder } from "@/types/order.type";
-import OrderStatusBadge from "@/app/(order)/order/components/OrderStatusBadge";
+import OrderStatusBadge from "@/app/(order)/components/OrderStatusBadge";
 import OrderDetailDialog from "./OrderDetailDialog";
 import Pagination from "@/components/Pagination";
 import { IPaginationMeta } from "@/types/pagination.type";

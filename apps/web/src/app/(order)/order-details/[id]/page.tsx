@@ -9,6 +9,9 @@ import ProductDetailsCard from "./components/ProductDetailsCard";
 import useFinishOrderByUser from "@/hooks/api/transaction/useFinishOrderByUser";
 import FinishOrderDialog from "./components/FinishOrderDialog";
 import GridItem from "./components/GridItems";
+import { Button } from "@/components/ui/button";
+import { MIDTRANS_PUBLIC_CLIENT } from "@/utils/config";
+import { useEffect } from "react";
 
 const OrderDetails = ({ params }: { params: { id: string } }) => {
   const {
@@ -30,6 +33,55 @@ const OrderDetails = ({ params }: { params: { id: string } }) => {
     refetchOrder();
   };
   const baseURL = process.env.NEXT_PUBLIC_BASE_API_URL;
+
+  useEffect(() => {
+    const snapScript = "https://app.sandbox.midtrans.com/snap/snap.js"
+    const clientKey = MIDTRANS_PUBLIC_CLIENT
+
+    const script = document.createElement('script')
+    script.src = snapScript
+    script.setAttribute('data-client-key', clientKey || '')
+    script.async = true
+
+    document.body.appendChild(script)
+
+    return () => {
+      document.body.removeChild(script)
+    }
+  }, [])
+
+  const handlePayment = async () => {
+    try {
+      if (!isLoadingOrder && order) {
+        if (window.snap) {
+          window.snap.pay(`${order.Payment.snapToken}`, {
+            onSuccess: function (result: any) {
+              alert('Payment success!');
+              console.log(result);
+            },
+            onPending: function (result: any) {
+              alert('Waiting for your payment!');
+              console.log(result);
+            },
+            onError: function (result: any) {
+              alert('Payment failed!');
+              console.log(result);
+            },
+            onClose: function () {
+              alert('Close Kah?');
+            },
+          });
+        } else {
+          alert('Snap is not loaded yet. Please try again.');
+        }
+      }
+
+    } catch (error) {
+      alert('Payment Error!')
+
+    }
+  }
+
 
   return isLoadingOrder || !order ? (
     <p className="">Loading...</p>
@@ -101,28 +153,46 @@ const OrderDetails = ({ params }: { params: { id: string } }) => {
       <Separator className="h-1" />
       <div className="p-4">
         <h4 className="font-semibold">Payment Details</h4>
-        <div className="grid w-full grid-cols-8 items-center justify-center gap-y-2 py-2 align-middle text-xs">
-          <GridItem
-            label="Payment Method"
-            value={
-              !order.Payment.paymentMethod
+        <div className="flex w-full flex-col gap-y-2 py-2 text-xs">
+          <div className="flex items-center justify-between">
+            <p>Payment Method</p>
+            <p>
+              {!order.Payment.paymentMethod
                 ? "Belum bayar"
-                : order.Payment.paymentMethod
-            }
-          />
-          <GridItem label="Purchase Total" value={order.totalAmount} />
-          <GridItem
-            label="Delivery fee"
-            value={order.Delivery[0].deliveryFee}
-          />
+                : order.Payment.paymentMethod}
+            </p>
+          </div>
+          <div className="flex items-center justify-between">
+            <p>Purchase Total</p>
+            <p>{order.totalAmount}</p>
+          </div>
+          <div className="flex items-center justify-between">
+            <p>Delivery fee</p>
+            <p>{order.Delivery[0].deliveryFee}</p>
+          </div>
+
           {order.Payment.paymentMethod === "MANUAL_TRANSFER" ? (
-            <GridItem
-              label="Payment proof"
-              value={!order.Payment.paymentProof? "No payment proof found": <>See payment proof</>}
-            />
+            <div className="flex items-center justify-between">
+              <p>Payment proof</p>
+              <p>
+                {!order.Payment.paymentProof ? (
+                  "No payment proof found"
+                ) : (
+                  <>See payment proof</>
+                )}
+              </p>
+            </div>
           ) : null}
+          <Separator />
+          <div className="flex items-center justify-between text-lg font-semibold">
+          <p>Total</p>
+          <p>{order.Delivery[0].deliveryFee + order.totalAmount}</p>
+          </div>
         </div>
       </div>
+      <Separator className="h-1" />
+      <div className="p-4"><Button className="w-full px-4 py-2" onClick={handlePayment}>Pay</Button></div>
+      <Separator className="h-1 mb-4" />
 
       <div className="flex justify-center gap-x-4">
         <CancelOrderDialog order={order} handleDelete={handleCancelOrder} />

@@ -70,7 +70,7 @@ const Checkout = () => {
       storeId: 1,
       deliveryFee: String(deliveryFee),
       addressId: selectedAddress?.cityId!,
-      paymentMethod: PaymentMethodArgs.MANUAL_TRANSFER,
+      paymentMethod: PaymentMethodArgs.DIGITAL_PAYMENT,
       deliveryCourier: selectedShipping?.name,
       deliveryService: selectedMethod?.description
     });
