@@ -53,7 +53,7 @@ const Users = () => {
 
   const handleSearch = debounce((value: string) => {
     setSearch(value);
-  }, 1500);
+  }, 300);
 
   useEffect(() => {
     setPage(1);
@@ -168,6 +168,7 @@ const Users = () => {
       </div>
       {selectedUserId !== null && dialogType === "USER" && (
         <DialogEditUser
+          refetch={refetch}
           userId={selectedUserId}
           open={selectedUserId !== null && dialogType === "USER"}
           onOpenChange={(open) => {

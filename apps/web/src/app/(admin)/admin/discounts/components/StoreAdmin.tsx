@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { formatToRupiah } from "@/utils/formatCurrency";
 import {
   Table,
   TableBody,
@@ -128,10 +129,10 @@ const DiscountsStoreAdmin = () => {
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>{discount.title}</TableCell>
                   <TableCell>{discount.discountType}</TableCell>
-                  <TableCell>{discount.discountvalue}</TableCell>
+                  <TableCell>{discount.discountvalue} %</TableCell>
                   <TableCell>{discount.discountLimit}</TableCell>
                   <TableCell>{discount.product.name}</TableCell>
-                  <TableCell>{discount.minPurchase}</TableCell>
+                  <TableCell>{formatToRupiah(discount.minPurchase)}</TableCell>
                   <TableCell>
                     {discount.isActive ? (
                       <Check style={{ color: "green" }} />

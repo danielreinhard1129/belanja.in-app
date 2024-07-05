@@ -11,6 +11,9 @@ import {
 import React from "react";
 import DialogStockActionSuperAdmin from "./DialogStockActionSuperAdmin";
 import PopoverStockRequest from "./PopoverStockRequest";
+import { Ban, Check } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import useUpdateIsActiveStoreProduct from "@/hooks/api/store-product/useUpdateIsActiveStoreProduct";
 
 interface StoreInventoryTableProps {
   storeId: number;
@@ -31,6 +34,14 @@ const StoreInventoryTable: React.FC<StoreInventoryTableProps> = ({
   refetch,
   handleSearch,
 }) => {
+  const { updateIsActiveStoreProduct } = useUpdateIsActiveStoreProduct();
+  const handleUpdateIsActive = async (
+    isActive: boolean,
+    storeProductId: number,
+  ) => {
+    await updateIsActiveStoreProduct(isActive, storeProductId);
+    refetch();
+  };
   return (
     <main>
       <h3 className="text-xl font-bold">Store Inventory</h3>
@@ -54,6 +65,7 @@ const StoreInventoryTable: React.FC<StoreInventoryTableProps> = ({
               <TableHead>Product</TableHead>
               <TableHead>Product ID</TableHead>
               <TableHead>Quantity</TableHead>
+              <TableHead>Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -64,12 +76,20 @@ const StoreInventoryTable: React.FC<StoreInventoryTableProps> = ({
                   <TableCell>{data.product.name}</TableCell>
                   <TableCell>{data.product.id}</TableCell>
                   <TableCell>{data.qty}</TableCell>
+                  <TableCell>
+                    <Switch
+                      checked={data.isActive}
+                      onCheckedChange={(checked) =>
+                        handleUpdateIsActive(checked, data.id)
+                      }
+                    />
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={4}
+                  colSpan={5}
                   className="border-b px-4 py-2 text-center"
                 >
                   Data Not Found

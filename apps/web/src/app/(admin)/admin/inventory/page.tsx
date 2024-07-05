@@ -24,7 +24,7 @@ const Inventory = () => {
 
   const handleSearch = debounce((value: string) => {
     setSearch(value);
-  }, 1500);
+  }, 300);
 
   const handleStoreClick = (storeId: number) => {
     setActiveStoreId(storeId.toString());

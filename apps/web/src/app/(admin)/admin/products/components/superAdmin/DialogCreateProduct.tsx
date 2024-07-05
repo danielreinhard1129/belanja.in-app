@@ -12,7 +12,6 @@ import { Label } from "@/components/ui/label";
 // import Select from 'react-select';
 import { FormInput } from "@/components/FormInput";
 import ImageUploader from "@/components/FormInputImages";
-import useGetCategories from "@/hooks/api/category/useGetCategories";
 import useCreateProduct from "@/hooks/api/product/useCreateProduct";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Plus } from "lucide-react";
@@ -25,22 +24,24 @@ import {
   useForm,
   useFormState,
 } from "react-hook-form";
+import { toast } from "sonner";
 import {
   TCreateProductSchema,
   createProductSchema,
   defaultValues,
 } from "../validationSchema/CreateProductSchema";
-import { toast } from "sonner";
 
 // Dynamic import for react-select
 const Select = dynamic(() => import("react-select"), { ssr: false });
 
 interface DialogCreateProductProps {
   refetch: () => void;
+  categories: { id: number; name: string }[];
 }
 
 const DialogCreateProduct: React.FC<DialogCreateProductProps> = ({
   refetch,
+  categories,
 }) => {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -114,7 +115,6 @@ const DialogCreateProduct: React.FC<DialogCreateProductProps> = ({
     }
   };
 
-  const { categories } = useGetCategories();
   const categoryOptions = categories.map((category) => ({
     value: category.id.toString(),
     label: category.name,

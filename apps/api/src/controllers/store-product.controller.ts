@@ -7,6 +7,7 @@ import { getProductsByStoreService } from '@/services/store-product/get-products
 import { getStocksByStoreAdminService } from '@/services/store-product/get-stockByStoreAdmin.service';
 import { getStocksService } from '@/services/store-product/get-stocks.service';
 import { rejectStockProductMutationService } from '@/services/store-product/reject-stockProductMutation.service';
+import { updateIsActiveStockSuperAdminService } from '@/services/store-product/update-isActiveStockSuperAdmin.service';
 import { NextFunction, Request, Response } from 'express';
 export class StoreProductController {
   async getStocks(req: Request, res: Response, next: NextFunction) {
@@ -128,6 +129,24 @@ export class StoreProductController {
   async createStockSuperAdmin(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await createStockSuperAdminService(
+        req.body,
+        res.locals.user,
+      );
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updateIsActiveStockSuperAdmin(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const result = await updateIsActiveStockSuperAdminService(
+        Number(req.params.id),
         req.body,
         res.locals.user,
       );

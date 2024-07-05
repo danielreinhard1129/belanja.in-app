@@ -38,6 +38,7 @@ export class StockJournalRouter {
       verifyToken,
       this.stockJournalController.updateStockJournalsSuperAdminNotifications,
     );
+    this.router.get('/:id', this.stockJournalController.getStockJournalById);
   }
 
   getRouter(): Router {

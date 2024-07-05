@@ -30,7 +30,9 @@ export const getDiscountsBySuperAdminService = async (
     throw new Error('You do not have access');
   }
 
-  let where: any = {};
+  let where: any = {
+    isDelete: false,
+  };
 
   if (storeId && storeId !== 'all') {
     where.storeId = Number(storeId);

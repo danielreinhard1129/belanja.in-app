@@ -12,11 +12,8 @@ export class ReportController {
     try {
       const query = {
         storeId: (req.query.storeId as string) || undefined,
-        categoryId: (req.query.categoryId as string) || undefined,
-        productId: (req.query.productId as string) || undefined,
-        filterDate: req.query.filterDate
-          ? new Date(req.query.filterDate as string)
-          : undefined,
+        filterMonth: req.query.filterMonth as string,
+        filterYear: req.query.filterYear as string,
       };
       const result = await getSalesReportService(query, res.locals.user);
 
@@ -35,7 +32,8 @@ export class ReportController {
       const query = {
         storeId: (req.query.storeId as string) || undefined,
         categoryId: (req.query.categoryId as string) || undefined,
-        month: (req.params.date as string) || '',
+        filterMonth: req.query.filterMonth as string,
+        filterYear: req.query.filterYear as string,
       };
       const result = await getSalesReportByCategoryService(
         query,
@@ -56,7 +54,8 @@ export class ReportController {
       const query = {
         storeId: (req.query.storeId as string) || undefined,
         productId: (req.query.productId as string) || undefined,
-        month: (req.params.date as string) || '',
+        filterMonth: req.query.filterMonth as string,
+        filterYear: req.query.filterYear as string,
       };
       const result = await getSalesReportByProductService(
         query,
