@@ -15,7 +15,7 @@ const useGetProvinces = (queries: IGetProvincesQuery) => {
   const getProvinces = async () => {
     try {
       setIsLoading(true);
-      const { data } = await axiosInstance.get("/address/provinces", {
+      const { data } = await axiosInstance.get("/addresses/provinces", {
         params: queries,
       });
 

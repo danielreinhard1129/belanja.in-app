@@ -2,6 +2,7 @@ import { createProductService } from '@/services/product/create-product.service'
 import { deleteManyProductsService } from '@/services/product/delete-many.product.service';
 import { deleteProductService } from '@/services/product/delete-product.service';
 import { getProductService } from '@/services/product/get-product.service';
+import { getProductsByLocationService } from '@/services/product/get-products-by-location.service';
 import { getProductsService } from '@/services/product/get-products.service';
 import { getProductsByParamsService } from '@/services/product/get-productsByParams.service';
 import { updateProductService } from '@/services/product/update-product.service';
@@ -101,6 +102,27 @@ export class ProductController {
       });
     } catch (error) {
       next(error);
+    }
+  }
+  
+  async getProductsByLocationController(req: Request, res: Response, next: NextFunction) {
+    try {
+      const {lat, long, radius} = req.query;
+      const query = {
+        lat: parseFloat(lat as string),
+        long: parseFloat(long as string),
+        radius: parseFloat(radius as string) || 10,
+        take: parseInt(req.query.take as string) || 8,
+        page: parseInt(req.query.page as string) || 1,
+        sortBy: (req.query.sortBy as string) || 'name',
+        sortOrder: (req.query.sortOrder as string) || 'desc',
+      };
+
+      const result = await getProductsByLocationService(query)
+
+      return res.status(200).send(result)
+    } catch (error) {
+      next(error)
     }
   }
 }

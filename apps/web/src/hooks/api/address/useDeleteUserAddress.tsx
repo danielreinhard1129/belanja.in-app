@@ -11,9 +11,7 @@ const useDeleteUserAddress = () => {
 
   const deleteAddress = async (addressId: number) => {
     try {
-      setIsLoading(true);
-
-      await axiosInstance.delete(`/address/${addressId}`);
+      await axiosInstance.delete(`/addresses/${addressId}`);
       toast.success("Address deleted successfully!");
     } catch (error) {
       if (error instanceof AxiosError) {

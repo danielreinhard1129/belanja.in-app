@@ -1,4 +1,5 @@
 "use client";
+import { formatToRupiah } from "@/utils/formatCurrency";
 import {
   Select,
   SelectContent,
@@ -109,11 +110,11 @@ const DiscountsSuperAdmin = () => {
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>{discount.title}</TableCell>
                   <TableCell>{discount.discountType}</TableCell>
-                  <TableCell>{discount.discountvalue}</TableCell>
+                  <TableCell>{discount.discountvalue} %</TableCell>
                   <TableCell>{discount.discountLimit}</TableCell>
                   <TableCell>{discount.store.name}</TableCell>
                   <TableCell>{discount.product.name}</TableCell>
-                  <TableCell>{discount.minPurchase}</TableCell>
+                  <TableCell>{formatToRupiah(discount.minPurchase)}</TableCell>
                   <TableCell>
                     {discount.isActive ? (
                       <Check style={{ color: "green" }} />

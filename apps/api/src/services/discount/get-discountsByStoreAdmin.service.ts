@@ -55,6 +55,7 @@ export const getDiscountsByStoreAdminService = async (
 
     const where: any = {
       storeId: store.id,
+      isDelete: false,
     };
 
     if (discountType && discountType !== 'all') {

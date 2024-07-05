@@ -16,7 +16,7 @@ const useGetCities = (queries: IGetCitiesQuery) => {
 
   const getCities = async () => {
     try {
-      const { data } = await axiosInstance.get("/address/cities", {
+      const { data } = await axiosInstance.get("/addresses/cities", {
         params: queries,
       });
 

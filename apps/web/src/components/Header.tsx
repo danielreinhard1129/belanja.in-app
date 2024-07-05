@@ -19,7 +19,7 @@ import useGetUser from "@/hooks/api/auth/useGetUser";
 
 export const Header = () => {
   const router = useRouter();
-  const { id, name, avatarUrl, provider, email } = useAppSelector((state) => state.user); // prettier-ignore
+  const { id, name, provider, email } = useAppSelector((state) => state.user); // prettier-ignore
   const dispatch = useAppDispatch();
   const [hideHeader, setHideHeader] = useState(false);
   const [lastScrollTop, setLastScrollTop] = useState(0);

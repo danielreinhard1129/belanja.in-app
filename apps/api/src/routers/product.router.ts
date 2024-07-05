@@ -18,6 +18,7 @@ export class ProductRouter {
       '/filter',
       this.productController.getProductsByParamsController,
     );
+    this.router.get('/location', this.productController.getProductsByLocationController)
     this.router.post(
       '/',
       verifyToken,

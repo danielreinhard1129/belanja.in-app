@@ -1,10 +1,12 @@
-import { startOfMonth, endOfMonth, getYear, getMonth } from 'date-fns';
+import { Prisma } from '@prisma/client';
 import prisma from '@/prisma';
+import { endOfMonth, getDaysInMonth } from 'date-fns';
 
 interface GetOrderQuery {
   storeId?: string;
   productId?: string;
-  month?: string;
+  filterMonth: string;
+  filterYear: string;
 }
 
 interface UserToken {
@@ -16,7 +18,7 @@ export const getSalesReportByProductService = async (
   user: UserToken,
 ) => {
   try {
-    const { month, storeId, productId } = query;
+    const { filterMonth, filterYear, productId, storeId } = query;
 
     const checkUser = await prisma.user.findUnique({
       where: {
@@ -30,11 +32,8 @@ export const getSalesReportByProductService = async (
 
     if (checkUser.role === 'USER') throw new Error('Unauthorized access');
 
-    let whereClause: any = {
-      createdAt: {
-        lte: new Date('2024-07-10'),
-        gte: new Date('2024-06-10'),
-      },
+    let whereClause: Prisma.OrderWhereInput = {
+      status: 'ORDER_RECEIVED', // Menambahkan filter status pesanan
     };
 
     if (checkUser.role === 'STOREADMIN') {
@@ -58,10 +57,108 @@ export const getSalesReportByProductService = async (
     }
 
     if (productId) {
-      whereClause.OrderItems.some.productId = Number(productId);
+      whereClause.OrderItems = {
+        some: {
+          productId: Number(productId),
+        },
+      };
     }
 
-    const salesReportByProduct = await prisma.order.findMany({
+    const now = new Date();
+    const month = filterMonth ? Number(filterMonth) - 1 : now.getMonth();
+    const year = filterYear ? Number(filterYear) : now.getFullYear();
+
+    function getDaysInSpecificMonth(year: number, month: number): number {
+      const date = new Date(year, month);
+      return getDaysInMonth(date);
+    }
+    const daysInMonth = getDaysInSpecificMonth(year, month);
+
+    const incomeDaily: number[] = [];
+    const transactionDaily: number[] = [];
+
+    const fetchDailyData = async () => {
+      for (let i = 1; i <= daysInMonth; i++) {
+        const day = new Date(year, month, i);
+        const startOfDay = new Date(day.setHours(0, 0, 0, 0));
+        const endOfDay = new Date(day.setHours(23, 59, 59, 999));
+
+        const dailyWhereClause = {
+          ...whereClause,
+          updatedAt: {
+            gte: startOfDay,
+            lt: endOfDay,
+          },
+        };
+
+        const dailyOrders = await prisma.order.findMany({
+          where: dailyWhereClause,
+          include: {
+            OrderItems: true,
+          },
+        });
+
+        let totalIncome = 0;
+        let totalTransaction = 0;
+
+        dailyOrders.forEach((order) => {
+          totalIncome += order.totalAmount;
+          totalTransaction += 1;
+        });
+        incomeDaily.push(Number(totalIncome));
+        transactionDaily.push(Number(totalTransaction));
+      }
+    };
+
+    await fetchDailyData();
+
+    const incomeMonthly: number[] = [];
+    const transactionMonthly: number[] = [];
+    const monthTypes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    const fetchMonthlyData = async () => {
+      for (const monthType of monthTypes) {
+        const startDate = new Date(year, monthType - 1, 1);
+        const endDate = endOfMonth(startDate);
+
+        const monthlyWhereClause = {
+          ...whereClause,
+          updatedAt: {
+            gte: startDate,
+            lt: endDate,
+          },
+        };
+
+        const monthlyOrders = await prisma.order.findMany({
+          where: monthlyWhereClause,
+          include: {
+            OrderItems: true,
+          },
+        });
+
+        let totalIncome = 0;
+        let totalTransaction = 0;
+
+        monthlyOrders.forEach((order) => {
+          totalIncome += order.totalAmount;
+          totalTransaction += 1;
+        });
+
+        incomeMonthly.push(Number(totalIncome));
+        transactionMonthly.push(Number(totalTransaction));
+      }
+    };
+
+    await fetchMonthlyData();
+
+    const startDate = new Date(year, month, 1);
+    const endDate = endOfMonth(startDate);
+
+    whereClause.updatedAt = {
+      gte: startDate,
+      lt: endDate,
+    };
+
+    const orders = await prisma.order.findMany({
       where: whereClause,
       include: {
         OrderItems: {
@@ -72,7 +169,24 @@ export const getSalesReportByProductService = async (
       },
     });
 
-    return salesReportByProduct;
+    let totalIncome = 0;
+    let totalTransaction = 0;
+
+    orders.forEach((order) => {
+      totalIncome += order.totalAmount;
+      totalTransaction += 1;
+    });
+
+    return {
+      data: {
+        totalIncome: totalIncome,
+        totalTransaction: totalTransaction,
+        incomeMonthly: incomeMonthly,
+        transactionMonthly: transactionMonthly,
+        incomeDaily: incomeDaily,
+        transactionDaily: transactionDaily,
+      },
+    };
   } catch (error) {
     throw error;
   }

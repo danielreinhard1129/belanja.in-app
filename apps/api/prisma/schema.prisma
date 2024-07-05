@@ -167,6 +167,7 @@ model StoreProduct {
   store     Store    @relation(fields: [storeId], references: [id])
   product   Product  @relation(fields: [productId], references: [id])
   createdAt DateTime @default(now())
+  isActive  Boolean? @default(true)
   updatedAt DateTime @updatedAt
 
   @@unique([storeId, productId])
@@ -238,7 +239,7 @@ model Cart {
 model Product {
   id            Int                    @id @default(autoincrement())
   name          String                 @unique
-  description   String
+  description   String                 @db.LongText
   weight        Int
   price         Int
   isDelete      Boolean?               @default(false)
@@ -293,6 +294,7 @@ model Discount {
   discountLimit Float
   minPurchase   Float?
   isActive      Boolean      @default(true)
+  isDelete      Boolean?     @default(false)
   storeId       Int
   productId     Int?
 
