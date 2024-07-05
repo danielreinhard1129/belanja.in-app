@@ -1,23 +1,67 @@
 import { calculateProductDiscount } from '@/lib/calculateProductDiscount';
 import prisma from '@/prisma';
-import { IOrderArgs } from '@/types/order.type';
+import { IOrderArgs, PaymentMethodArgs } from '@/types/order.type';
 import { Discount, Product, UserVoucher, userDiscount } from '@prisma/client';
 
-interface ProductDiscountMap {
-  productId: number;
-  originalPrice: number;
-  discValue: number;
-  total: number;
-}
-
 export const createOrderService = async (body: IOrderArgs) => {
-  const { userId, storeId, products, userDiscountIds, userVoucherIds } = body;
+  const {
+    userId,
+    storeId,
+    products,
+    userDiscountIds,
+    userVoucherIds,
+    addressId,
+    deliveryFee,
+    paymentMethod,
+    deliveryService,
+    deliveryCourier
+  } = body;
 
   try {
     const user = await prisma.user.findFirst({
       where: { id: userId },
       include: { addresses: true },
     });
+
+    if (!user) {
+      throw new Error('User Not Found!');
+    }
+
+    const padNumber = (num: number, size: number): string => {
+      let s = num.toString();
+      while (s.length < size) s = '0' + s;
+      return s;
+    };
+
+    const getNextNumber = (lastReferenceNumber: string | undefined) => {
+      if (!lastReferenceNumber) {
+        return padNumber(1, 4);
+      }
+      const numberParts = lastReferenceNumber.split('-');
+      const lastPart = numberParts.pop();
+      if (!lastPart) {
+        throw new Error('Invalid number format');
+      }
+      const lastNumber = parseInt(lastPart, 10);
+      if (isNaN(lastNumber)) {
+        throw new Error('Last part of the number is not a valid number');
+      }
+      return padNumber(lastNumber + 1, 4);
+    };
+
+    const lastOrderNumber = await prisma.order.findFirst({
+      where: {
+        orderNumber: {
+          contains: `ORD-${padNumber(user.id, 4)}-${padNumber(storeId, 3)}-`,
+        },
+      },
+      orderBy: {
+        orderNumber: 'desc',
+      },
+    });
+
+    const nextOrderNumber = getNextNumber(lastOrderNumber?.orderNumber);
+    const orderNumber = `ORD-${padNumber(user.id, 4)}-${padNumber(storeId, 3)}-${nextOrderNumber}`;
 
     // Create initial order
     const newOrder = await prisma.order.create({
@@ -27,11 +71,39 @@ export const createOrderService = async (body: IOrderArgs) => {
         totalAmount: 0, // This will be updated after calculating total
         totalWeight: 0, // this will be updated after calculating total
         status: 'WAITING_FOR_PAYMENT',
+        orderNumber,
       },
       include: {
         OrderItems: true,
       },
     });
+    const lastInvoiceNumber = await prisma.payment.findFirst({
+      where: {
+        invoiceNumber: {
+          contains: `IN-${padNumber(user.id, 4)}-${padNumber(newOrder.id, 3)}-`,
+        },
+      },
+      orderBy: {
+        invoiceNumber: 'desc',
+      },
+    });
+    const nextInvoiceNumber = getNextNumber(lastInvoiceNumber?.invoiceNumber);
+    const invoiceNumber = `IN-${padNumber(user.id, 4)}-${padNumber(newOrder.id, 3)}-${nextInvoiceNumber}`;
+
+    const lastDeliveryNumber = await prisma.delivery.findFirst({
+      where: {
+        deliveryNumber: {
+          contains: `DLV-${padNumber(user.id, 4)}-${padNumber(storeId, 3)}-`,
+        },
+      },
+      orderBy: {
+        deliveryNumber: 'desc',
+      },
+    });
+    const nextDeliveryNumber = getNextNumber(
+      lastDeliveryNumber?.deliveryNumber,
+    );
+    const deliveryNumber = `DLV-${padNumber(user.id, 4)}-${padNumber(newOrder.id, 3)}-${nextDeliveryNumber}`;
 
     let totalAmount = 0;
     let discountValue = 0;
@@ -184,6 +256,58 @@ export const createOrderService = async (body: IOrderArgs) => {
     const order = await prisma.order.findFirst({
       where: { id: newOrder.id },
       include: { OrderItems: true },
+    });
+
+    if (!order) {
+      throw new Error('Order not found');
+    }
+    const newDelivery = await prisma.delivery.create({
+      data: {
+        deliveryNumber,
+        addressId,
+        deliveryFee: Number(deliveryFee),
+        orderId: order?.id,
+        storeId,
+        status: 'PENDING',
+        deliveryService,
+        deliveryCourier
+      },
+    });
+
+    const newInvoice = await prisma.payment.create({
+      data: {
+        amount: order.totalAmount,
+        invoiceNumber,
+        paymentMethod:
+          paymentMethod === PaymentMethodArgs.DIGITAL_PAYMENT
+            ? null
+            : paymentMethod === PaymentMethodArgs.MANUAL_TRANSFER
+              ? 'MANUAL_TRANSFER'
+              : null,
+        orderId: order.id,
+      },
+    });
+
+    
+    const newJournal = await Promise.all(
+      order.OrderItems.map(async (val) => {
+        await prisma.stockJournal.create({
+          data: {
+            quantity: val.qty,
+            storeId,
+            fromStoreId: storeId,
+            productId: val.productId,
+            status: 'AUTOMATED',
+            type: 'PURCHASE',
+            JournalDetail: { create: {} },
+          },
+        });
+      }),
+    );
+
+    await prisma.cart.updateMany({
+      where: { userId },
+      data: { isActive: false, qty: 0 },
     });
     return { message: 'Order created successfully', order };
   } catch (error) {

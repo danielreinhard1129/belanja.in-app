@@ -87,7 +87,7 @@ model User {
   role       Role      @default(USER)
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
-  addressId  Int?
+  // addressId  Int?
   avatarUrl  String?
   provider   String?
   gender     String?
@@ -193,17 +193,19 @@ model StockJournal {
 }
 
 enum JournalType {
-  MUTATION
-  INCREASE
-  DECREASE
+  MUTATION @map("MUTATION")
+  INCREASE @map("INCREASE")
+  DECREASE @map("DECREASE")
+  PURCHASE @map("PURCHASE")
 }
 
 enum JournalStatus {
-  WAITING_ADMIN_CONFIRMATION
-  ON_PURCHASE
-  SUCCESS
-  REJECTED
-  ON_PROGRESS
+  WAITING_ADMIN_CONFIRMATION @map("WAITING_ADMIN_CONFIRMATION")
+  SUCCESS @map("SUCCESS")
+  REJECTED @map("REJECTED")
+  ON_PROGRESS @map("ON_PROGRESS")
+  AUTOMATED  @map("AUTOMATED")
+
 }
 
 model JournalDetail {
@@ -362,6 +364,7 @@ model UserVoucher {
 
 model Order {
   id          Int         @id @default(autoincrement())
+  orderNumber String
   totalAmount Int
   totalWeight Int?
   createdAt   DateTime    @default(now())
@@ -415,9 +418,12 @@ model OrderItems {
 }
 
 model Payment {
-  id              Int           @id @default(autoincrement())
-  paymentMethod   PaymentMethod
-  paymentDate     DateTime
+  id              Int            @id @default(autoincrement())
+  invoiceNumber   String
+  paymentStatus   PaymentStatus  @default(PENDING)
+  paymentMethod   PaymentMethod?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
   amount          Int
   paymentProof    String?
   snapToken       String?
@@ -430,16 +436,29 @@ model Payment {
   @@map("payments")
 }
 
+enum PaymentStatus {
+  COMPLETED @map("COMPLETED")
+  CANCELLED @map("CANCELLED")
+  DENIED    @map("DENIED")
+  EXPIRED   @map("EXPIRED")
+  PENDING   @map("PENDING")
+}
+
 enum PaymentMethod {
-  QRIS
-  VIRTUAL_ACCOUNT
-  MANUAL_TRANSFER
+  QRIS            @map("QRIS")
+  VIRTUAL_ACCOUNT @map("VIRTUAL_ACCOUNT")
+  MANUAL_TRANSFER @map("MANUAL_TRANSFER")
 }
 
 model Delivery {
-  id          Int    @id @default(autoincrement())
-  deliveryFee Int
-  status      String
+  id             Int            @id @default(autoincrement())
+  deliveryNumber String
+  deliveryFee    Int
+  status         DeliveryStatus @default(PENDING)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  deliveryService String?
+  deliveryCourier String?
 
   addressId Int
   storeId   Int
@@ -450,4 +469,11 @@ model Delivery {
   orders    Order   @relation(fields: [orderId], references: [id])
 
   @@map("deliveries")
+}
+
+enum DeliveryStatus {
+  PENDING     @map("PENDING")
+  CANCELLED   @map("CANCELLED")
+  ON_DELIVERY @map("ON_DELIVERY")
+  DELIVERED   @map("DELIVERED")
 }

@@ -119,11 +119,17 @@ const OrderTable: FC<OrderTableProps> = ({
           orders.map((order, i) => {
             return (
               <TableRow key={i}>
-                <TableCell className="font-medium">{order.id}</TableCell>
+                <TableCell className="font-medium">{order.orderNumber}</TableCell>
                 <TableCell>{order.users?.name}</TableCell>
                 <TableCell>{order.Payment?.paymentMethod}</TableCell>
                 <TableCell className="text-center">
-                  {order.totalAmount}
+                {new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                maximumSignificantDigits: Math.trunc(
+                  Math.abs(order.totalAmount),
+                ).toFixed().length,
+              }).format(order.totalAmount)}
                 </TableCell>
                 <TableCell className="w-fit">
                   <OrderStatusBadge orderStatus={order.status} />

@@ -31,6 +31,8 @@ export class OrderController {
         toDate: (req.query.toDate as string) || '',
       };
       const result = await getOrdersByUserId(query);
+      console.log("ini dari order BE",result);
+      
 
       return res.status(200).send(result);
     } catch (error) {
@@ -44,6 +46,7 @@ export class OrderController {
   ) {
     try {
       const query = {
+        id: parseInt(res.locals.user.id),
         take: parseInt(req.query.take as string) || 10,
         page: parseInt(req.query.page as string) || 1,
         sortBy: (req.query.sortBy as string) || 'updatedAt',
@@ -53,6 +56,7 @@ export class OrderController {
         category: (req.query.category as string) || '',
         fromDate: (req.query.fromDate as string) || '',
         toDate: (req.query.toDate as string) || '',
+        storeId: (req.query.storeId as string) || ' ',
       };
       const result = await getAllOrdersService(query);
 
@@ -116,7 +120,11 @@ export class OrderController {
       next(error);
     }
   }
-  async getOrderDetailsByAdminController(req: Request, res: Response, next: NextFunction) {
+  async getOrderDetailsByAdminController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
       const query = {
         orderId: parseInt(req.query.orderId as string),
