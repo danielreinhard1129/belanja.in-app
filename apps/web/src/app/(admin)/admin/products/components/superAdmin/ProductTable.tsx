@@ -15,12 +15,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { BASE_API_URL } from "@/utils/config";
 import { ImageIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 import PopoverProductMenu from "./PopoverProductMenu";
+import { BASE_API_URL } from "@/utils/config";
 
 interface ProductTableProps {
   products: any[];
