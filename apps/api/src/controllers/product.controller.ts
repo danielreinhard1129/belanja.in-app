@@ -104,10 +104,14 @@ export class ProductController {
       next(error);
     }
   }
-  
-  async getProductsByLocationController(req: Request, res: Response, next: NextFunction) {
+
+  async getProductsByLocationController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
-      const {lat, long, radius} = req.query;
+      const { lat, long, radius } = req.query;
       const query = {
         lat: parseFloat(lat as string),
         long: parseFloat(long as string),
@@ -116,13 +120,15 @@ export class ProductController {
         page: parseInt(req.query.page as string) || 1,
         sortBy: (req.query.sortBy as string) || 'name',
         sortOrder: (req.query.sortOrder as string) || 'desc',
+        search: (req.query.search as string) || '',
+        category: (req.query.category as string) || 'all',
       };
 
-      const result = await getProductsByLocationService(query)
+      const result = await getProductsByLocationService(query);
 
-      return res.status(200).send(result)
+      return res.status(200).send(result);
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 }

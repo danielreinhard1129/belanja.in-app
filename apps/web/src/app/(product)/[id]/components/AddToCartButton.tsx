@@ -26,7 +26,7 @@ const AddToCartButton: FC<AddToCartButtonProps> = ({ carts, handleAddToCart, pro
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button
-          className="bg-[#FF6100] px-2 py-3 w-full text-white "
+          className="bg-[#FF6100] px-2 py-3 w-full text-white"
           variant={"outline"}
           disabled={isProductExist}
         >

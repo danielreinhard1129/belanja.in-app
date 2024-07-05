@@ -23,7 +23,7 @@ const storage =
     : createNoopStorage();
 
 const persistConfig = {
-  key: "user",
+  key: "store",
   storage,
   timeout: 2000,
 };
