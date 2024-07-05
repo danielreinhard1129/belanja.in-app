@@ -62,7 +62,7 @@ export const lists = [
     url: "/admin/journals",
     icon: <BookMarked size={20} />,
   },
-  { name: "Profile", url: "/admin/users/profile", icon: <User size={20} /> },
+  { name: "Profile", url: "/admin/profile", icon: <User size={20} /> },
   {
     name: "Sales & Report",
     url: "/admin/reports",

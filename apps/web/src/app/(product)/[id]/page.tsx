@@ -96,8 +96,10 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
         <div className="flex gap-3">
           {product?.storeProduct
             .filter((storeProduct) => storeProduct.productId === product.id)
-            .map((storeProduct) => (
-              <p className="text-sm text-black/60">Stock: {storeProduct.qty}</p>
+            .map((storeProduct, index) => (
+              <p key={index} className="text-sm text-black/60">
+                Stock: {storeProduct.qty}
+              </p>
             ))}
           <p className="text-sm text-black/60">Weight: {product?.weight}gr</p>
         </div>
@@ -106,8 +108,8 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
         </p>
         {product?.storeProduct
           .filter((storeProduct) => storeProduct.productId === product.id)
-          .map((storeProduct) => (
-            <Card className="rounded-lg">
+          .map((storeProduct, index) => (
+            <Card className="rounded-lg" key={index}>
               <CardContent className="space-y-4 p-3">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10">
@@ -122,7 +124,9 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
                   <MapPin size={16} className="mt-[2px]" />
                   <div>
                     <p className="text-sm">Store Location</p>
-                    <p className="text-sm font-medium">{storeProduct.store.City.citName}</p>
+                    <p className="text-sm font-medium">
+                      {storeProduct.store.City.citName}
+                    </p>
                   </div>
                 </div>
               </CardContent>

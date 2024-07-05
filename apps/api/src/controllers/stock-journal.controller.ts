@@ -1,3 +1,4 @@
+import { getStockJournalByIdService } from '@/services/stock-journal/get-stockJournalById.service';
 import { getStockJournalByStoreAdminService } from '@/services/stock-journal/get-stockJournalByStoreAdmin.service';
 import { getStockJournalsByStoreSuperAdminService } from '@/services/stock-journal/get-stockJournalsByStoreSuperAdmin.service';
 import { getStockJournalsByStoreWithParamsService } from '@/services/stock-journal/get-stockJournalsByStoreWithParams.service';
@@ -111,4 +112,39 @@ export class StockJournalController {
       next(error);
     }
   }
+
+  async getStockJournalById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await getStockJournalByIdService(Number(req.params.id));
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // async getStockJournalsActionStoreAdmin(
+  //   req: Request,
+  //   res: Response,
+  //   next: NextFunction,
+  // ) {
+  //   try {
+  //     const query = {
+  //       take: parseInt(req.query.take as string) || 8,
+  //       page: parseInt(req.query.page as string) || 1,
+  //       sortBy: (req.query.sortBy as string) || 'name',
+  //       sortOrder: (req.query.sortOrder as string) || 'desc',
+  //       search: (req.query.search as string) || '',
+  //       status: (req.query.status as string) || 'all',
+  //     };
+  //     const result = await getStockJournalActionStoreAdminService(
+  //       res.locals.user,
+  //       query,
+  //     );
+
+  //     return res.status(200).send(result);
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // }
 }

@@ -1,3 +1,4 @@
+// OrderItem.ts
 interface OrderItem {
   id: number;
   qty: number;
@@ -9,8 +10,10 @@ interface OrderItem {
   productId: number;
   userDiscountId: number | null;
   userVoucherId: number | null;
+  products?: Product;
 }
 
+// Product.ts
 interface Product {
   id: number;
   name: string;
@@ -23,19 +26,17 @@ interface Product {
   categories?: Category[];
 }
 
+// Category.ts
 interface Category {
   categoryId: number;
   productId: number;
 }
 
-interface OrderItemWithProduct extends OrderItem {
-  products: Product;
-}
-
+// Order.ts
 interface Order {
   id: number;
   totalAmount: number;
-  totalWeight: number | null;
+  totalWeight: number;
   createdAt: string;
   updatedAt: string;
   status: string;
@@ -46,15 +47,20 @@ interface Order {
   OrderItems: OrderItem[];
 }
 
-interface OrderWithProduct extends Order {
-  OrderItems: OrderItemWithProduct[];
-}
-
+// SalesReportResponse.ts
 export interface SalesReportResponse {
   salesReport: Order[];
-  salesReportByCategory: OrderWithProduct[];
-  salesReportByProduct: OrderWithProduct[];
   totalAmountSalesReport: number;
+}
+
+// SalesReportByCategoryResponse.ts
+export interface SalesReportByCategoryResponse {
+  salesReportByCategory: Order[];
   totalAmountSalesReportByCategory: number;
+}
+
+// SalesReportByProductResponse.ts
+export interface SalesReportByProductResponse {
+  salesReportByProduct: Order[];
   totalAmountSalesReportByProduct: number;
 }

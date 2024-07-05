@@ -17,8 +17,12 @@ export const deleteDiscountService = async (id: number, user: userToken) => {
 
     if (checkUser.role === 'USER') throw new Error('Unauthorized access');
 
-    const discount = await prisma.discount.delete({
+    const discount = await prisma.discount.update({
       where: { id },
+      data: {
+        isDelete: true,
+        isActive: false,
+      },
     });
 
     return { message: 'Discount Has been deleted', data: discount };
