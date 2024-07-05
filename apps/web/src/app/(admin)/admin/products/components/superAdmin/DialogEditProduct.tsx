@@ -31,7 +31,6 @@ import {
 } from "../validationSchema/EditProductSchema";
 import { BASE_API_URL } from "@/utils/config";
 import { toast } from "sonner";
-import { Product } from "@/types/product.type";
 const Select = dynamic(() => import("react-select"), { ssr: false });
 interface DialogEditProductProps {
   productId: number;

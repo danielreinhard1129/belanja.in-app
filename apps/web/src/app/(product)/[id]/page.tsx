@@ -8,11 +8,14 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import ProductSkeleton from "./components/ProductSkeleton";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import useGetCartsById from "@/hooks/api/cart/useGetCartById";
 import { useAppSelector } from "@/redux/hooks";
 import AddToCartButton from "./components/AddToCartButton";
 import useAddToCart from "@/hooks/api/cart/useAddToCart";
+import { Card, CardContent } from "@/components/ui/card";
+import defaultStore from "../../../../public/default.png";
+import { Separator } from "@/components/ui/separator";
+import { MapPin } from "lucide-react";
 
 const ProductPage = ({ params }: { params: { id: string } }) => {
   const { id: userId } = useAppSelector((state) => state.user);
@@ -50,7 +53,7 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
             <Skeleton className="h-full w-full" />
           )}
         </div>
-        <div className="absolute right-3 top-3 grid h-20 w-20 grid-rows-4 gap-2 opacity-50 transition-opacity duration-500 hover:opacity-100 md:right-10 md:top-10 md:h-28 md:w-28 md:px-0">
+        <div className="absolute right-3 top-3 grid h-80 w-20 grid-rows-4 gap-2 opacity-50 transition-opacity duration-500 hover:opacity-100 md:right-10 md:top-10 md:h-28 md:w-28 md:px-0">
           {product?.images.map((image, index) => (
             <div
               key={index}
@@ -67,15 +70,21 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
           ))}
         </div>
       </div>
-      <div className="w-full space-y-2 px-4 pt-4 md:w-1/2 md:px-0 md:pl-20 md:pt-0">
-        <Badge>{product?.categories[0].category.name}</Badge>
+      <div className="w-full space-y-3 px-4 pt-4 md:w-1/2 md:px-0 md:pl-20 md:pt-0">
+        {product?.categories
+          .filter((category) => category.productId === product.id)
+          .map((category) => (
+            <Badge
+              key={category.categoryId}
+              className="bg-[#FF6100] text-xs font-normal"
+            >
+              {category.category.name}
+            </Badge>
+          ))}
         <h1 className="line-clamp-2 w-full text-2xl font-medium">
           {product?.name}
         </h1>
-        <p className="line-clamp-2 text-sm text-black/60">
-          {product?.description}
-        </p>
-        <p>
+        <p className="text-3xl font-semibold">
           {new Intl.NumberFormat("id-ID", {
             style: "currency",
             currency: "IDR",
@@ -84,33 +93,62 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
             ).toFixed().length,
           }).format(Number(product?.price))}
         </p>
+        <div className="flex gap-3">
+          {product?.storeProduct
+            .filter((storeProduct) => storeProduct.productId === product.id)
+            .map((storeProduct, index) => (
+              <p key={index} className="text-sm text-black/60">
+                Stock: {storeProduct.qty}
+              </p>
+            ))}
+          <p className="text-sm text-black/60">Weight: {product?.weight}gr</p>
+        </div>
+        <p className="line-clamp-2 text-sm text-black/60">
+          {product?.description}
+        </p>
+        {product?.storeProduct
+          .filter((storeProduct) => storeProduct.productId === product.id)
+          .map((storeProduct, index) => (
+            <Card className="rounded-lg" key={index}>
+              <CardContent className="space-y-4 p-3">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10">
+                    <Image src={defaultStore} alt="store" />
+                  </div>
+                  <p className="text-sm font-medium">
+                    {storeProduct.store.name}
+                  </p>
+                </div>
+                <Separator />
+                <div className="flex items-start gap-2 text-neutral-500">
+                  <MapPin size={16} className="mt-[2px]" />
+                  <div>
+                    <p className="text-sm">Store Location</p>
+                    <p className="text-sm font-medium">
+                      {storeProduct.store.City.citName}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        <div className="pb-20 md:pb-10"></div>
+        <div className="hidden md:flex">
+          <AddToCartButton
+            carts={carts}
+            handleAddToCart={handleAddToCart}
+            productId={product?.id}
+          />
+        </div>
+      </div>
+
+      {/* BOTTOM NAV */}
+      <div className="fixed bottom-0 flex h-20 w-full items-center justify-between self-center rounded-none border-t bg-white px-3 md:hidden">
         <AddToCartButton
           carts={carts}
           handleAddToCart={handleAddToCart}
           productId={product?.id}
         />
-        <div>CIHUY</div>
-        <div>CIHUY</div>
-        <div>CIHUY</div>
-        <div>CIHUY</div>
-        <div>CIHUY</div>
-        <div>CIHUY</div>
-        <div>CIHUY</div>
-        <div>CIHUY</div>
-        <div>CIHUY</div>
-        <div>CIHUY</div>
-        <div>CIHUY</div>
-        <div>CIHUY</div>
-      </div>
-
-      {/* BOTTOM NAV */}
-      <div className="fixed bottom-0 flex h-20 w-full items-center justify-between self-center rounded-none border-t bg-white px-3 md:hidden">
-        <div className="flex w-full gap-4 pl-4">
-          <p>-</p>
-          <p>1</p>
-          <p>+</p>
-        </div>
-        <Button className="w-full py-3">Add to Cart</Button>
       </div>
     </div>
   );

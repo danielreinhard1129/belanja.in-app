@@ -21,7 +21,6 @@ import { FormInput } from "@/components/FormInput";
 import useGetUser from "@/hooks/api/user/useGetUserWithStoreAdmin";
 import useUpdateUser from "@/hooks/api/user/useUpdateUser";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 
 interface DialogEditUserProps {
   userId: number;
@@ -59,21 +58,11 @@ const DialogEditUser: React.FC<DialogEditUserProps> = ({
   }, [user, reset]);
 
   const onSubmit: SubmitHandler<EditUser> = async (data) => {
-    try {
-      await updateUser(data, userId);
-      refetch();
-      refetchUser();
-      reset(defaultValues);
-      onOpenChange(false);
-    } catch (error) {
-      if (typeof error === "string") {
-        toast.error(error);
-      } else if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error("An unknown error occurred");
-      }
-    }
+    // console.log(data);
+    await updateUser(data, userId);
+    refetchUser();
+    refetch();
+    onOpenChange(false);
   };
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

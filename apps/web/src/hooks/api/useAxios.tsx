@@ -30,7 +30,6 @@ const useAxios = () => {
         if (err?.response?.status === 401) {
           localStorage.removeItem("Authorization");
           localStorage.removeItem("token");
-          router.push("/");
           dispatch(logoutAction());
         }
         return Promise.reject(err);

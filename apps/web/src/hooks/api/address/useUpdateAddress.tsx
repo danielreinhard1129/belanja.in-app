@@ -8,12 +8,12 @@ import { Address } from "@/types/address.type";
 const useUpdateAddress = (addressId: number, userId: number) => {
   const { axiosInstance } = useAxios();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const updateAddress = async (payload: Partial<Address>) => {
     try {
       const response = await axiosInstance.patch(
-        `/address/update-address/${addressId}`,
+        `/addresses/${addressId}`,
         payload,
       );
 

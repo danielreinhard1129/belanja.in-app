@@ -87,7 +87,6 @@ model User {
   role       Role      @default(USER)
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
-  addressId  Int?
   avatarUrl  String?
   provider   String?
   gender     String?
@@ -235,7 +234,7 @@ model Cart {
 model Product {
   id            Int                    @id @default(autoincrement())
   name          String                 @unique
-  description   String
+  description   String                 @db.LongText
   weight        Int
   price         Int
   isDelete      Boolean?               @default(false)

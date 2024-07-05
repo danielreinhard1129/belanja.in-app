@@ -13,7 +13,7 @@ const useGetUserAddress = (userId: number) => {
     try {
       setIsLoading(true);
       const { data } = await axiosInstance.get<AddressData>(
-        `/address/${userId}`,
+        `/addresses/user/${userId}`,
       );
 
       setAddresses(data);
