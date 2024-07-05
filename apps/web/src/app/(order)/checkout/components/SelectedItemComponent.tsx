@@ -71,25 +71,7 @@ const SelectedItemComponent: FC<SelectedItemsProps> = ({
           </p>
         </div>
       </div>
-      {/* <div className="flex justify-end">
-        <div className="flex items-center rounded-md shadow-sm">
-          <Button
-            className="rounded-l-md rounded-r-none px-2 py-1"
-            onClick={() => handleDecreaseCounter(index)}
-          >
-            -
-          </Button>
-          <div className="flex h-full w-8 items-center justify-center shadow-inner">
-            {cart.qty}
-          </div>
-          <Button
-            className="rounded-l-none rounded-r-md px-2 py-1"
-            onClick={() => handleIncreaseCounter(index)}
-          >
-            +
-          </Button>
-        </div>
-      </div> */}
+      
     </div>
   );
 };

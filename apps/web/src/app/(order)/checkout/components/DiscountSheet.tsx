@@ -6,21 +6,22 @@ import {
     SheetTitle
   } from "@/components/ui/sheet";
 import { AddressData } from '@/types/address.type';
+import { Discount } from '@/types/discount.type';
 
   interface DiscountSheetProps{
     openState: boolean;
     setOpenState: Dispatch<SetStateAction<boolean>>;
-    addresses: AddressData
+    discounts: Discount[]
   }
 
-const DiscountSheet:FC<DiscountSheetProps> = ({openState,setOpenState,addresses}) => {
+const DiscountSheet:FC<DiscountSheetProps> = ({openState,setOpenState,discounts}) => {
   return (
     <Sheet open={openState} onOpenChange={setOpenState}>
     <SheetContent side={"bottom"} className="h-2/3 flex flex-col gap-4 overflow-y-scroll rounded-t-lg ">
       <SheetHeader >
         <SheetTitle className="flex justify-start">Available Promo</SheetTitle>
       </SheetHeader>
-      {addresses.map((address, index)=>{
+      {discounts.map((discount, index)=>{
           return (
             <div key={index}></div>
           // <AddressCard key={index} data={address} closeDrawer={()=> handleSelectAddress(index)} />

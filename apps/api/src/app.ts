@@ -24,6 +24,7 @@ import { AddressRouter } from './routers/address.router';
 import { CartRouter } from './routers/cart.router';
 import { DeliveryRouter } from './routers/delivery.router';
 import { ReportRouter } from './routers/report.router';
+import { PaymentRouter } from './routers/payment.router';
 
 export default class App {
   private app: Express;
@@ -83,6 +84,7 @@ export default class App {
     const cartRouter = new CartRouter();
     const deliveryRouter = new DeliveryRouter();
     const reportRouter = new ReportRouter();
+    const paymentRouter = new PaymentRouter();
 
     this.app.get('/api', (req: Request, res: Response) => {
       res.send(`Welcome to belanja.in API !`);
@@ -103,6 +105,7 @@ export default class App {
     this.app.use('/api/carts', cartRouter.getRouter());
     this.app.use('/api/delivery', deliveryRouter.getRouter());
     this.app.use('/api/reports', reportRouter.getRouter());
+    this.app.use('/api/payment', paymentRouter.getRouter());
   }
 
   public start(): void {

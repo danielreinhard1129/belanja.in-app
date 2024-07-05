@@ -6,7 +6,7 @@ import useGetUserAddress from "@/hooks/api/address/useGetUserAddress";
 import useGetCartsById from "@/hooks/api/cart/useGetCartById";
 import useGetDeliveryFee from "@/hooks/api/transaction/useGetDeliveryFee";
 import { useAppSelector } from "@/redux/hooks";
-import { ICart, IProductArg } from "@/types/order.type";
+import { ICart, IProductArg, PaymentMethodArgs } from "@/types/order.type";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import AddressSheet from "./components/AddressSheet";
@@ -18,6 +18,7 @@ import SkeletonShippingMethod from "./components/SkeletonShippingMethod";
 import { calculateTotalWeight } from "@/helper/calculateTotalWeight";
 import useCreateNewOrder from "@/hooks/api/transaction/useCreateNewOrder";
 import Link from "next/link";
+import useGetDiscount from "@/hooks/api/discounts/useGetDiscount";
 
 const Checkout = () => {
   const [openAddressDrawer, setOpenAddressDrawer] = useState<boolean>(false);
@@ -31,19 +32,13 @@ const Checkout = () => {
   const { carts, setCarts } = useGetCartsById(id);
   const { addresses, setAddresses } = useGetUserAddress(id);
   const totalWeight = calculateTotalWeight(carts);
-  const selectedAddress = addresses.find((address) => address.isSelected);
+  const selectedAddress = addresses.length
+    ? addresses.find((address) => address.isSelected)
+    : null;
   const [weight, setWeight] = useState<number>(0);
   const [addressId, setAddressId] = useState<number>(0);
 
   const { createNewOrder } = useCreateNewOrder();
-
-  const handleCreateOrder = (cartItems: ICart[]) => {
-    const products: IProductArg[] = cartItems.map((item) => ({
-      productId: item.productId,
-      qty: item.qty,
-    }));
-    createNewOrder({ products: products, userId: id, storeId: 1 });
-  };
 
   const {
     data: shippingMethods,
@@ -55,6 +50,31 @@ const Checkout = () => {
     destination: selectedAddress?.cityId.toString() || "",
     origin: /*carts[0].stores.city ||*/ "501",
   });
+  
+  const selectedShipping =
+    shippingMethods.length ?
+    shippingMethods.find((method) => method.isSelected): undefined
+
+  const selectedMethod =
+    selectedShipping ? selectedShipping.costs.find((cost) => cost.isSelected): undefined
+
+  const deliveryFee = selectedMethod && selectedMethod.cost[0].value;
+  const handleCreateOrder = (cartItems: ICart[]) => {
+    const products: IProductArg[] = cartItems.map((item) => ({
+      productId: item.productId,
+      qty: item.qty,
+    }));
+    createNewOrder({
+      products: products,
+      userId: id,
+      storeId: 1,
+      deliveryFee: String(deliveryFee),
+      addressId: selectedAddress?.cityId!,
+      paymentMethod: PaymentMethodArgs.DIGITAL_PAYMENT,
+      deliveryCourier: selectedShipping?.name,
+      deliveryService: selectedMethod?.description
+    });
+  };
   // console.log(shippingMethods);
 
   const baseURL = process.env.NEXT_PUBLIC_BASE_API_URL;
@@ -71,14 +91,12 @@ const Checkout = () => {
   // }, 2000);
   // console.log("ini totalweight", totalWeight);
 
-  
-
   if (!carts || !carts.length) {
     return (
-      <div className="container mx-auto flex flex-col h-screen items-center justify-center text-2xl font-semibold gap-y-2">
+      <div className="container mx-auto flex h-screen flex-col items-center justify-center gap-y-2 text-2xl font-semibold">
         <p>Oops, Sorry. It seems you have no item selected.</p>
         <Link href="/">
-          <p className="underline text-orange-300 text-lg">Start shopping?</p>
+          <p className="text-lg text-orange-300 underline">Start shopping?</p>
         </Link>
       </div>
     );
@@ -104,6 +122,9 @@ const Checkout = () => {
             counter={setCarts}
           />
         ))}
+        <Link href={`/cart`}>
+          <p className="text-orange-400 underline">Edit items?</p>
+        </Link>
       </section>
 
       <Separator className="h-1" />
@@ -189,11 +210,11 @@ const Checkout = () => {
           <ChevronRight className="max-h-4 max-w-4 font-light" />
         </div>
       </div>
-      <DiscountSheet
+      {/* <DiscountSheet
         addresses={addresses}
         openState={openDiscountDrawer}
         setOpenState={setOpenDiscountDrawer}
-      />
+      /> */}
       <Separator className="h-1" />
       <section className="mb-0 grid grid-cols-2 bg-white p-4 pb-8">
         <div
