@@ -3,16 +3,19 @@ import { PaginationQueryParams } from '@/types/pagination.type';
 import { OrderStatus, Prisma } from '@prisma/client';
 
 interface GetOrdersQuery extends PaginationQueryParams {
+  id: number;
   search: string;
   status: OrderStatus | undefined;
   category: string;
   toDate: string;
   fromDate: string;
+  storeId: string;
 }
 
 export const getAllOrdersService = async (query: GetOrdersQuery) => {
   try {
     const {
+      id,
       page,
       search,
       sortBy,
@@ -22,9 +25,31 @@ export const getAllOrdersService = async (query: GetOrdersQuery) => {
       category,
       fromDate,
       toDate,
+      storeId,
     } = query;
 
+    const admin = await prisma.user.findFirst({
+      where: { id },
+      include: {
+        storeAdmin: { include: { stores: { select: { id: true } } } },
+      },
+    });
+
+    const storeIdSuperAdmin =
+      storeId && storeId === 'all' ? undefined : parseInt(storeId, 10);
+
+    const storeIdStoreAdmin = admin?.storeAdmin?.stores?.id;
+
+    const storeIdArgs =
+      admin?.role === 'SUPERADMIN'
+        ? storeIdSuperAdmin
+        : admin?.role === 'STOREADMIN'
+          ? storeIdStoreAdmin
+          : undefined;
+
     const categoryArgs = category && category === 'all' ? undefined : category;
+
+    console.log('ini dari order service', storeId);
     const dateRangeArgs = {
       from: !fromDate ? undefined : new Date(fromDate),
       to: !toDate ? undefined : new Date(toDate),
@@ -32,16 +57,8 @@ export const getAllOrdersService = async (query: GetOrdersQuery) => {
 
     const whereClause: Prisma.OrderWhereInput = {
       status: status,
-      OrderItems: {
-        some: {
-          products: {
-            name: { contains: search },
-            categories: {
-              some: { category: { name: { contains: categoryArgs } } },
-            },
-          },
-        },
-      },
+      storeId: storeIdArgs,
+      orderNumber: { contains: search },
       updatedAt: { gte: dateRangeArgs.from, lte: dateRangeArgs.to },
     };
 
@@ -60,7 +77,7 @@ export const getAllOrdersService = async (query: GetOrdersQuery) => {
         },
         stores: { include: { City: true } },
         Payment: true,
-        users: true
+        users: true,
       },
     });
     if (!orders) {

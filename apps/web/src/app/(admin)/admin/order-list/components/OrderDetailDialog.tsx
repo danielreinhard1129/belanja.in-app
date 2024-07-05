@@ -1,4 +1,4 @@
-import OrderStatusBadge from "@/app/(order)/order/components/OrderStatusBadge";
+import OrderStatusBadge from "@/app/(order)/components/OrderStatusBadge";
 import {
   Dialog,
   DialogContent,

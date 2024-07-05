@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { FC } from "react";
 import {
   Card,
@@ -19,10 +19,11 @@ import { useRouter } from "next/navigation";
 
 interface OrderCardProps {
   orderItems: IOrderItem[];
-  orderId : number;
+  orderId: string;
   purchaseTotal: number;
   orderStatus: string;
   purchaseDate: Date;
+  orderNumber: string;
   url: string | undefined;
 }
 
@@ -32,13 +33,14 @@ const OrderCard: FC<OrderCardProps> = ({
   purchaseTotal,
   purchaseDate,
   orderItems,
+  orderNumber,
   url,
 }) => {
-    const router = useRouter()
+  const router = useRouter();
   return (
     <Card
       className={`flex min-h-40 flex-col place-content-center justify-start rounded-xl p-4 shadow-[0px_1px_4px_0px_#D6DFEB] transition-all duration-75 hover:scale-[99%]`}
-      onClick={() =>router.push(`/order/order-details/${orderId}`) }
+      onClick={() => router.push(`/order/order-details/${orderId}`)}
     >
       <CardHeader>
         <CardTitle className="flex items-center justify-between gap-2">
@@ -48,8 +50,9 @@ const OrderCard: FC<OrderCardProps> = ({
           </div>
           <OrderStatusBadge orderStatus={orderStatus} />
         </CardTitle>
-        <CardDescription className="text-xs">
-          {format(purchaseDate, "dd MMMM yyyy")}
+        <CardDescription className="flex justify-between text-xs items-center">
+          <div>{format(purchaseDate, "dd MMMM yyyy")}</div>
+          <div className="mr-1">{orderNumber}</div>
         </CardDescription>
       </CardHeader>
       <Separator className="mt-4 h-[1px]" />

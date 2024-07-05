@@ -17,4 +17,6 @@ export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string;
 export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET as string;
 export const RAJAONGKIR_API_KEY = process.env.RAJAONGKIR_API_KEY as string;
 export const RO_KEY = process.env.RO_KEY as string
+export const MIDTRANS_CLIENT_KEY = process.env.MIDTRANS_PUBLIC_CLIENT as string
+export const MIDTRANS_SERVER_KEY = process.env.MIDTRANS_SECRET as string
 

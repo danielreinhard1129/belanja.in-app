@@ -37,16 +37,7 @@ export const getOrdersByUserId = async (query: GetOrdersQuery) => {
     const whereClause: Prisma.OrderWhereInput = {
       status: status,
       userId: id,
-      OrderItems: {
-        some: {
-          products: {
-            name: { contains: search },
-            categories: {
-              some: { category: { name: { contains: categoryArgs } } },
-            },
-          },
-        },
-      },
+      orderNumber: { contains: search },
       updatedAt: { gte: dateRangeArgs.from, lte: dateRangeArgs.to },
     };
 
@@ -72,6 +63,8 @@ export const getOrdersByUserId = async (query: GetOrdersQuery) => {
     }
 
     const count = await prisma.order.count({ where: whereClause });
+
+    console.log('ini order service', whereClause);
 
     return {
       data: orders,
