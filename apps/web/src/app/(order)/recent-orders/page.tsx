@@ -36,7 +36,7 @@ const RecentOrders = () => {
   };
   const baseURL = process.env.NEXT_PUBLIC_BASE_API_URL;
 
-  console.log("ini date", date);
+  console.log("ini orders", orders);
 
   return isLoadingOrders ? (
     // <p className="">Loading...</p>
@@ -71,7 +71,8 @@ const RecentOrders = () => {
         {orders.map((order, i) => {
           return (
             <OrderCard
-              orderId={order.id}
+              orderId={String(order.id)}
+              orderNumber={order.orderNumber}
               key={i}
               orderStatus={String(order.status)}
               orderItems={order.OrderItems}

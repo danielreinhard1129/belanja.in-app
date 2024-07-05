@@ -1,4 +1,5 @@
 import { Address } from "./address.type";
+import { Delivery } from "./delivery.type";
 import { Product } from "./product.type";
 import { Store } from "./store.type";
 import { User } from "./user.type";
@@ -14,7 +15,18 @@ export interface IOrderArgs {
   products: IProductArg[];
   userDiscountIds?: number[];
   userVoucherIds?: number[];
+  addressId: number
+  deliveryFee: string
+  paymentMethod: PaymentMethodArgs
+  deliveryService?: string 
+  deliveryCourier?: string
 }
+
+export enum PaymentMethodArgs{
+  DIGITAL_PAYMENT = "DIGITAL_PAYMENT",
+  MANUAL_TRANSFER = "MANUAL_TRANSFER"
+}
+
 export interface ICart {
   id: number;
   storeId: number;
@@ -41,6 +53,7 @@ export enum OrderStatus {
 
 export interface IOrder {
   id: number;
+  orderNumber: string;
   totalAmount: number;
   totalWeight?: number;
   createdAt: Date;
@@ -56,7 +69,7 @@ export interface IOrder {
   userVouchers?: UserVoucher;
   OrderItems: IOrderItem[];
   Payment: IPayment;
-  delivery: IDelivery[];
+  Delivery: Delivery[];
 }
 
 export interface IOrderItem {

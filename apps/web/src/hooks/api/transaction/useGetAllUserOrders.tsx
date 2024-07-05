@@ -11,6 +11,7 @@ interface IGetOrdersQuery extends IPaginationQueries {
   category?: string
   fromDate?: string
   toDate?: string
+  storeId?: string
 }
 
 const useGetAllUserOrders = (queries: IGetOrdersQuery) => {
@@ -35,7 +36,7 @@ const useGetAllUserOrders = (queries: IGetOrdersQuery) => {
 
   useEffect(() => {
     getAllUserOrders();
-  }, [queries?.page, queries?.search, queries.status, queries.category, queries.fromDate, queries.toDate]);
+  }, [queries?.page, queries?.search, queries.status, queries.category, queries.fromDate, queries.toDate, queries.storeId]);
   return {orders, meta, isLoading, refetch: getAllUserOrders};
 };
 
