@@ -59,7 +59,7 @@ const SuperAdmin = () => {
 
   const handleSearch = debounce((value: string) => {
     setSearch(value);
-  }, 1500);
+  }, 300);
 
   const handleStoreChange = (value: string) => {
     setSelectedStoreId(value);
@@ -228,25 +228,18 @@ const SuperAdmin = () => {
                             </div>
                             <div className="col-span-1 text-center">:</div>
                             <div className="col-span-5">{journal.status}</div>
-                            <div className="col-span-5 font-semibold">
-                              CreatedAt
-                            </div>
+                            <div className="col-span-5 font-semibold">Date</div>
                             <div className="col-span-1 text-center">:</div>
                             <div className="col-span-5">
                               {format(
                                 new Date(journal.createdAt),
-                                "yyyy-MM-dd HH:mm:ss",
+                                "yyyy-MM-dd",
                               )}
                             </div>
-                            <div className="col-span-5 font-semibold">
-                              UpdatedAt
-                            </div>
+                            <div className="col-span-5 font-semibold">Time</div>
                             <div className="col-span-1 text-center">:</div>
                             <div className="col-span-5">
-                              {format(
-                                new Date(journal.updatedAt),
-                                "yyyy-MM-dd HH:mm:ss",
-                              )}
+                              {format(new Date(journal.createdAt), "HH:mm:ss")}
                             </div>
                           </div>
                         </DialogContent>

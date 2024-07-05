@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/dialog";
 import useCreateCategory from "@/hooks/api/category/useCreateCategory";
 import useDeleteCategory from "@/hooks/api/category/useDeleteCategory";
-import useGetCategories from "@/hooks/api/category/useGetCategories";
 import useUpdateCategory from "@/hooks/api/category/useUpdateCategory";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Edit, Loader2, Plus, Trash } from "lucide-react";
@@ -32,15 +31,18 @@ import {
 
 interface DialogSettingsCategoryProps {
   refetch: () => void;
+  refetchCategories: () => void;
+  categories: { id: number; name: string }[];
 }
 
 const DialogSettingsCategory: React.FC<DialogSettingsCategoryProps> = ({
   refetch,
+  refetchCategories,
+  categories,
 }) => {
   const { createCategory, isLoading: isCreating } = useCreateCategory();
   const { updateCategory, isLoading: isUpdating } = useUpdateCategory();
   const { deleteCategory } = useDeleteCategory();
-  const { categories, refetch: refetchCategories } = useGetCategories();
   const [editingCategory, setEditingCategory] =
     useState<SchemaCreateCategory | null>(null);
   const [deletingCategoryId, setDeletingCategoryId] = useState<number | null>(

@@ -1,4 +1,6 @@
 import { Button } from "@/components/ui/button";
+import { formatToRupiah } from "@/utils/formatCurrency";
+import { formatWeight } from "@/utils/formatWeight";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Popover,
@@ -131,8 +133,8 @@ const ProductTable: React.FC<ProductTableProps> = ({
                   </div>
                 ))}
               </TableCell>
-              <TableCell>{product.price}</TableCell>
-              <TableCell>{product.weight}</TableCell>
+              <TableCell>{formatToRupiah(product.price)}</TableCell>
+              <TableCell>{formatWeight(product.weight)}</TableCell>
               <TableCell>
                 <PopoverProductMenu
                   productId={product.id}

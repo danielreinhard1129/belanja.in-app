@@ -136,10 +136,9 @@ const DialogStockMutation: React.FC<DialogStockMutationProps> = ({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
+          <DialogTitle>Mutation</DialogTitle>
           <DialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            Export or Import Store Product you need
           </DialogDescription>
         </DialogHeader>
         <FormProvider {...methods}>

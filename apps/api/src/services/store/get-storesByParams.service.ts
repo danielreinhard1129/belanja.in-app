@@ -28,6 +28,11 @@ export const getStoresByParamsService = async (query: GetStoresByParams) => {
           },
         },
         City: true,
+        storeProduct: {
+          select: {
+            qty: true,
+          },
+        },
       },
       skip: (page - 1) * take,
       take: take,
@@ -36,6 +41,20 @@ export const getStoresByParamsService = async (query: GetStoresByParams) => {
     if (!stores.length) {
       throw new Error('No stores found');
     }
+
+    await Promise.all(
+      stores.map(async (store) => {
+        const totalQty = store.storeProduct.reduce(
+          (sum, product) => sum + product.qty,
+          0,
+        );
+
+        await prisma.store.update({
+          where: { id: store.id },
+          data: { qty: totalQty },
+        });
+      }),
+    );
 
     const count = await prisma.store.count({ where });
 

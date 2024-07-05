@@ -1,5 +1,7 @@
 "use client";
 import Pagination from "@/components/Pagination";
+import { formatToRupiah } from "@/utils/formatCurrency";
+import { formatWeight } from "@/utils/formatWeight";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -53,7 +55,7 @@ const StoreAdmin: React.FC = () => {
 
   const handleSearch = debounce((value: string) => {
     setSearch(value);
-  }, 1500);
+  }, 300);
 
   const handleChangePaginate = ({ selected }: { selected: number }) => {
     setPage(selected + 1);
@@ -158,8 +160,8 @@ const StoreAdmin: React.FC = () => {
                     </div>
                   ))}
                 </TableCell>
-                <TableCell>{product.price}</TableCell>
-                <TableCell>{product.weight}</TableCell>
+                <TableCell>{formatToRupiah(product.price)}</TableCell>
+                <TableCell>{formatWeight(product.weight)}</TableCell>
                 <TableCell>
                   <div
                     onClick={() => handleOpenDialog(product.id)}

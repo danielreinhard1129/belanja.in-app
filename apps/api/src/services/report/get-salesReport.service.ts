@@ -1,24 +1,14 @@
 import prisma from '@/prisma';
+import { endOfMonth, getDaysInMonth } from 'date-fns';
 
 interface GetOrderQuery {
   storeId?: string;
-  categoryId?: string;
-  productId?: string;
-  filterDate?: Date;
+  filterMonth: string;
+  filterYear: string;
 }
 
 interface UserToken {
   id: number;
-}
-
-interface OrderItem {
-  qty: number;
-  total: number;
-  // Jika ada properti lain yang dibutuhkan, tambahkan di sini
-}
-
-interface Order {
-  OrderItems: OrderItem[];
 }
 
 export const getSalesReportService = async (
@@ -26,7 +16,7 @@ export const getSalesReportService = async (
   user: UserToken,
 ) => {
   try {
-    const { filterDate, storeId, categoryId, productId } = query;
+    const { filterMonth, filterYear, storeId } = query;
 
     const checkUser = await prisma.user.findUnique({
       where: {
@@ -40,29 +30,9 @@ export const getSalesReportService = async (
 
     if (checkUser.role === 'USER') throw new Error('Unauthorized access');
 
-    let whereClause: any = {};
-
-    if (filterDate !== undefined) {
-      // Mengatur awal bulan (tanggal 1) dan akhir bulan (hari terakhir)
-      const startOfMonth = new Date(
-        filterDate.getFullYear(),
-        filterDate.getMonth(),
-        1,
-      );
-      const endOfMonth = new Date(
-        filterDate.getFullYear(),
-        filterDate.getMonth() + 1,
-        0,
-        23,
-        59,
-        59,
-        999,
-      );
-      whereClause.createdAt = {
-        gte: startOfMonth,
-        lte: endOfMonth,
-      };
-    }
+    let whereClause: any = {
+      status: 'ORDER_RECEIVED',
+    };
 
     if (checkUser.role === 'STOREADMIN') {
       const getStoreAdmin = await prisma.storeAdmin.findFirst({
@@ -84,88 +54,124 @@ export const getSalesReportService = async (
       whereClause.storeId = Number(storeId);
     }
 
-    if (categoryId) {
-      whereClause.OrderItems = {
-        some: {
-          products: {
-            categories: {
-              some: {
-                categoryId: Number(categoryId),
-              },
-            },
-          },
-        },
-      };
-    }
+    const now = new Date();
+    const month = filterMonth ? Number(filterMonth) - 1 : now.getMonth();
+    const year = filterYear ? Number(filterYear) : now.getFullYear();
 
-    if (productId) {
-      if (!whereClause.OrderItems) {
-        whereClause.OrderItems = {
-          some: {},
+    function getDaysInSpecificMonth(year: number, month: number): number {
+      const date = new Date(year, month);
+      return getDaysInMonth(date);
+    }
+    const daysInMonth = getDaysInSpecificMonth(year, month);
+
+    const incomeDaily: number[] = [];
+    const transactionDaily: number[] = [];
+
+    const fetchDailyData = async () => {
+      for (let i = 1; i <= daysInMonth; i++) {
+        const day = new Date(year, month, i);
+        const startOfDay = new Date(day.setHours(0, 0, 0, 0));
+        const endOfDay = new Date(day.setHours(23, 59, 59, 999));
+
+        const dailyWhereClause = {
+          ...whereClause,
+          updatedAt: {
+            gte: startOfDay,
+            lt: endOfDay,
+          },
         };
-      }
-      whereClause.OrderItems.some.productId = Number(productId);
-    }
 
-    const calculateTotalAmount = (orders: Order[]): number => {
-      return orders.reduce((total: number, order: Order) => {
-        const orderTotal = order.OrderItems.reduce(
-          (itemTotal: number, item: OrderItem) => {
-            return itemTotal + item.total;
+        const dailyOrders = await prisma.order.findMany({
+          where: dailyWhereClause,
+          include: {
+            OrderItems: true,
           },
-          0,
-        );
-        return total + orderTotal;
-      }, 0);
+        });
+
+        let totalIncome = 0;
+        let totalTransaction = 0;
+
+        dailyOrders.forEach((order) => {
+          totalIncome += order.totalAmount;
+          totalTransaction += 1;
+        });
+        incomeDaily.push(Number(totalIncome));
+        transactionDaily.push(Number(totalTransaction));
+      }
     };
 
-    const salesReport = await prisma.order.findMany({
+    await fetchDailyData();
+
+    const incomeMonthly: number[] = [];
+    const transactionMonthly: number[] = [];
+    const monthTypes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    const fetchMonthlyData = async () => {
+      for (const monthType of monthTypes) {
+        const startDate = new Date(year, monthType - 1, 1);
+        const endDate = endOfMonth(startDate);
+
+        const monthlyWhereClause = {
+          ...whereClause,
+          updatedAt: {
+            gte: startDate,
+            lt: endDate,
+          },
+        };
+
+        const monthlyOrders = await prisma.order.findMany({
+          where: monthlyWhereClause,
+          include: {
+            OrderItems: true,
+          },
+        });
+
+        let totalIncome = 0;
+        let totalTransaction = 0;
+
+        monthlyOrders.forEach((order) => {
+          totalIncome += order.totalAmount;
+          totalTransaction += 1;
+        });
+
+        incomeMonthly.push(Number(totalIncome));
+        transactionMonthly.push(Number(totalTransaction));
+      }
+    };
+
+    await fetchMonthlyData();
+
+    const startDate = new Date(year, month, 1);
+    const endDate = endOfMonth(startDate);
+
+    whereClause.updatedAt = {
+      gte: startDate,
+      lt: endDate,
+    };
+
+    const orders = await prisma.order.findMany({
       where: whereClause,
       include: {
         OrderItems: true,
       },
     });
 
-    const salesReportByCategory = await prisma.order.findMany({
-      where: whereClause,
-      include: {
-        OrderItems: {
-          include: {
-            products: {
-              include: {
-                categories: true,
-              },
-            },
-          },
-        },
-      },
-    });
+    let totalIncome = 0;
+    let totalTransaction = 0;
 
-    const salesReportByProduct = await prisma.order.findMany({
-      where: whereClause,
-      include: {
-        OrderItems: {
-          include: {
-            products: true,
-          },
-        },
-      },
+    orders.forEach((order) => {
+      totalIncome += order.totalAmount;
+      totalTransaction += 1;
     });
-
-    const totalAmountSalesReport = calculateTotalAmount(salesReport);
-    const totalAmountSalesReportByCategory = calculateTotalAmount(
-      salesReportByCategory,
-    );
-    const totalAmountSalesReportByProduct =
-      calculateTotalAmount(salesReportByProduct);
 
     return {
-      salesReport,
-      salesReportByCategory,
-      salesReportByProduct,
-      totalAmountSalesReport,
-      totalAmountSalesReportByCategory,
-      totalAmountSalesReportByProduct,
+      data: {
+        totalIncome: totalIncome,
+        totalTransaction: totalTransaction,
+        incomeMonthly: incomeMonthly,
+        transactionMonthly: transactionMonthly,
+        incomeDaily: incomeDaily,
+        transactionDaily: transactionDaily,
+      },
     };
   } catch (error) {
     throw error;

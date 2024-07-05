@@ -21,7 +21,7 @@ export const getProductsByLocationService = async (
     });
 
     const storeIds = nearbyStores.map((store) => store.id);
-    
+
     let storeProduct;
 
     if (!lat && !long) {
