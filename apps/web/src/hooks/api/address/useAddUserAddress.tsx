@@ -15,7 +15,7 @@ const useAddUserAddress = (userId: number) => {
     try {
       setIsLoading(true);
       const { data } = await axiosInstance.post(
-        `/address/add-address`,
+        `/addresses`,
         payload,
       );
 

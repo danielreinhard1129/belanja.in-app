@@ -21,47 +21,65 @@ export const getProductsByLocationService = async (
     });
 
     const storeIds = nearbyStores.map((store) => store.id);
+    
+    let storeProduct;
 
-    const where: any = {
-      isDelete: false,
-      storeProduct: {
-        some: {
+    if (!lat && !long) {
+      storeProduct = await prisma.storeProduct.findMany({
+        where: {
+          store: {
+            isPrimary: true,
+          },
+          product: {
+            isDelete: false,
+          },
+        },
+        include: {
+          product: {
+            include: {
+              images: true,
+            },
+          },
+          store: true,
+        },
+        skip: (page - 1) * take,
+        take: take,
+      });
+    } else {
+      storeProduct = await prisma.storeProduct.findMany({
+        where: {
           storeId: {
             in: storeIds,
           },
-        },
-      },
-    };
-
-    const products = await prisma.product.findMany({
-      where,
-      include: {
-        storeProduct: true,
-        images: true,
-        categories: {
-          select: {
-            category: {
-              select: {
-                name: true,
-              },
-            },
+          product: {
+            isDelete: false,
           },
         },
-      },
-      skip: (page - 1) * take,
-      take: take,
-      orderBy: {
-        [sortBy]: sortOrder,
+        include: {
+          product: {
+            include: {
+              images: true,
+            },
+          },
+          store: true,
+        },
+        skip: (page - 1) * take,
+        take: take,
+      });
+    }
+
+    const count = await prisma.storeProduct.count({
+      where: {
+        store: {
+          isPrimary: true,
+        },
+        product: {
+          isDelete: false,
+        },
       },
     });
 
-    const count = await prisma.product.count({ where });
-
-    return {
-      data: products,
-      nearbyStores,
-      meta: { page, take, total: count },
-    };
+    return { data: storeProduct, meta: { page, take, total: count } };
   } catch (error) {
     throw error;
   }

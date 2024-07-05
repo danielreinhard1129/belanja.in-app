@@ -29,6 +29,8 @@ import {
 import { FormSchema } from "./AddUserAddressSchema";
 import Map from "../Map";
 import { getChangedValues } from "@/utils/getChangeValue";
+import { useRouter } from "next/navigation";
+import { ChevronLeft } from "lucide-react";
 
 interface UpdateUserAddressFormProps {
   addressId: number;
@@ -41,6 +43,7 @@ const UpdateUserAddressForm: React.FC<UpdateUserAddressFormProps> = ({
 }) => {
   const { updateAddress } = useUpdateAddress(addressId, userId);
   const { address, isLoading: addressLoading } = useGetAddress(addressId);
+  const router = useRouter();
 
   const [selectedProvinceId, setSelectedProvinceId] = useState<string>("");
   const [selectedCityId, setSelectedCityId] = useState<string>("");
@@ -93,7 +96,7 @@ const UpdateUserAddressForm: React.FC<UpdateUserAddressFormProps> = ({
           cityId: address.cityId,
           provinceId: address.provinceId,
         });
-      }, 0);
+      }, 300);
     }
   }, [address, form]);
 
@@ -139,6 +142,14 @@ const UpdateUserAddressForm: React.FC<UpdateUserAddressFormProps> = ({
         className="flex w-full flex-col px-4"
       >
         <div className="space-y-4">
+          <div className="mt-4 flex items-center gap-4">
+            <ChevronLeft
+              size={20}
+              className="cursor-pointer"
+              onClick={() => router.push(`/user/${userId}`)}
+            />
+            <h1 className="text-lg font-semibold">Edit Address</h1>
+          </div>
           <FormField
             control={form.control}
             name="addressLine"
@@ -293,9 +304,11 @@ const UpdateUserAddressForm: React.FC<UpdateUserAddressFormProps> = ({
             />
           )}
         </div>
-        <Button type="submit" className="my-3 w-full px-4 py-3">
-          Update Address
-        </Button>
+        <div className="flex w-full max-w-lg gap-4 self-end">
+          <Button type="submit" className="my-3 w-full px-4 py-3">
+            Save Changes
+          </Button>
+        </div>
       </form>
     </Form>
   );

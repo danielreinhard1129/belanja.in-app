@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,7 +11,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-// import Select from 'react-select';
 import { FormInput } from "@/components/FormInput";
 import ImageUploader from "@/components/FormInputImages";
 import useGetCategories from "@/hooks/api/category/useGetCategories";

@@ -31,8 +31,14 @@ import {
 } from "@/components/ui/popover";
 import useDeleteUserAddress from "@/hooks/api/address/useDeleteUserAddress";
 
-const DialogShowAddress = ({ userId }: { userId: number }) => {
-  const { addresses } = useGetUserAddress(userId);
+const DialogShowAddress = ({
+  userId,
+  refetchAddresses,
+}: {
+  userId: number;
+  refetchAddresses: () => void;
+}) => {
+  const { addresses, refetch } = useGetUserAddress(userId);
   const router = useRouter();
   const [selectedAddressId, setSelectedAddressId] = useState<number | null>(
     null,
@@ -58,24 +64,24 @@ const DialogShowAddress = ({ userId }: { userId: number }) => {
   const handleSave = async () => {
     if (selectedAddressId !== null) {
       await setPrimaryAddress({ isPrimary: true });
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
+      refetchAddresses();
+      refetch();
+      setOpenDialog(false);
     }
   };
 
-  const handleDelete = (addressId: number) => {
-    deleteAddress(addressId);
-    setTimeout(() => {
-      window.location.reload();
-    }, 1500);
+  const handleDelete = async (addressId: number) => {
+    await deleteAddress(addressId);
+    refetchAddresses();
+    refetch();
+    setOpenDialog(false);
   };
 
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="px-3 py-2">
-          Show Address
+        <Button variant="link" className="px-3 py-2">
+          Show All
         </Button>
       </DialogTrigger>
       <DialogContent className="md:max-w-[425px]">

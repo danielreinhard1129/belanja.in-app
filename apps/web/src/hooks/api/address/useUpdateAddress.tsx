@@ -13,7 +13,7 @@ const useUpdateAddress = (addressId: number, userId: number) => {
   const updateAddress = async (payload: Partial<Address>) => {
     try {
       const response = await axiosInstance.patch(
-        `/address/update-address/${addressId}`,
+        `/addresses/${addressId}`,
         payload,
       );
 

@@ -22,20 +22,20 @@ export class AddressRouter {
       this.addressController.getSubdistrictsController,
     );
     this.router.get(
-      '/get-address/:id',
+      '/:id',
       this.addressController.getAddressByIdController,
     );
-    this.router.get('/:id', this.addressController.getAddressController);
+    this.router.get('/user/:id', this.addressController.getAddressesController);
     this.router.post(
-      '/add-address',
+      '/',
       this.addressController.addAddressController,
     );
     this.router.patch(
-      '/update-address/:id',
+      '/:id',
       this.addressController.updateAddressController,
     );
     this.router.delete(
-      '/delete-address/:id',
+      '/:id',
       this.addressController.deleteAddressController,
     );
   }

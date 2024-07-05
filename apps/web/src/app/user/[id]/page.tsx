@@ -24,7 +24,7 @@ import DialogShowAddress from "./components/DialogShowAddress";
 const UserDetail = () => {
   const { id } = useAppSelector((state) => state.user);
   const { user } = useGetUser(id);
-  const { addresses } = useGetUserAddress(user?.id || id);
+  const { addresses, refetch } = useGetUserAddress(user?.id || id);
   const router = useRouter();
 
   const {
@@ -33,12 +33,6 @@ const UserDetail = () => {
     onSuccess,
   } = useSendChangePassword();
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    if (onSuccess) {
-      alert(`Email for change password has been sent to ${user?.email}`);
-    }
-  }, [onSuccess, user]);
 
   const handleEditProfile = async () => {
     setIsLoading(true);
@@ -66,7 +60,7 @@ const UserDetail = () => {
               <ChevronLeft color="white" />
             </Button>
           </div>
-          <div className="absolute top-0 z-0 h-[160px] w-[140vw] self-center rounded-b-full bg-[#FF6100] md:rounded-none"></div>
+          <div className="absolute top-0 z-0 h-[160px] w-full self-center bg-[#FF6100]"></div>
           <div className="z-50 flex w-full flex-col items-center md:items-start">
             <div className="relative mt-10 h-32 w-32 overflow-hidden rounded-full border-4 border-white">
               <Image
@@ -108,14 +102,17 @@ const UserDetail = () => {
               </TooltipProvider>
             </div>
           </div>
-          <div className="w-full">
+          <div className="w-fit">
             <h1>Profile Details</h1>
             {user.gender && <div>{user.gender}</div>}
             {user.birthDate && (
               <div>{format(new Date(user.birthDate), "dd MMMM yyyy")}</div>
             )}
             <div>
-              <h1>Address</h1>
+              <div className="flex w-full items-center justify-between">
+                <h1>Address</h1>
+                <DialogShowAddress userId={id} refetchAddresses={refetch} />
+              </div>
               <div>
                 {primaryAddress && addresses ? (
                   <Card key={primaryAddress.id} className="w-fit p-4">
@@ -137,10 +134,19 @@ const UserDetail = () => {
                     </CardContent>
                   </Card>
                 ) : (
-                  <div>No address registered</div>
+                  <div>
+                    <p>No address registered yet</p>
+                    <Button
+                      className="px-3 py-2"
+                      onClick={() =>
+                        router.push(`/user/${user.id}/add-address`)
+                      }
+                    >
+                      Add Address
+                    </Button>
+                  </div>
                 )}
               </div>
-              <DialogShowAddress userId={id} />
             </div>
             <Button
               className="px-4 py-2"

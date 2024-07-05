@@ -12,7 +12,7 @@ const useGetAddress = (addressId: number) => {
   const getAddress = async () => {
     try {
       const { data } = await axiosInstance.get<Address>(
-        `/address/get-address/${addressId}`,
+        `/addresses/${addressId}`,
       );
 
       setAddress(data);

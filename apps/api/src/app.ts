@@ -99,7 +99,7 @@ export default class App {
     this.app.use('/api/users', userRouter.getRouter());
     this.app.use('/api/discounts', discountRouter.getRouter());
     // this.app.use('/api/vouchers', voucherRouter.getRouter());
-    this.app.use('/api/address', addressRouter.getRouter());
+    this.app.use('/api/addresses', addressRouter.getRouter());
     this.app.use('/api/carts', cartRouter.getRouter());
     this.app.use('/api/delivery', deliveryRouter.getRouter());
     this.app.use('/api/reports', reportRouter.getRouter());
