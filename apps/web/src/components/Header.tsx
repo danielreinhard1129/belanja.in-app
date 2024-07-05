@@ -32,6 +32,7 @@ export const Header = () => {
     localStorage.removeItem("Authorization");
     localStorage.removeItem("token");
     setIsLoggedIn(false);
+    setIsLoggedIn(false);
     router.replace("/");
   };
 
@@ -46,6 +47,9 @@ export const Header = () => {
   const scrollThreshold = 40;
 
   useEffect(() => {
+    const checkHeader = localStorage.getItem("Authorization");
+    setIsLoggedIn(!!checkHeader);
+
     const checkHeader = localStorage.getItem("Authorization");
     setIsLoggedIn(!!checkHeader);
 
@@ -76,6 +80,7 @@ export const Header = () => {
       <div className="container mx-auto flex h-20 items-center justify-between p-0 px-6 py-2">
         <Logo />
         <div className="flex items-center gap-2 md:gap-6">
+          {isLoggedIn && user && !isLoading ? (
           {isLoggedIn && user && !isLoading ? (
             <div className="flex items-center gap-10">
               <div

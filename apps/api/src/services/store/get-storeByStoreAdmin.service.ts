@@ -10,15 +10,18 @@ export const getStoreBySuperAdminService = async (id: number) => {
       throw new Error('Store admin not found');
     }
 
-    const store = await prisma.store.findFirst({
+    const stores = await prisma.store.findFirst({
       where: { storeAdminId: storeAdmin.id, isDelete: false },
+      include: {
+        City: true,
+      },
     });
 
-    if (!store) {
+    if (!stores) {
       throw new Error('Store is not found');
     }
 
-    return store;
+    return stores;
   } catch (error) {
     throw error;
   }

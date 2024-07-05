@@ -3,11 +3,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { MoreHorizontal } from "lucide-react";
+import { Eye, MoreHorizontal } from "lucide-react";
 import React from "react";
 import DeleteAlertDialog from "./DeleteAlertDialog";
 import DialogDetailProduct from "./DialogDetailProduct";
 import DialogEditProduct from "./DialogEditProduct";
+import Link from "next/link";
 
 interface PopoverMenuProps {
   productId: number;
@@ -46,11 +47,16 @@ const PopoverProductMenu: React.FC<PopoverMenuProps> = ({
             open={deleteAlertDialog}
             onOpenChange={isDeleteAlertDialog}
           />
-          <DialogDetailProduct
+          {/* <DialogDetailProduct
             open={dialogDetailProduct}
             onOpenChange={isDialogDetailProduct}
             productId={productId}
-          />
+          /> */}
+          <Link href={`/admin/products/${productId}`}>
+            <div className="flex cursor-pointer items-center gap-2">
+              <Eye size={16} /> View Detail
+            </div>
+          </Link>
         </div>
       </PopoverContent>
     </Popover>

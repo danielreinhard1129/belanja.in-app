@@ -4,10 +4,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { NotebookPen } from "lucide-react";
 import React, { useState } from "react";
 import DialogSettingStoreProducts from "./DialogSettingStoreProducts";
-// import DialogStockMutation from "./DialogStockMutation";
 import DialogRequestStockMutation from "./DialogRequestStockMutation";
 import DialogStockActionStoreAdmin from "./DialogStockActionStoreAdmin";
 import { BookMarked } from "lucide-react";
@@ -21,8 +19,8 @@ const PopoverStockRequest: React.FC<PopoverStockMenuProps> = ({
   storeId,
   refetch,
 }) => {
-  // const [isDialogMutationStock, setIsDialogMutationStock] =
-  //   useState<boolean>(false);
+  const [isDialogStockAction, setIsDialogStockAction] =
+    useState<boolean>(false);
   const [isDialogSettingStoreProducts, setIsDialogSettingStoreProducts] =
     useState<boolean>(false);
   const [isDialogRequestStockMutation, setIsDialogRequestStockMutation] =
@@ -36,12 +34,6 @@ const PopoverStockRequest: React.FC<PopoverStockMenuProps> = ({
         </div>
       </PopoverTrigger>
       <PopoverContent className="w-32 text-xs">
-        {/* <DialogStockMutation
-          storeId={storeId}
-          refetch={refetch}
-          open={isDialogMutationStock}
-          onOpenChange={setIsDialogMutationStock}
-        /> */}
         <DialogSettingStoreProducts
           storeId={storeId}
           refetch={refetch}

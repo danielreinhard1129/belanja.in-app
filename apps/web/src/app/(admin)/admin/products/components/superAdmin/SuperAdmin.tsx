@@ -25,7 +25,7 @@ const SuperAdmin: React.FC = () => {
   const [pageCheckboxes, setPageCheckboxes] = useState<{
     [key: number]: boolean;
   }>({});
-  const { categories } = useGetCategories();
+  const { categories, refetch: refetchCategories } = useGetCategories();
   const { deleteProduct, isLoading: isDeleting } = useDeleteProduct();
   const { deleteProducts, isLoading: isDeletes } = useDeleteProducts();
   const {
@@ -44,7 +44,7 @@ const SuperAdmin: React.FC = () => {
 
   const handleSearch = debounce((value: string) => {
     setSearch(value);
-  }, 1500);
+  }, 300);
 
   useEffect(() => {
     // Reset pageCheckboxes when page changes
@@ -131,8 +131,12 @@ const SuperAdmin: React.FC = () => {
               productId={selectedItems}
             />
           )}
-          <DialogSettingsCategory refetch={refetch} />
-          <DialogCreateProduct refetch={refetch} />
+          <DialogSettingsCategory
+            refetch={refetch}
+            refetchCategories={refetchCategories}
+            categories={categories}
+          />
+          <DialogCreateProduct refetch={refetch} categories={categories} />
         </div>
       </div>
       <ProductTable

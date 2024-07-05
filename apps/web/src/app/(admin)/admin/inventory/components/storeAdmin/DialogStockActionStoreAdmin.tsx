@@ -68,6 +68,7 @@ const DialogStockActionStoreAdmin: React.FC<
   };
 
   const handleConfirm = async (id: number) => {
+    refetch();
     await confirmMutation(id);
     refetchStockJournals();
     refetch();
@@ -101,7 +102,7 @@ const DialogStockActionStoreAdmin: React.FC<
         </div>
       </DrawerTrigger>
       <DrawerContent>
-        <div className="px-6">
+        <div className="px-40 pt-6">
           <div className="mb-4">
             <Select
               onValueChange={(value) => setStatus(value)}
@@ -232,23 +233,23 @@ const DialogStockActionStoreAdmin: React.FC<
                               <div className="col-span-1 text-center">:</div>
                               <div className="col-span-5">{journal.status}</div>
                               <div className="col-span-5 font-semibold">
-                                CreatedAt
+                                Date
                               </div>
                               <div className="col-span-1 text-center">:</div>
                               <div className="col-span-5">
                                 {format(
                                   new Date(journal.createdAt),
-                                  "yyyy-MM-dd HH:mm:ss",
+                                  "yyyy-MM-dd",
                                 )}
                               </div>
                               <div className="col-span-5 font-semibold">
-                                UpdatedAt
+                                Time
                               </div>
                               <div className="col-span-1 text-center">:</div>
                               <div className="col-span-5">
                                 {format(
-                                  new Date(journal.updatedAt),
-                                  "yyyy-MM-dd HH:mm:ss",
+                                  new Date(journal.createdAt),
+                                  "HH:mm:ss",
                                 )}
                               </div>
                             </div>
@@ -265,7 +266,7 @@ const DialogStockActionStoreAdmin: React.FC<
                                     {isReject ? (
                                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                     ) : null}
-                                    Reject
+                                    REJECT
                                   </Button>
                                   <Button
                                     disabled={isConfirm}
@@ -275,7 +276,7 @@ const DialogStockActionStoreAdmin: React.FC<
                                     {isConfirm ? (
                                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                     ) : null}
-                                    Confirm
+                                    CONFIRM
                                   </Button>
                                 </>
                               ) : storeId === journal.fromStoreId &&
@@ -288,7 +289,7 @@ const DialogStockActionStoreAdmin: React.FC<
                                   {isArrive ? (
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                   ) : null}
-                                  Arrive
+                                  ARRIVE
                                 </Button>
                               ) : null}
                             </div>

@@ -13,6 +13,7 @@ import React from "react";
 import PopoverStockRequest from "./PopoverStockRequest";
 import useGetStoreByStoreAdmin from "@/hooks/api/store/useGetStoreByStoreAdmin";
 import { useAppSelector } from "@/redux/hooks";
+import { Ban, Check } from "lucide-react";
 
 interface StoreAdminProps {
   stocks: Stock;
@@ -53,6 +54,7 @@ const StoreAdmin: React.FC<StoreAdminProps> = ({
             <TableHead>Product</TableHead>
             <TableHead>Product ID</TableHead>
             <TableHead>Quantity</TableHead>
+            <TableHead>Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -63,11 +65,18 @@ const StoreAdmin: React.FC<StoreAdminProps> = ({
                 <TableCell>{store.product.name}</TableCell>
                 <TableCell>{store.product.id}</TableCell>
                 <TableCell>{store.qty}</TableCell>
+                <TableCell>
+                  {store.isActive ? (
+                    <Check style={{ color: "green" }} />
+                  ) : (
+                    <Ban style={{ color: "red" }} />
+                  )}
+                </TableCell>
               </TableRow>
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={4} className="border-b px-4 py-2 text-center">
+              <TableCell colSpan={5} className="border-b px-4 py-2 text-center">
                 Data Not Found
               </TableCell>
             </TableRow>

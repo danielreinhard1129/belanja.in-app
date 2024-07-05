@@ -14,10 +14,7 @@ const useAddUserAddress = (userId: number) => {
   const addUserAddress = async (payload: Address) => {
     try {
       setIsLoading(true);
-      const { data } = await axiosInstance.post(
-        `/addresses`,
-        payload,
-      );
+      const { data } = await axiosInstance.post(`/addresses`, payload);
 
       toast.success(`${data.message}`);
       router.push(`/user/${userId}`);

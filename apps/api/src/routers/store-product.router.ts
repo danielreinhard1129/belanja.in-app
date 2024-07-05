@@ -44,6 +44,11 @@ export class StoreProductRouter {
       '/by-super-admin',
       this.storeProductController.getStocksBySuperAdmin,
     );
+    this.router.post(
+      '/:id',
+      verifyToken,
+      this.storeProductController.updateIsActiveStockSuperAdmin,
+    );
   }
 
   getRouter(): Router {

@@ -92,7 +92,7 @@ const DialogStockActionSuperAdmin: React.FC<
         </div>
       </DrawerTrigger>
       <DrawerContent>
-        <div className="p-10">
+        <div className="px-40 pt-6">
           <Table>
             <TableHeader>
               <TableRow>
@@ -205,23 +205,23 @@ const DialogStockActionSuperAdmin: React.FC<
                               <div className="col-span-1 text-center">:</div>
                               <div className="col-span-5">{journal.status}</div>
                               <div className="col-span-5 font-semibold">
-                                CreatedAt
+                                Date
                               </div>
                               <div className="col-span-1 text-center">:</div>
                               <div className="col-span-5">
                                 {format(
                                   new Date(journal.createdAt),
-                                  "yyyy-MM-dd HH:mm:ss",
+                                  "yyyy-MM-dd",
                                 )}
                               </div>
                               <div className="col-span-5 font-semibold">
-                                UpdatedAt
+                                Time
                               </div>
                               <div className="col-span-1 text-center">:</div>
                               <div className="col-span-5">
                                 {format(
-                                  new Date(journal.updatedAt),
-                                  "yyyy-MM-dd HH:mm:ss",
+                                  new Date(journal.createdAt),
+                                  "HH:mm:ss",
                                 )}
                               </div>
                             </div>
@@ -235,7 +235,7 @@ const DialogStockActionSuperAdmin: React.FC<
                                 {isReject && (
                                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                 )}
-                                {isReject ? "Loading" : "Reject"}
+                                {isReject ? "LOADING" : "REJECT"}
                               </Button>
                               <Button
                                 disabled={isConfirm}
@@ -245,7 +245,7 @@ const DialogStockActionSuperAdmin: React.FC<
                                 {isConfirm && (
                                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                 )}
-                                {isConfirm ? "Loading" : "Confirm"}
+                                {isConfirm ? "LOADING" : "CONFIRM"}
                               </Button>
                             </div>
                           </DialogContent>
