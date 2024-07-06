@@ -25,6 +25,8 @@ import {
 } from "@/components/ui/select";
 import { FormSchema } from "./AddUserAddressSchema";
 import Map from "../Map";
+import { ChevronLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface AddUserAddressFormProps {
   userId: number;
@@ -40,6 +42,8 @@ const AddUserAddressForm: React.FC<AddUserAddressFormProps> = ({ userId }) => {
   } | null>(null);
 
   const { data: provinces, isLoading: provincesLoading } = useGetProvinces({});
+
+  const router = useRouter();
 
   const {
     data: cities,
@@ -90,9 +94,26 @@ const AddUserAddressForm: React.FC<AddUserAddressFormProps> = ({ userId }) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex w-full flex-col px-4"
+        className="container flex w-full flex-col px-4"
       >
         <div className="space-y-4">
+          <div className="container flex h-fit w-full items-center justify-between gap-4 bg-white px-0 pb-4 pt-4 md:justify-start">
+            <Button
+              variant="secondary"
+              className="rounded-full p-2 text-black hover:bg-gray-400 hover:text-white"
+              onClick={() => router.push(`/user/${userId}`)}
+            >
+              <ChevronLeft size={16} />
+            </Button>
+            <h1 className="text-lg font-medium">Add Address</h1>
+            <Button
+              variant="secondary"
+              className="rounded-full p-2 opacity-0"
+              onClick={() => router.push("/")}
+            >
+              <ChevronLeft size={16} color="black" />
+            </Button>
+          </div>
           <FormField
             control={form.control}
             name="addressLine"
