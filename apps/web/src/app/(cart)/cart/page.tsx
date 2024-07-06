@@ -10,6 +10,7 @@ import { set } from "lodash";
 import useIncrementCart from "@/hooks/api/cart/useIncrementCart";
 import useDecrementCart from "@/hooks/api/cart/useDecrementCart";
 import useRemoveItem from "@/hooks/api/cart/useRemoveItem";
+import AuthGuardTrx from "@/hoc/AuthGuardTrx";
 
 const Cart = () => {
   const { id: userId } = useAppSelector((state) => state.user);
@@ -123,4 +124,4 @@ const Cart = () => {
   );
 };
 
-export default Cart;
+export default AuthGuardTrx(Cart);

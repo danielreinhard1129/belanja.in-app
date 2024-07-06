@@ -48,9 +48,6 @@ export const Header = () => {
 
   useEffect(() => {
 
-    const checkHeader = localStorage.getItem("Authorization");
-    setIsLoggedIn(!!checkHeader);
-
     const handleScroll = () => {
       const currentScrollTop =
         window.pageYOffset || document.documentElement.scrollTop;
@@ -84,17 +81,18 @@ export const Header = () => {
                 className="hidden cursor-pointer items-center gap-2 hover:underline md:flex"
                 onClick={() => router.push(`/user/${id}`)}
               >
-                <Avatar>
-                  <AvatarImage
+                <div className="relative h-6 w-6 overflow-hidden rounded-full">
+                  <Image
                     src={
                       (user.avatarUrl
                         ? `${appConfig.baseUrl}/assets${user.avatarUrl}`
                         : defaultAvatar) as string
                     }
-                    alt="avatar"
+                    alt="pfp"
+                    fill
                     className="object-cover"
                   />
-                </Avatar>
+                </div>
                 <div className="text-sm font-medium">{name}</div>
               </div>
               <div>
@@ -158,10 +156,6 @@ export const Header = () => {
                         </div>
                         <ChevronRight size={20} />
                       </div>
-                      <Separator />
-                      <div>Cart</div>
-                      <div>Cart</div>
-                      <div>Cart</div>
                       <Separator />
                       <div
                         className="cursor-pointer text-red-500 hover:underline"

@@ -19,21 +19,16 @@ export const updateUserDetailsService = async (
       throw new Error('User not found');
     }
 
-    // if (body.email && body.email !== user.email) {
-    //   const userEmail = await prisma.user.findFirst({
-    //     where: { email: { equals: body.email } },
-    //   });
-    //   if (userEmail) {
-    //     throw new Error('Email already in use');
-    //   }
-    // }
+    if (body.email && body.email !== user.email) {
+      const userEmail = await prisma.user.findFirst({
+        where: { email: { equals: body.email } },
+      });
+      if (userEmail) {
+        throw new Error('Email already in use');
+      }
+    }
 
     let avatarUrl = user.avatarUrl;
-
-    if (file) {
-      avatarUrl = `/images/${file.filename}`;
-      // const imagePath = join(__dirname, '../../../public' + user.avatarUrl);
-    }
 
     const userDetails = await prisma.user.update({
       where: { id: userId },

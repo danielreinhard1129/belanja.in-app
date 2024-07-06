@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useEffect, useState } from "react";
 import useGetProduct from "@/hooks/api/product/useGetProduct";
 import { appConfig } from "@/utils/config";
 import Image from "next/image";
-import { notFound } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import ProductSkeleton from "./components/ProductSkeleton";
 import { Badge } from "@/components/ui/badge";
 import useGetCartsById from "@/hooks/api/cart/useGetCartById";
@@ -16,21 +15,42 @@ import { Card, CardContent } from "@/components/ui/card";
 import defaultStore from "../../../../public/default.png";
 import { Separator } from "@/components/ui/separator";
 import { MapPin } from "lucide-react";
+import {
+  Carousel,
+  CarouselApi,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
+import DiscountCard from "./components/DiscountCard";
 
 const ProductPage = ({ params }: { params: { id: string } }) => {
   const { id: userId } = useAppSelector((state) => state.user);
   const { carts, refetch: refetchCart } = useGetCartsById(userId);
   const { addToCart } = useAddToCart();
   const { product, isLoading } = useGetProduct(Number(params.id));
-  const [selectedImage, setSelectedImage] = useState(0);
-  const storeId = product?.storeProduct[0].storeId!
-  
-  console.log(product);
-  
+  const [count, setCount] = useState(0);
+  const [current, setCurrent] = useState(0);
+  const [api, setApi] = useState<CarouselApi>();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!api) return;
+
+    setCount(api.scrollSnapList().length);
+    setCurrent(api.selectedScrollSnap() + 1);
+
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap() + 1);
+    });
+  }, [api]);
 
   const handleAddToCart = async () => {
-    await addToCart(product?.id, storeId );
-    refetchCart();
+    if (userId !== 0) {
+      await addToCart(product?.id, 1);
+      refetchCart();
+    } else {
+      router.push("/login");
+    }
   };
   console.log(carts);
 
@@ -44,51 +64,58 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
 
   return (
     <div className="container flex h-screen flex-col px-0 pt-20 md:flex-row md:pt-28">
-      <div className="relative w-full md:w-1/2">
-        <div className="relative aspect-square overflow-hidden rounded-none md:rounded-3xl">
-          {product ? (
-            <Image
-              src={`${appConfig.baseUrl}/assets${product?.images[selectedImage].images}`}
-              alt={`product-${selectedImage}`}
-              fill
-              className="object-cover"
-            />
-          ) : (
-            <Skeleton className="h-full w-full" />
-          )}
-        </div>
-        <div className="absolute right-3 top-3 grid h-80 w-20 grid-rows-4 gap-2 opacity-50 transition-opacity duration-500 hover:opacity-100 md:right-10 md:top-10 md:h-28 md:w-28 md:px-0">
-          {product?.images.map((image, index) => (
-            <div
+      <div className="relative h-fit w-full px-4 md:w-1/2">
+        <Carousel className="w-full" setApi={setApi}>
+          <CarouselContent>
+            {product?.images.map((image, index) => (
+              <CarouselItem key={index}>
+                <div className="">
+                  <Card className="aspect-square w-full overflow-hidden rounded-2xl bg-gray-100">
+                    <CardContent className="p-0">
+                      <div
+                        key={index}
+                        className="relative aspect-square w-full overflow-hidden"
+                      >
+                        <Image
+                          src={`${appConfig.baseUrl}/assets${image.images}`}
+                          alt={`product-${index + 1}`}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
+        <div className="absolute bottom-0 left-0 right-0 mx-auto flex w-fit py-1.5">
+          {Array.from({ length: count }).map((_, index) => (
+            <span
               key={index}
-              className="relative col-span-1 aspect-square cursor-pointer overflow-hidden rounded-lg"
-              onClick={() => setSelectedImage(index)}
-            >
-              <Image
-                src={`${appConfig.baseUrl}/assets${image.images}`}
-                alt={`product-${index + 1}`}
-                fill
-                className="object-cover"
-              />
-            </div>
+              className={`mx-[2px] h-1 w-10 rounded-full ${
+                current === index + 1 ? "bg-[#FF6100]" : "bg-[#CDCDCD]"
+              }`}
+            ></span>
           ))}
         </div>
       </div>
-      <div className="w-full space-y-3 px-4 pt-4 md:w-1/2 md:px-0 md:pl-20 md:pt-0">
+      <div className="w-full space-y-2 px-4 pt-4 md:w-1/2 md:px-0 md:pl-20 md:pt-0">
         {product?.categories
           .filter((category) => category.productId === product.id)
           .map((category) => (
             <Badge
               key={category.categoryId}
-              className="bg-[#FF6100] text-xs font-normal"
+              className="rounded-lg bg-[#97e6a8] text-xs font-normal text-[#19792e] hover:bg-[#97e6a8] hover:text-[#19792e]"
             >
               {category.category.name}
             </Badge>
           ))}
-        <h1 className="line-clamp-2 w-full text-2xl font-medium">
+        <h1 className="line-clamp-2 w-full pt-2 text-lg font-medium">
           {product?.name}
         </h1>
-        <p className="text-3xl font-semibold">
+        <p className="text-2xl font-semibold">
           {new Intl.NumberFormat("id-ID", {
             style: "currency",
             currency: "IDR",
@@ -107,9 +134,22 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
             ))}
           <p className="text-sm text-black/60">Weight: {product?.weight}gr</p>
         </div>
-        <p className="line-clamp-2 text-sm text-black/60">
-          {product?.description}
-        </p>
+        <Separator />
+        <h2 className="text-base font-medium">Description</h2>
+        <p className="text-sm text-black/60">{product?.description}</p>
+        {product?.discounts
+          .filter((discount) => discount.productId === product.id)
+          .map((discount, index) => (
+            <DiscountCard
+              key={index}
+              discountLimit={discount.discountLimit}
+              discountType={discount.discountType}
+              discountValue={discount.discountvalue}
+              index={index}
+              minPurchase={discount.minPurchase}
+              title={discount.title}
+            />
+          ))}
         {product?.storeProduct
           .filter((storeProduct) => storeProduct.productId === product.id)
           .map((storeProduct, index) => (
@@ -126,12 +166,10 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
                 <Separator />
                 <div className="flex items-start gap-2 text-neutral-500">
                   <MapPin size={16} className="mt-[2px]" />
-                  <div>
-                    <p className="text-sm">Store Location</p>
-                    <p className="text-sm font-medium">
-                      {storeProduct.store.City.citName}
-                    </p>
-                  </div>
+                  <p className="text-sm">Store Location:</p>
+                  <p className="text-sm font-medium">
+                    {storeProduct.store.City.citName}
+                  </p>
                 </div>
               </CardContent>
             </Card>

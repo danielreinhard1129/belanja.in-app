@@ -28,6 +28,11 @@ export class ReportRouter {
       verifyToken,
       this.reportController.getSalesReportByProductController,
     );
+    this.router.get(
+      '/most-buy',
+      verifyToken,
+      this.reportController.getMostBuyProductController,
+    );
   }
 
   getRouter(): Router {

@@ -4,34 +4,29 @@ import { Button } from "@/components/ui/button";
 import useSendChangePassword from "@/hooks/api/auth/useSendChangePassword";
 import { useAppSelector } from "@/redux/hooks";
 import { appConfig } from "@/utils/config";
-import { format } from "date-fns";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import avatarDefault from "../../../../public/default-avatar.png";
-import { ChevronLeft, Circle, Edit } from "lucide-react";
+import { ChevronLeft, Pencil } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Card, CardContent } from "@/components/ui/card";
 import useGetUser from "@/hooks/api/auth/useGetUser";
-import useGetUserAddress from "@/hooks/api/address/useGetUserAddress";
-import DialogShowAddress from "./components/DialogShowAddress";
+import { TabsUser } from "./components/TabsUser";
+import { Card, CardContent } from "@/components/ui/card";
+import CardAddresses from "./components/CardAddresses";
 
 const UserDetail = () => {
   const { id } = useAppSelector((state) => state.user);
   const { user } = useGetUser(id);
-  const { addresses, refetch } = useGetUserAddress(user?.id || id);
   const router = useRouter();
 
-  const {
-    isLoading: isSendingChangePassword,
-    sendChangePassword,
-    onSuccess,
-  } = useSendChangePassword();
+  const { isLoading: isSendingChangePassword, sendChangePassword } =
+    useSendChangePassword();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleEditProfile = async () => {
@@ -45,117 +40,106 @@ const UserDetail = () => {
     }
   };
 
-  const primaryAddress = addresses?.find((addr) => addr.isPrimary);
-
   return (
     <>
+      <div className="container fixed left-0 right-0 z-50 mx-auto flex h-fit w-full items-center justify-between bg-white px-4 pb-4 pt-4">
+        <Button
+          variant="secondary"
+          className="rounded-full p-2 text-black hover:bg-gray-400 hover:text-white"
+          onClick={() => router.push("/")}
+        >
+          <ChevronLeft size={16} />
+        </Button>
+        <h1 className="text-lg font-medium">Profile</h1>
+        <Button
+          variant="secondary"
+          className="rounded-full p-2 opacity-0"
+          onClick={() => router.push("/")}
+        >
+          <ChevronLeft size={16} color="black" />
+        </Button>
+      </div>
       {user ? (
-        <div className="container flex flex-col items-center gap-4 overflow-hidden px-4 md:items-start md:px-0">
-          <div className="z-50 flex h-fit w-full items-center pt-4">
-            <Button
-              variant="ghost"
-              className="px-0 py-0"
-              onClick={() => router.push("/")}
-            >
-              <ChevronLeft color="white" />
-            </Button>
-          </div>
-          <div className="absolute top-0 z-0 h-[160px] w-full self-center bg-[#FF6100]"></div>
-          <div className="z-50 flex w-full flex-col items-center md:items-start">
-            <div className="relative mt-10 h-32 w-32 overflow-hidden rounded-full border-4 border-white">
+        <div className="container flex flex-col gap-4 px-4 pt-20 md:flex-row">
+          <Card className="relative flex w-full flex-col items-center gap-4 overflow-hidden rounded-xl px-3 py-6 shadow-md md:items-start">
+            <div className="absolute right-0 top-0 h-[90px] w-full bg-[#FF6100]">
               <Image
-                src={
-                  user?.avatarUrl
-                    ? `${appConfig.baseUrl}/assets${user.avatarUrl}`
-                    : avatarDefault
-                }
-                alt="profile picture"
+                src="https://images.unsplash.com/photo-1719527126300-687e4145b97f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 fill
-                className="object-cover"
+                objectFit="cover"
+                alt="bg"
               />
             </div>
-            <div className="flex w-full flex-col items-center justify-between gap-3 md:flex-row">
-              <div className="pt-4 text-xl font-medium">{user?.name}</div>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="secondary"
-                      className="px-2 py-2"
-                      onClick={handleEditProfile}
-                      disabled={isLoading}
-                    >
-                      {isLoading ? (
-                        "Loading..."
-                      ) : (
-                        <div className="flex gap-4">
-                          <Edit size={20} />
+            <CardContent className="flex w-full flex-col items-center gap-4 px-2">
+              <div className="flex w-full flex-col items-center">
+                <div className="relative h-32 w-32">
+                  <div className="absolute bottom-0 left-[88px] z-20">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="default"
+                            className="group h-10 w-10 rounded-full border-2 border-white px-2 transition-all duration-300 hover:w-[120px]"
+                            onClick={handleEditProfile}
+                            disabled={isLoading}
+                          >
+                            {isLoading ? (
+                              "Loading..."
+                            ) : (
+                              <div className="flex items-center gap-2">
+                                <Pencil size={14} />
+                                <p className="hidden font-normal transition-all group-hover:flex">
+                                  Edit profile
+                                </p>
+                              </div>
+                            )}
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
                           <p>Edit Profile</p>
-                        </div>
-                      )}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Edit Profile</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-          </div>
-          <div className="w-fit">
-            <h1>Profile Details</h1>
-            {user.gender && <div>{user.gender}</div>}
-            {user.birthDate && (
-              <div>{format(new Date(user.birthDate), "dd MMMM yyyy")}</div>
-            )}
-            <div>
-              <div className="flex w-full items-center justify-between">
-                <h1>Address</h1>
-                <DialogShowAddress userId={id} refetchAddresses={refetch} />
-              </div>
-              <div>
-                {primaryAddress && addresses ? (
-                  <Card key={primaryAddress.id} className="w-fit p-4">
-                    <CardContent className="flex items-center gap-4 p-0 text-sm text-black/70">
-                      <div>
-                        <Circle
-                          fill="#FF6100"
-                          size={12}
-                          className="text-[#FF6100]"
-                        />
-                      </div>
-                      <p>
-                        {primaryAddress.addressLine},{" "}
-                        {primaryAddress.subdistricts.subdistrictName},{" "}
-                        {primaryAddress.cities.citName},{" "}
-                        {primaryAddress.cities.province.provinceName},{" "}
-                        {primaryAddress.cities.postal_code}
-                      </p>
-                    </CardContent>
-                  </Card>
-                ) : (
-                  <div>
-                    <p>No address registered yet</p>
-                    <Button
-                      className="px-3 py-2"
-                      onClick={() =>
-                        router.push(`/user/${user.id}/add-address`)
-                      }
-                    >
-                      Add Address
-                    </Button>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
-                )}
+                  <Image
+                    src={
+                      user?.avatarUrl
+                        ? `${appConfig.baseUrl}/assets${user.avatarUrl}`
+                        : avatarDefault
+                    }
+                    alt="profile picture"
+                    fill
+                    className="z-10 rounded-full border-4 border-white object-cover"
+                  />
+                </div>
+                <div className="flex w-full flex-col items-center justify-between gap-2 pt-2">
+                  <p className="text-xl font-medium">{user?.name}</p>
+                </div>
               </div>
-            </div>
-            <Button
-              className="px-4 py-2"
-              onClick={() => sendChangePassword({ id })}
-              disabled={isSendingChangePassword}
-            >
-              {isSendingChangePassword ? "Loading..." : "Change Password"}
-            </Button>
-          </div>
+              <TabsUser
+                email={user.email}
+                birthDate={user.birthDate}
+                gender={user.gender}
+                id={user.id}
+              />
+              <div className="w-full flex gap-2">
+                <Button
+                  className="px-4 py-2 w-full"
+                  onClick={() => sendChangePassword({ id })}
+                  disabled={isSendingChangePassword}
+                >
+                  {isSendingChangePassword ? "Loading..." : "Change Password"}
+                </Button>
+                <Button
+                  className="px-4 py-2 w-full"
+                  onClick={() => router.push("/recent-orders")}
+                >
+                  Recent Orders
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+          <CardAddresses id={user.id} />
         </div>
       ) : (
         <div>Loading...</div>
