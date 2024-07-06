@@ -47,8 +47,6 @@ export const Header = () => {
   const scrollThreshold = 40;
 
   useEffect(() => {
-    const checkHeader = localStorage.getItem("Authorization");
-    setIsLoggedIn(!!checkHeader);
 
     const handleScroll = () => {
       const currentScrollTop =
