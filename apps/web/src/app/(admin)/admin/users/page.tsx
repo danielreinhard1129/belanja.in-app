@@ -80,7 +80,7 @@ const Users = () => {
     <main className="container py-16">
       <div className="mx-auto max-w-6xl">
         <h2 className="mb-4 text-2xl font-bold">Users</h2>
-        <div className="container border-2 pb-6 shadow-xl">
+        <div className="container border-2 bg-white pb-6 shadow-xl">
           <div className="my-4 flex justify-between">
             <div className="flex justify-between gap-4">
               <Select

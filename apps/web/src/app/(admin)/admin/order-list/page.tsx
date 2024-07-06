@@ -61,7 +61,7 @@ const OrderList = () => {
   return (
     <main className="container py-16">
       <h2 className="mx-auto mb-4 max-w-6xl text-2xl font-bold">Order list</h2>
-      <div className="container mx-auto mb-10 max-w-6xl border-2 shadow-xl">
+      <div className="container mx-auto mb-10 max-w-6xl border-2 bg-white py-2 shadow-xl">
         {adminRole === "STOREADMIN" ? null : adminRole === "SUPERADMIN" ? (
           <Select onValueChange={handleStoreChange} defaultValue="all">
             <SelectTrigger className="m-4 mb-2 w-[180px]">

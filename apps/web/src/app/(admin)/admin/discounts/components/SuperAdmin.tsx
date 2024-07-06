@@ -65,7 +65,7 @@ const DiscountsSuperAdmin = () => {
   return (
     <main className="mx-auto max-w-6xl">
       <h2 className="mb-4 text-2xl font-bold">Discounts</h2>
-      <div className="container border-2 pb-6 shadow-xl">
+      <div className="container border-2 bg-white pb-6 shadow-xl">
         <div className="my-4 flex justify-between">
           <div>
             <Select onValueChange={handleStoreChange} defaultValue="all">

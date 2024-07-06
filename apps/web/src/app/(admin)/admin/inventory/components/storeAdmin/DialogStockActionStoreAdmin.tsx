@@ -47,6 +47,9 @@ interface DialogStockActionStoreAdminProps {
 const DialogStockActionStoreAdmin: React.FC<
   DialogStockActionStoreAdminProps
 > = ({ storeId, refetch }) => {
+  const now = new Date();
+  const [filterMonth, setFilterMonth] = useState(`${now.getMonth() + 1}`);
+  const [filterYear, setFilterYear] = useState("2024");
   const [page, setPage] = useState<number>(1);
   const [status, setStatus] = useState<string>("WAITING_ADMIN_CONFIRMATION");
   const {
@@ -58,6 +61,8 @@ const DialogStockActionStoreAdmin: React.FC<
     page,
     take: 5,
     status,
+    filterMonth,
+    filterYear,
   });
   const { confirmMutation, isLoading: isConfirm } = useConfirmStockMutation();
   const { rejectMutation, isLoading: isReject } = useRejectStockMutation();

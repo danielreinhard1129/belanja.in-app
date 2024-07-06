@@ -38,7 +38,7 @@ const StoreAdmin: React.FC<StoreAdminProps> = ({
   return (
     <main className="mx-auto max-w-6xl">
       <h2 className="mb-4 text-2xl font-bold">Inventory</h2>
-      <div className="container max-w-6xl border-2 pb-6 shadow-xl">
+      <div className="container max-w-6xl border-2 bg-white pb-6 shadow-xl">
         <div className="my-4 flex justify-between">
           <Input
             type="text"

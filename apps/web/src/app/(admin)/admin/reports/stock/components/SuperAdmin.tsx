@@ -95,7 +95,7 @@ const SuperAdmin = () => {
   return (
     <main className="mx-auto max-w-6xl">
       <h2 className="mb-4 text-2xl font-bold">Stock Journal</h2>
-      <div className="container border-2 pb-6 shadow-xl">
+      <div className="container border-2 bg-white pb-6 shadow-xl">
         <div className="my-4 flex justify-between">
           <div className="flex justify-between gap-4">
             <Select onValueChange={handleStoreChange} defaultValue="all">
@@ -313,7 +313,7 @@ const SuperAdmin = () => {
           <div className="ml-4 mt-2 flex justify-start">
             <div className="mr-10 mt-2 flex gap-4">
               <p>Total Products In Store: </p>
-              <p className="font-bold">{store?.qty}</p>
+              <p className="font-bold">{store?.qty ?? "0"}</p>
             </div>
           </div>
           {stockJournals.length > 0 && (

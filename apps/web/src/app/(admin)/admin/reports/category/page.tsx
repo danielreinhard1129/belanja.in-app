@@ -94,7 +94,7 @@ const Category = () => {
     })) || [];
 
   return (
-    <main className="container my-10 max-w-6xl border-2 shadow-xl">
+    <main className="container my-10 max-w-6xl border-2 bg-white shadow-xl">
       <div className="mb-4 flex items-center justify-between gap-4">
         <div className="grid grid-cols-2 items-center gap-5">
           <div className="col-span-1">

@@ -22,13 +22,9 @@ const CardMonthlyIncome = () => {
       amount: income,
     })) || [];
   return (
-    <Card className="relative h-full pb-0 md:pb-10 pt-14 px-6 w-full rounded-xl">
+    <Card className="relative h-full w-full rounded-xl px-6 pb-0 pt-14 md:pb-10">
       <CardContent className="relative z-20">
-        <BarChartComponent
-          data={incomeMonthlyData}
-          barColor="#8884d8"
-          title="Income Report"
-        />
+        <BarChartComponent data={incomeMonthlyData} title="Income Report" />
       </CardContent>
     </Card>
   );

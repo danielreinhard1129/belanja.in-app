@@ -8,19 +8,6 @@ export const loginValidator = [
     .isEmail()
     .withMessage('Invalid email format'),
 
-  body('password')
-    .notEmpty()
-    .withMessage('Password is required')
-    .isStrongPassword({
-      minLength: 8,
-      minLowercase: 1,
-      minUppercase: 1,
-      minNumbers: 1,
-    })
-    .withMessage(
-      'Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, and one number.',
-    ),
-
   (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
 

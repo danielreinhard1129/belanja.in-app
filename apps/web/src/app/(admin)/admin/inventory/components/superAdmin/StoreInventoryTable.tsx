@@ -55,7 +55,7 @@ const StoreInventoryTable: React.FC<StoreInventoryTableProps> = ({
           <PopoverStockRequest refetch={refetch} storeId={storeId} />
         </div>
       </div>
-      <div className="my-4 mb-10 border-2 p-5 shadow-xl">
+      <div className="my-4 mb-10 border-2 bg-white p-5 shadow-xl">
         <Table>
           <TableHeader>
             <TableRow>
