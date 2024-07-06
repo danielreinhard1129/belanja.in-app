@@ -139,16 +139,25 @@ const UpdateUserAddressForm: React.FC<UpdateUserAddressFormProps> = ({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex w-full flex-col px-4"
+        className="container flex w-full flex-col px-4"
       >
         <div className="space-y-4">
-          <div className="mt-4 flex items-center gap-4">
-            <ChevronLeft
-              size={20}
-              className="cursor-pointer"
+          <div className="container flex h-fit w-full items-center justify-between gap-4 bg-white px-0 pb-4 pt-4 md:justify-start">
+            <Button
+              variant="secondary"
+              className="rounded-full p-2 text-black hover:bg-gray-400 hover:text-white"
               onClick={() => router.push(`/user/${userId}`)}
-            />
-            <h1 className="text-lg font-semibold">Edit Address</h1>
+            >
+              <ChevronLeft size={16} />
+            </Button>
+            <h1 className="text-lg font-medium">Edit Address</h1>
+            <Button
+              variant="secondary"
+              className="rounded-full p-2 opacity-0"
+              onClick={() => router.push("/")}
+            >
+              <ChevronLeft size={16} color="black" />
+            </Button>
           </div>
           <FormField
             control={form.control}

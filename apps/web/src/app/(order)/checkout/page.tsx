@@ -19,17 +19,23 @@ import { calculateTotalWeight } from "@/helper/calculateTotalWeight";
 import useCreateNewOrder from "@/hooks/api/transaction/useCreateNewOrder";
 import Link from "next/link";
 import useGetDiscount from "@/hooks/api/discounts/useGetDiscount";
+import PaymentMethodSheet from "./components/PaymentMethodSheet";
 
 const Checkout = () => {
   const [openAddressDrawer, setOpenAddressDrawer] = useState<boolean>(false);
   const [openDiscountDrawer, setOpenDiscountDrawer] = useState<boolean>(false);
+  const [openPaymentMethodDrawer, setOpenPaymentMethodDrawer] =
+    useState<boolean>(false);
   const [openShippingDrawer, setOpenShippingDrawer] = useState<boolean>(false);
   const [openCourierDrawer, setOpenCourierDrawer] = useState<boolean>(false);
   const [openOrderSummaryDrawer, setOpenOrderSummaryDrawer] =
     useState<boolean>(false);
 
+  const [paymentMethodState, setPaymentMethodState] =
+    useState<PaymentMethodArgs>(PaymentMethodArgs.DIGITAL_PAYMENT);
+
   const { id } = useAppSelector((state) => state.user);
-  const { carts, setCarts } = useGetCartsById(id);
+  const { carts } = useGetCartsById(id);
   const { addresses, setAddresses } = useGetUserAddress(id);
   const totalWeight = calculateTotalWeight(carts);
   const selectedAddress = addresses.length
@@ -48,15 +54,16 @@ const Checkout = () => {
   } = useGetDeliveryFee({
     weight: totalWeight.toString(),
     destination: selectedAddress?.cityId.toString() || "",
-    origin: /*carts[0].stores.city ||*/ "501",
+    origin: carts[0]?.stores.cityId,
   });
-  
-  const selectedShipping =
-    shippingMethods.length ?
-    shippingMethods.find((method) => method.isSelected): undefined
 
-  const selectedMethod =
-    selectedShipping ? selectedShipping.costs.find((cost) => cost.isSelected): undefined
+  const selectedShipping = shippingMethods.length
+    ? shippingMethods.find((method) => method.isSelected)
+    : undefined;
+
+  const selectedMethod = selectedShipping
+    ? selectedShipping.costs.find((cost) => cost.isSelected)
+    : undefined;
 
   const deliveryFee = selectedMethod && selectedMethod.cost[0].value;
   const handleCreateOrder = (cartItems: ICart[]) => {
@@ -67,29 +74,18 @@ const Checkout = () => {
     createNewOrder({
       products: products,
       userId: id,
-      storeId: 1,
+      storeId: carts[0].storeId,
       deliveryFee: String(deliveryFee),
-      addressId: selectedAddress?.cityId!,
-      paymentMethod: PaymentMethodArgs.DIGITAL_PAYMENT,
+      addressId: selectedAddress?.id!,
+      paymentMethod: paymentMethodState,
       deliveryCourier: selectedShipping?.name,
-      deliveryService: selectedMethod?.description
+      deliveryService: selectedMethod?.description,
     });
   };
-  // console.log(shippingMethods);
 
   const baseURL = process.env.NEXT_PUBLIC_BASE_API_URL;
-
-  // setTimeout(() => {
-  //   if (totalWeight != weight) {
-  //     setWeight(totalWeight);
-  //   }
-  // }, 2000);
-  // setTimeout(() => {
-  //   if (selectedAddress?.cityId != addressId && selectedAddress) {
-  //     setAddressId(selectedAddress.cityId);
-  //   }
-  // }, 2000);
-  // console.log("ini totalweight", totalWeight);
+  console.log(paymentMethodState);
+  
 
   if (!carts || !carts.length) {
     return (
@@ -108,18 +104,15 @@ const Checkout = () => {
       <section className="flex flex-col gap-2 bg-white p-4">
         <h6 className="text-md font-bold">Items selected</h6>
         <div className="mb-2">
-          <p className="text-sm font-semibold">Store name</p>
-          <p className="text-sm font-light">City</p>
+          <p className="text-sm font-semibold">{carts[0].stores.name}</p>
+          <p className="text-sm font-light">{carts[0].stores.City.citName}</p>
         </div>
         {carts.map((cart, index) => (
           <SelectedItemComponent
-            userId={id}
             key={index}
             index={index}
             cart={cart}
             url={baseURL}
-            carts={carts}
-            counter={setCarts}
           />
         ))}
         <Link href={`/cart`}>
@@ -192,12 +185,18 @@ const Checkout = () => {
           )}
 
           <Separator className="h-0.5" />
-          <div className="flex items-center justify-between px-4 pt-2">
+          <div className="flex items-center justify-between px-4 pt-2" onClick={()=>setOpenPaymentMethodDrawer(true)}>
             <p>Payment method</p>
             <div className="flex justify-end">
               <ChevronRight className="max-h-4 max-w-4 font-light" />
             </div>
           </div>
+          <PaymentMethodSheet
+            openState={openPaymentMethodDrawer}
+            setOpenState={setOpenPaymentMethodDrawer}
+            radioValue={paymentMethodState}
+            setRadioValue={setPaymentMethodState}
+          />
         </div>
       </section>
       <Separator className="h-1" />

@@ -2,9 +2,8 @@
 import { toast } from "@/components/ui/use-toast";
 import { IOrderArgs } from "@/types/order.type";
 import { AxiosError } from "axios";
-import useAxios from "../useAxios";
 import { useRouter } from "next/navigation";
-import { BASE_URL } from "@/utils/config";
+import useAxios from "../useAxios";
 
 const useCreateNewOrder = () => {
   const  {axiosInstance} = useAxios()
@@ -16,7 +15,7 @@ const useCreateNewOrder = () => {
         payload,
       );
       await new Promise<void>((res)=>setTimeout(res, 500))
-      router.push(`order/order-details/${data.order.id}`)
+      router.push(`/order-details/${data.order.id}`)
     } catch (error) {
       if (error instanceof AxiosError) {
         toast({

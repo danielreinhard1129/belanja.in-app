@@ -9,7 +9,7 @@ interface AdminLayoutProps {
 
 const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
   return (
-    <div className="flex flex-col md:flex-row">
+    <div className="flex flex-col bg-gray-100 md:flex-row">
       <Navbar />
       {children}
     </div>
