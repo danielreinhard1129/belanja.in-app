@@ -145,6 +145,7 @@ export const createStockSuperAdminService = async (
             quantity: stock.qty,
             type: 'MUTATION',
             status: 'ON_PROGRESS',
+            isRead: true,
             productId: Number(stock.productId),
             storeId: Number(fromStoreId),
             fromStoreId: Number(fromStoreId),
@@ -257,6 +258,7 @@ export const createStockSuperAdminService = async (
             quantity: stock.qty,
             type: 'MUTATION',
             status: 'ON_PROGRESS',
+            isRead: true,
             productId: Number(stock.productId),
             storeId: Number(fromStoreId),
             fromStoreId: Number(fromStoreId),
@@ -330,12 +332,13 @@ export const createStockSuperAdminService = async (
         const stockJournals = await prisma.stockJournal.createMany({
           data: stocks.map((stock) => ({
             quantity: stock.qty,
-            type: 'MUTATION',
+            type: 'INCREASE',
             status: 'ON_PROGRESS',
+            isRead: true,
             productId: Number(stock.productId),
             storeId: Number(fromStoreId),
             fromStoreId: Number(fromStoreId),
-            toStoreId: toStoreId,
+            toStoreId: null,
           })),
         });
 
@@ -343,7 +346,7 @@ export const createStockSuperAdminService = async (
         const createdStockJournals = await prisma.stockJournal.findMany({
           where: {
             storeId: Number(fromStoreId),
-            type: 'MUTATION',
+            type: 'INCREASE',
           },
           orderBy: {
             createdAt: 'desc',
@@ -355,7 +358,7 @@ export const createStockSuperAdminService = async (
         const journalDetails = await prisma.journalDetail.createMany({
           data: createdStockJournals.map((journal) => ({
             stockJournalId: journal.id,
-            toStoreId: toStoreId,
+            toStoreId: null,
           })),
         });
 
@@ -404,7 +407,7 @@ export const createStockSuperAdminService = async (
           await prisma.storeProduct.update({
             where: {
               storeId_productId: {
-                storeId: Number(toStoreId),
+                storeId: Number(fromStoreId),
                 productId: Number(stock.productId),
               },
             },
@@ -416,38 +419,17 @@ export const createStockSuperAdminService = async (
           });
         }
 
-        // Update or create store products in fromStore
-        for (const stock of stocks) {
-          await prisma.storeProduct.upsert({
-            where: {
-              storeId_productId: {
-                storeId: Number(fromStoreId),
-                productId: Number(stock.productId),
-              },
-            },
-            update: {
-              qty: {
-                increment: stock.qty,
-              },
-            },
-            create: {
-              storeId: Number(fromStoreId),
-              productId: Number(stock.productId),
-              qty: stock.qty,
-            },
-          });
-        }
-
         // Create stock journals
         const stockJournals = await prisma.stockJournal.createMany({
           data: stocks.map((stock) => ({
             quantity: stock.qty,
-            type: 'MUTATION',
+            type: 'DECREASE',
             status: 'ON_PROGRESS',
+            isRead: true,
             productId: Number(stock.productId),
             storeId: Number(fromStoreId),
             fromStoreId: Number(fromStoreId),
-            toStoreId: toStoreId,
+            toStoreId: null,
           })),
         });
 
@@ -455,7 +437,7 @@ export const createStockSuperAdminService = async (
         const createdStockJournals = await prisma.stockJournal.findMany({
           where: {
             storeId: Number(fromStoreId),
-            type: 'MUTATION',
+            type: 'DECREASE',
           },
           orderBy: {
             createdAt: 'desc',
@@ -467,7 +449,7 @@ export const createStockSuperAdminService = async (
         const journalDetails = await prisma.journalDetail.createMany({
           data: createdStockJournals.map((journal) => ({
             stockJournalId: journal.id,
-            toStoreId: toStoreId,
+            toStoreId: null,
           })),
         });
 

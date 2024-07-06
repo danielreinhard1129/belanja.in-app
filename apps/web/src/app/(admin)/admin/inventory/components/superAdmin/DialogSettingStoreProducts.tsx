@@ -115,6 +115,7 @@ const DialogSettingStoreProducts: React.FC<DialogSettingStoreProductsProps> = ({
 
   const onSubmit = async (data: SchemaCreateStoreProducts) => {
     const payload = { ...data, type: activeTab, storeId: String(storeId) };
+    // console.log(payload);
     try {
       await createStockSuperAdmin(payload, storeId);
       refetch();

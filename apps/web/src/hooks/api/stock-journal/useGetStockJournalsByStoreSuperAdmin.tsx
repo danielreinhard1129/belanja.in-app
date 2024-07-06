@@ -24,9 +24,6 @@ const useGetStockJournalsByStoreSuperAdmin = (queries: IGetStocksQuery) => {
       setStockJournals(data.data);
       setMeta(data.meta);
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error);
-      }
       setStockJournals([]);
     } finally {
       setIsLoading(false);

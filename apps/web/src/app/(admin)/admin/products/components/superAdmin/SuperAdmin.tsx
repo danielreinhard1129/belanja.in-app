@@ -3,7 +3,7 @@ import Pagination from "@/components/Pagination";
 import useGetCategories from "@/hooks/api/category/useGetCategories";
 import useDeleteProduct from "@/hooks/api/product/useDeleteProduct";
 import useDeleteProducts from "@/hooks/api/product/useDeleteProducts";
-import useGetProductsByFilter from "@/hooks/api/product/useGetProductsByFilter";
+import useGetProductsByFilters from "@/hooks/api/product/useGetProductsByFilters";
 import React, { useEffect, useState } from "react";
 import CategorySelect from "../CategorySelect";
 import DeleteManyAlertDialog from "./DeleteManyAlertDialog";
@@ -33,7 +33,7 @@ const SuperAdmin: React.FC = () => {
     isLoading,
     meta,
     refetch,
-  } = useGetProductsByFilter({
+  } = useGetProductsByFilters({
     page,
     take: 5,
     sortBy: "name",
@@ -47,14 +47,12 @@ const SuperAdmin: React.FC = () => {
   }, 300);
 
   useEffect(() => {
-    // Reset pageCheckboxes when page changes
     setPageCheckboxes({});
     setSelectAll(false);
-    setSelectedItems([]); // Reset selected items
+    setSelectedItems([]);
   }, [page]);
 
   useEffect(() => {
-    // Check if all products on the current page are selected
     const allSelected = products.every((product) => pageCheckboxes[product.id]);
     setSelectAll(allSelected);
   }, [products, pageCheckboxes]);
@@ -64,12 +62,11 @@ const SuperAdmin: React.FC = () => {
     updatedPageCheckboxes[id] = !updatedPageCheckboxes[id];
     setPageCheckboxes(updatedPageCheckboxes);
 
-    // Update selected items
     const selectedIndex = selectedItems.indexOf(id);
     if (selectedIndex === -1) {
-      setSelectedItems([...selectedItems, id]); // Add to selected items
+      setSelectedItems([...selectedItems, id]);
     } else {
-      setSelectedItems(selectedItems.filter((item) => item !== id)); // Remove from selected items
+      setSelectedItems(selectedItems.filter((item) => item !== id));
     }
   };
 
@@ -79,12 +76,12 @@ const SuperAdmin: React.FC = () => {
     products.forEach((product) => {
       updatedPageCheckboxes[product.id] = !selectAll;
       if (!selectAll) {
-        updatedSelectedItems.push(product.id); // Add to selected items
+        updatedSelectedItems.push(product.id);
       }
     });
     setPageCheckboxes(updatedPageCheckboxes);
     setSelectAll(!selectAll);
-    setSelectedItems(updatedSelectedItems); // Update selected items
+    setSelectedItems(updatedSelectedItems);
   };
 
   const handleChangePaginate = ({ selected }: { selected: number }) => {
@@ -105,59 +102,65 @@ const SuperAdmin: React.FC = () => {
   const take = meta?.take || 10;
 
   return (
-    <main className="container mx-auto mb-10 max-w-6xl border-2 pb-6 shadow-xl">
-      <div className="my-4 flex justify-between">
-        <div className="flex gap-4">
-          <Input
-            type="text"
-            placeholder="Search"
-            name="search"
-            onChange={(e) => {
-              handleSearch(e.target.value);
-            }}
-          />
-          <CategorySelect
-            category={category}
-            setCategory={setCategory}
-            categories={categories}
-          />
-          <SortOrderSelect sortOrder={sortOrder} setSortOrder={setSortOrder} />
-        </div>
-        <div className="ml-4 flex items-center gap-2">
-          {selectedItems.length > 0 && (
-            <DeleteManyAlertDialog
-              handleDeletes={handleDeletes}
-              isDeletes={isDeletes}
-              productId={selectedItems}
+    <main className="mx-auto max-w-6xl">
+      <h2 className="mb-4 text-2xl font-bold">Products</h2>
+      <div className="container border-2 bg-white pb-6 shadow-xl">
+        <div className="my-4 flex justify-between">
+          <div className="flex gap-4">
+            <Input
+              type="text"
+              placeholder="Search"
+              name="search"
+              onChange={(e) => {
+                handleSearch(e.target.value);
+              }}
             />
-          )}
-          <DialogSettingsCategory
-            refetch={refetch}
-            refetchCategories={refetchCategories}
-            categories={categories}
-          />
-          <DialogCreateProduct refetch={refetch} categories={categories} />
+            <CategorySelect
+              category={category}
+              setCategory={setCategory}
+              categories={categories}
+            />
+            <SortOrderSelect
+              sortOrder={sortOrder}
+              setSortOrder={setSortOrder}
+            />
+          </div>
+          <div className="ml-4 flex items-center gap-2">
+            {selectedItems.length > 0 && (
+              <DeleteManyAlertDialog
+                handleDeletes={handleDeletes}
+                isDeletes={isDeletes}
+                productId={selectedItems}
+              />
+            )}
+            <DialogSettingsCategory
+              refetch={refetch}
+              refetchCategories={refetchCategories}
+              categories={categories}
+            />
+            <DialogCreateProduct refetch={refetch} categories={categories} />
+          </div>
         </div>
-      </div>
-      <ProductTable
-        products={products}
-        pageCheckboxes={pageCheckboxes}
-        selectAll={selectAll}
-        handleSelectOne={handleSelectOne}
-        handleSelectAll={handleSelectAll}
-        handleDelete={handleDelete}
-        isLoading={isLoading}
-        isDeleting={isDeleting}
-        refetch={refetch}
-        page={page}
-        take={take}
-      />
-      <div className="mx-auto w-fit">
-        <Pagination
-          total={total}
+        <ProductTable
+          products={products}
+          pageCheckboxes={pageCheckboxes}
+          selectAll={selectAll}
+          handleSelectOne={handleSelectOne}
+          handleSelectAll={handleSelectAll}
+          handleDelete={handleDelete}
+          isLoading={isLoading}
+          isDeleting={isDeleting}
+          refetch={refetch}
+          page={page}
           take={take}
-          onChangePage={handleChangePaginate}
         />
+        <div className="mx-auto w-fit">
+          <Pagination
+            total={total}
+            take={take}
+            onChangePage={handleChangePaginate}
+          />
+        </div>
       </div>
     </main>
   );

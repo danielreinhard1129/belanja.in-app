@@ -11,7 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import useGetStoreAdmin from "@/hooks/api/store-admin/useGetStoreAdmin";
-import useGetStore from "@/hooks/api/store/useGetStore";
+import useGetStoreById from "@/hooks/api/store/useGetStoreById";
 import useUpdateStore from "@/hooks/api/store/useUpdateStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Pencil } from "lucide-react";
@@ -30,6 +30,13 @@ import {
 } from "../validationSchema/schemaStore";
 import useGetCities from "@/hooks/api/store/useGetCities";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface DialogEditStoreProps {
   storeId: number;
@@ -44,7 +51,7 @@ export function DialogEditStore({
   onOpenChange,
   storeId,
 }: DialogEditStoreProps) {
-  const { store, refetch: refetchStore } = useGetStore(storeId);
+  const { store, refetch: refetchStore } = useGetStoreById(storeId);
   const { updateStore, isLoading } = useUpdateStore(storeId);
   const { storeAdmins } = useGetStoreAdmin();
   const { cities } = useGetCities();
@@ -109,40 +116,52 @@ export function DialogEditStore({
                 type="text"
                 placeholder="Your name store"
               />
-              <Controller
-                name="cityId"
-                control={control}
-                render={({ field }) => (
-                  <select {...field} className="mb-2 w-full">
-                    <option value="" disabled>
-                      Select a Product
-                    </option>
-                    {cities.map((city) => (
-                      <option key={city.id} value={city.id.toString()}>
-                        {city.citName}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              />
+              <div className="mb-2">
+                <Controller
+                  name="cityId"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      value={field.value?.toString()}
+                      onValueChange={(value) => field.onChange(value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a city" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {cities.map((city) => (
+                          <SelectItem key={city.id} value={city.id.toString()}>
+                            {city.citName}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </div>
               <Controller
                 name="storeAdminId"
                 control={control}
                 render={({ field }) => (
-                  <select {...field} className="mb-2 w-full">
-                    <option value="" disabled>
-                      Select a Store Admin
-                    </option>
-                    <option value="">Nothing</option>
-                    {storeAdmins.map((storeAdmin) => (
-                      <option
-                        key={storeAdmin.id}
-                        value={storeAdmin.id.toString()}
-                      >
-                        {storeAdmin.user.name}
-                      </option>
-                    ))}
-                  </select>
+                  <Select
+                    value={field.value?.toString()}
+                    onValueChange={(value) => field.onChange(value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a Store Admin" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="null">Nothing</SelectItem>
+                      {storeAdmins.map((storeAdmin) => (
+                        <SelectItem
+                          key={storeAdmin.id}
+                          value={storeAdmin.id.toString()}
+                        >
+                          {storeAdmin.user.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 )}
               />
             </div>

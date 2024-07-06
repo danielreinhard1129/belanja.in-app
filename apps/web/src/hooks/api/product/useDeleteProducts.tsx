@@ -9,7 +9,7 @@ const useDeleteProducts = () => {
   const deleteProducts = async (productId: number[]) => {
     try {
       setIsLoading(true);
-      const response = await axiosInstance.delete("/products/delete", {
+      const response = await axiosInstance.delete("/products/records", {
         data: { productId },
       });
       toast.success(response.data.message);

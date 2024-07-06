@@ -2,7 +2,7 @@ import { createStoreService } from '@/services/store/create-store.service';
 import { deleteStoreService } from '@/services/store/delete-store.service';
 import { getCitiesService } from '@/services/store/get-cities.service';
 import { getStoreService } from '@/services/store/get-store.service';
-import { getStoreBySuperAdminService } from '@/services/store/get-storeByStoreAdmin.service';
+import { getStoreByStoreAdminService } from '@/services/store/get-storeByStoreAdmin.service';
 import { getStoresService } from '@/services/store/get-stores.service';
 import { getStoresByParamsService } from '@/services/store/get-storesByParams.service';
 import { updateStoreService } from '@/services/store/update-store.service';
@@ -80,7 +80,7 @@ export class StoreController {
 
   async getStoreByStoreAdmin(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await getStoreBySuperAdminService(Number(req.params.id));
+      const result = await getStoreByStoreAdminService(Number(req.params.id));
 
       return res.status(200).send(result);
     } catch (error) {

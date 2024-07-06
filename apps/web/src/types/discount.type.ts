@@ -35,10 +35,10 @@ export interface IFormDiscount {
   title: string;
   desc: string;
   discountType: string;
-  discountvalue: number;
-  discountLimit: number;
+  discountvalue?: number;
+  discountLimit?: number;
   minPurchase?: number;
-  productId: string;
+  productId?: string;
   storeId?: string;
   isActive?: boolean;
 }

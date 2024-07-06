@@ -5,7 +5,7 @@ import SuperAdmin from "./components/SuperAdmin";
 const Journal = () => {
   const { role } = useAppSelector((state) => state.user);
   return (
-    <main className="container mx-auto py-20">
+    <main className="container py-16">
       {role === "SUPERADMIN" ? <SuperAdmin /> : <StoreAdmin />}
     </main>
   );

@@ -13,7 +13,7 @@ import {
 import useCreateStore from "@/hooks/api/store/useCreateStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FormProvider,
   SubmitHandler,
@@ -26,18 +26,35 @@ import {
   schemaStore,
 } from "../validationSchema/schemaStore";
 import useGetStoreAdminNoStore from "@/hooks/api/store-admin/useGetStoreAdminNoStore";
-import useGetCities from "@/hooks/api/store/useGetCities";
 import { toast } from "sonner";
+import useGetProvinces from "@/hooks/api/address/useGetProvinces";
+import useGetCities from "@/hooks/api/address/useGetCities";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface AddStoreModalProps {
   refetch: () => void;
 }
 
 export function AddStoreModal({ refetch }: AddStoreModalProps) {
+  const [selectedProvinceId, setSelectedProvinceId] = useState<string>("");
+  const [selectedCityId, setSelectedCityId] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { createStore, isLoading } = useCreateStore();
   const { storeAdmins } = useGetStoreAdminNoStore();
-  const { cities } = useGetCities();
+  const { data: provinces, isLoading: provincesLoading } = useGetProvinces({});
+  const {
+    data: cities,
+    isLoading: citiesLoading,
+    refetch: refetchCities,
+  } = useGetCities({
+    provinceId: selectedProvinceId,
+  });
   const citiesOptions = cities.map((city) => ({
     value: city.id.toString(),
     label: city.citName,
@@ -58,13 +75,24 @@ export function AddStoreModal({ refetch }: AddStoreModalProps) {
 
   const handleReset = () => {
     reset(defaultValues);
+    setSelectedProvinceId("");
+    setSelectedCityId("");
   };
+
+  useEffect(() => {
+    setSelectedCityId("");
+    if (selectedProvinceId) {
+      refetchCities();
+    }
+  }, [selectedProvinceId]);
 
   const onSubmit: SubmitHandler<SchemaStore> = async (data) => {
     try {
       await createStore(data);
       refetch();
       reset(defaultValues);
+      setSelectedProvinceId("");
+      setSelectedCityId("");
       setIsOpen(false);
     } catch (error) {
       if (typeof error === "string") {
@@ -99,6 +127,32 @@ export function AddStoreModal({ refetch }: AddStoreModalProps) {
                 type="text"
                 placeholder="Your name store"
               />
+              <div className="mb-2">
+                <Select
+                  value={selectedProvinceId}
+                  onValueChange={(value) => {
+                    setSelectedProvinceId(value);
+                  }}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a province" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {provincesLoading ? (
+                      <div>Loading provinces...</div>
+                    ) : (
+                      provinces.map((province) => (
+                        <SelectItem
+                          key={province.id}
+                          value={province.id.toString()}
+                        >
+                          {province.provinceName}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
               <FormSelect<SchemaStore>
                 name="cityId"
                 label="City"
