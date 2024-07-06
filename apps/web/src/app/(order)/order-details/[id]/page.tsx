@@ -11,9 +11,14 @@ import FinishOrderDialog from "./components/FinishOrderDialog";
 import GridItem from "./components/GridItems";
 import { Button } from "@/components/ui/button";
 import { MIDTRANS_PUBLIC_CLIENT } from "@/utils/config";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { OrderStatus } from "@/types/order.type";
+import UploadPaymentProofDialog from "./components/UploadPaymentProofDialog";
+import PaymentProofDialog from "./components/PaymentProofDialog";
 
 const OrderDetails = ({ params }: { params: { id: string } }) => {
+  const [openUploadDialog, setOpenUploadDialog] = useState<boolean>(false)
+  const [openProofDialog, setOpenProofDialog] = useState<boolean>(false)
   const {
     order,
     isLoading: isLoadingOrder,
@@ -35,20 +40,20 @@ const OrderDetails = ({ params }: { params: { id: string } }) => {
   const baseURL = process.env.NEXT_PUBLIC_BASE_API_URL;
 
   useEffect(() => {
-    const snapScript = "https://app.sandbox.midtrans.com/snap/snap.js"
-    const clientKey = MIDTRANS_PUBLIC_CLIENT
+    const snapScript = "https://app.sandbox.midtrans.com/snap/snap.js";
+    const clientKey = MIDTRANS_PUBLIC_CLIENT;
 
-    const script = document.createElement('script')
-    script.src = snapScript
-    script.setAttribute('data-client-key', clientKey || '')
-    script.async = true
+    const script = document.createElement("script");
+    script.src = snapScript;
+    script.setAttribute("data-client-key", clientKey || "");
+    script.async = true;
 
-    document.body.appendChild(script)
+    document.body.appendChild(script);
 
     return () => {
-      document.body.removeChild(script)
-    }
-  }, [])
+      document.body.removeChild(script);
+    };
+  }, []);
 
   const handlePayment = async () => {
     try {
@@ -56,32 +61,29 @@ const OrderDetails = ({ params }: { params: { id: string } }) => {
         if (window.snap) {
           window.snap.pay(`${order.Payment.snapToken}`, {
             onSuccess: function (result: any) {
-              alert('Payment success!');
+              alert("Payment success!");
               console.log(result);
             },
             onPending: function (result: any) {
-              alert('Waiting for your payment!');
+              alert("Waiting for your payment!");
               console.log(result);
             },
             onError: function (result: any) {
-              alert('Payment failed!');
+              alert("Payment failed!");
               console.log(result);
             },
             onClose: function () {
-              alert('Close Kah?');
+              alert("Close Kah?");
             },
           });
         } else {
-          alert('Snap is not loaded yet. Please try again.');
+          alert("Snap is not loaded yet. Please try again.");
         }
       }
-
     } catch (error) {
-      alert('Payment Error!')
-
+      alert("Payment Error!");
     }
-  }
-
+  };
 
   return isLoadingOrder || !order ? (
     <p className="">Loading...</p>
@@ -155,6 +157,10 @@ const OrderDetails = ({ params }: { params: { id: string } }) => {
         <h4 className="font-semibold">Payment Details</h4>
         <div className="flex w-full flex-col gap-y-2 py-2 text-xs">
           <div className="flex items-center justify-between">
+            <p>Payment ID</p>
+            <p>{order.Payment.invoiceNumber}</p>
+          </div>
+          <div className="flex items-center justify-between">
             <p>Payment Method</p>
             <p>
               {!order.Payment.paymentMethod
@@ -178,21 +184,41 @@ const OrderDetails = ({ params }: { params: { id: string } }) => {
                 {!order.Payment.paymentProof ? (
                   "No payment proof found"
                 ) : (
-                  <>See payment proof</>
+                  <p className="underline text-orange-400 cursor-pointer" onClick={()=>setOpenProofDialog(true)}>See payment proof</p>
                 )}
               </p>
+              <PaymentProofDialog open={openProofDialog} setOpen={setOpenProofDialog} order={order}/>
             </div>
           ) : null}
           <Separator />
           <div className="flex items-center justify-between text-lg font-semibold">
-          <p>Total</p>
-          <p>{order.Delivery[0].deliveryFee + order.totalAmount}</p>
+            <p>Total</p>
+            <p>{order.Delivery[0].deliveryFee + order.totalAmount}</p>
           </div>
         </div>
       </div>
       <Separator className="h-1" />
-      <div className="p-4"><Button className="w-full px-4 py-2" onClick={handlePayment}>Pay</Button></div>
-      <Separator className="h-1 mb-4" />
+      <div className="p-4">
+        {order.Payment.paymentMethod === "MANUAL_TRANSFER" ? (
+          <Button
+            className="w-full px-4 py-2"
+            disabled={order.status !== OrderStatus.WAITING_FOR_PAYMENT}
+            onClick={()=>setOpenUploadDialog(true)}
+          >
+            Upload Payment Proof
+          </Button>
+        ) : !order.Payment.paymentMethod ? (
+          <Button
+            className="w-full px-4 py-2"
+            onClick={handlePayment}
+            disabled={order.status !== OrderStatus.WAITING_FOR_PAYMENT}
+          >
+            Pay
+          </Button>
+        ) : null}
+        <UploadPaymentProofDialog order={order} refetchOrder={refetchOrder} openState={openUploadDialog} setOpenState={setOpenUploadDialog} />
+      </div>
+      <Separator className="mb-4 h-1" />
 
       <div className="flex justify-center gap-x-4">
         <CancelOrderDialog order={order} handleDelete={handleCancelOrder} />

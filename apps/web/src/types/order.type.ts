@@ -15,16 +15,16 @@ export interface IOrderArgs {
   products: IProductArg[];
   userDiscountIds?: number[];
   userVoucherIds?: number[];
-  addressId: number
-  deliveryFee: string
-  paymentMethod: PaymentMethodArgs
-  deliveryService?: string 
-  deliveryCourier?: string
+  addressId: number;
+  deliveryFee: string;
+  paymentMethod: PaymentMethodArgs;
+  deliveryService?: string;
+  deliveryCourier?: string;
 }
 
-export enum PaymentMethodArgs{
+export enum PaymentMethodArgs {
   DIGITAL_PAYMENT = "DIGITAL_PAYMENT",
-  MANUAL_TRANSFER = "MANUAL_TRANSFER"
+  MANUAL_TRANSFER = "MANUAL_TRANSFER",
 }
 
 export interface ICart {
@@ -99,6 +99,16 @@ export interface IPayment {
   snapRedirectUrl?: string;
   orderId: number;
   orders: IOrder;
+  paymentStatus: PaymentStatus;
+  invoiceNumber: string;
+}
+
+export enum PaymentStatus {
+  COMPLETED = "COMPLETED",
+  CANCELLED = "CANCELLED",
+  DENIED = "DENIED",
+  EXPIRED = "EXPIRED",
+  PENDING = "PENDING",
 }
 
 enum PaymentMethod {

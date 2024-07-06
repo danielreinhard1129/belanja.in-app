@@ -23,9 +23,13 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
   const { addToCart } = useAddToCart();
   const { product, isLoading } = useGetProduct(Number(params.id));
   const [selectedImage, setSelectedImage] = useState(0);
+  const storeId = product?.storeProduct[0].storeId!
+  
+  console.log(product);
+  
 
   const handleAddToCart = async () => {
-    await addToCart(product?.id, 1);
+    await addToCart(product?.id, storeId );
     refetchCart();
   };
   console.log(carts);
