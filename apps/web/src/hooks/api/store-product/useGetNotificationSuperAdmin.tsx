@@ -1,4 +1,4 @@
-import { axiosInstance } from "@/lib/axios";
+import { axiosInstance } from "@/libs/axios";
 import { useAppSelector } from "@/redux/hooks";
 import { NotifSuperAdmin } from "@/types/notification.type";
 import { AxiosError } from "axios";
@@ -15,12 +15,6 @@ const useGetNotificationSuperAdmin = () => {
     try {
       const { data } = await axiosInstance.get(
         "/stock-journals/super-admin/notifications",
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        },
       );
       setNotifications(data);
     } catch (error) {

@@ -6,7 +6,7 @@ import SuperAdmin from "./components/superAdmin/SuperAdmin";
 const Product = () => {
   const { role } = useAppSelector((state) => state.user);
   return (
-    <main className="container py-20">
+    <main className="container py-16">
       {role === "SUPERADMIN" ? <SuperAdmin /> : <StoreAdmin />}
     </main>
   );

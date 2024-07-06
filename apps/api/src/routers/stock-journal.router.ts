@@ -14,7 +14,7 @@ export class StockJournalRouter {
 
   private initializeRoutes(): void {
     this.router.get(
-      '/filter',
+      '/filters',
       verifyToken,
       this.stockJournalController.getStockJournalsByStoreWithParams,
     );

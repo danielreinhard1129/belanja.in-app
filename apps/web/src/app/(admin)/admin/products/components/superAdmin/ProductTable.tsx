@@ -126,7 +126,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
               <TableCell>
                 {product.categories.map((categories: any, cti: any) => (
                   <div className="my-1" key={cti}>
-                    <div className="inline-block rounded-full bg-slate-300 px-2 py-1 text-black">
+                    <div className="inline-block rounded-full bg-orange-300 px-2 py-1 text-orange-800">
                       {categories.category.name}
                     </div>
                   </div>

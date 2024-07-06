@@ -83,37 +83,37 @@ export const updateDiscountService = async (
       storeName = store.name;
     }
 
-    // Melakukan pengecekan productId yang ada di store
-    const checkProductInStore = await prisma.storeProduct.findFirst({
-      where: {
-        storeId: Number(finalStoreId),
-        productId: Number(productId),
-      },
-    });
-
-    if (!checkProductInStore) {
-      // Ambil informasi produk
-      const product = await prisma.product.findUnique({
+    if (productId) {
+      const checkProductInStore = await prisma.storeProduct.findFirst({
         where: {
-          id: Number(productId),
+          storeId: Number(finalStoreId),
+          productId: Number(productId),
         },
       });
 
-      if (!product) {
-        throw new Error('Product not found');
-      }
+      if (!checkProductInStore) {
+        // Ambil informasi produk
+        const product = await prisma.product.findUnique({
+          where: {
+            id: Number(productId),
+          },
+        });
 
-      if (checkUser.role === 'SUPERADMIN') {
-        throw new Error(
-          `Product ${product.name} is not found in store ${storeName}`,
-        );
-      } else {
-        throw new Error(
-          `Product ${product.name} is not found in your store ${storeName}`,
-        );
+        if (!product) {
+          throw new Error('Product not found');
+        }
+
+        if (checkUser.role === 'SUPERADMIN') {
+          throw new Error(
+            `Product ${product.name} is not found in store ${storeName}`,
+          );
+        } else {
+          throw new Error(
+            `Product ${product.name} is not found in your store ${storeName}`,
+          );
+        }
       }
     }
-
     // Update discount
     const updateDiscount = await prisma.discount.update({
       where: { id },
@@ -126,7 +126,7 @@ export const updateDiscountService = async (
         minPurchase: Number(minPurchase),
         isActive: isActive,
         storeId: Number(finalStoreId),
-        productId: Number(productId),
+        productId: productId ? Number(productId) : undefined,
       },
     });
 

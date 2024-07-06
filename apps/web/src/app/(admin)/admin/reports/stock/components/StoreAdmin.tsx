@@ -1,14 +1,14 @@
+"use client";
 import Pagination from "@/components/Pagination";
-import { Button } from "@/components/ui/button";
+import { AlertDialogHeader } from "@/components/ui/alert-dialog";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -32,100 +32,132 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import useGetStockJournalByStoreAdmin from "@/hooks/api/stock-journal/useGetStockJournalByStoreAdmin";
-import useArriveStockMutation from "@/hooks/api/store-product/useArriveStockMutation";
-import useConfirmStockMutation from "@/hooks/api/store-product/useConfirmStockMutation";
-import useRejectStockMutation from "@/hooks/api/store-product/useRejectStockMutation";
+import useGetStoreByStoreAdmin from "@/hooks/api/store/useGetStoreByStoreAdmin";
+import { useAppSelector } from "@/redux/hooks";
 import { format } from "date-fns";
-import { Eye, Loader2, NotebookPen } from "lucide-react";
-import React, { useState } from "react";
+import { debounce } from "lodash";
+import { Eye } from "lucide-react";
+import Image from "next/image";
+import { useState } from "react";
+import ImageNotFoundStore from "../../../../../../../public/no-store.svg";
+import ItemFilterMonth from "../../components/ItemFilterMonth";
 
-interface DialogStockActionStoreAdminProps {
-  storeId: number;
-  refetch: () => void;
-}
-
-const DialogStockActionStoreAdmin: React.FC<
-  DialogStockActionStoreAdminProps
-> = ({ storeId, refetch }) => {
+const StoreAdmin = () => {
   const now = new Date();
+  const { id } = useAppSelector((state) => state.user);
+  const { store } = useGetStoreByStoreAdmin(id);
+  const [page, setPage] = useState<number>(1);
+  const [status, setStatus] = useState<string>("all");
+  const [search, setSearch] = useState<string>("");
   const [filterMonth, setFilterMonth] = useState(`${now.getMonth() + 1}`);
   const [filterYear, setFilterYear] = useState("2024");
-  const [page, setPage] = useState<number>(1);
-  const [status, setStatus] = useState<string>("WAITING_ADMIN_CONFIRMATION");
-  const {
-    stockJournals,
-    isLoading,
-    refetch: refetchStockJournals,
-    meta,
-  } = useGetStockJournalByStoreAdmin({
-    page,
-    take: 5,
-    status,
-    filterMonth,
-    filterYear,
-  });
-  const { confirmMutation, isLoading: isConfirm } = useConfirmStockMutation();
-  const { rejectMutation, isLoading: isReject } = useRejectStockMutation();
-  const { arriveMutation, isLoading: isArrive } = useArriveStockMutation();
+  const { stockJournals, isLoading, refetch, meta } =
+    useGetStockJournalByStoreAdmin({
+      page,
+      take: 5,
+      search,
+      status,
+      filterMonth,
+      filterYear,
+    });
+
+  const handleSearch = debounce((value: string) => {
+    setSearch(value);
+  }, 300);
 
   const handleChangePaginate = ({ selected }: { selected: number }) => {
     setPage(selected + 1);
   };
 
-  const handleConfirm = async (id: number) => {
-    refetch();
-    await confirmMutation(id);
-    refetchStockJournals();
-    refetch();
+  const handleChangeFilterMonth = (value: string) => {
+    setFilterMonth(value);
   };
 
-  const handleReject = async (id: number) => {
-    await rejectMutation(id);
-    refetchStockJournals();
-    refetch();
-  };
-
-  const handleArrive = async (id: number) => {
-    await arriveMutation(id);
-    refetchStockJournals();
-    refetch();
+  const handleChangeFilterYear = (value: string) => {
+    setFilterYear(value);
   };
 
   const total = meta?.total || 0;
   const take = meta?.take || 10;
 
-  if (!stockJournals) {
-    return <div>Data Not Found</div>;
+  if (!store) {
+    return (
+      <div className="mx-auto flex flex-col items-center justify-center gap-7">
+        <div className="text-center text-xl font-bold">
+          You don&#39;t have any store
+        </div>
+        <div>
+          <Image
+            src={ImageNotFoundStore}
+            alt="ImageNotFoundStore"
+            width={600}
+            height={600}
+            style={{ width: "auto", height: "auto" }}
+            priority
+          />
+        </div>
+      </div>
+    );
   }
 
   return (
-    <Drawer>
-      <DrawerTrigger>
-        <div className="flex items-center gap-2">
-          <NotebookPen className="h-4 w-4" />
-          <span>Stock</span>
-        </div>
-      </DrawerTrigger>
-      <DrawerContent>
-        <div className="px-40 pt-6">
-          <div className="mb-4">
-            <Select
-              onValueChange={(value) => setStatus(value)}
-              defaultValue="WAITING_ADMIN_CONFIRMATION"
-            >
-              <SelectTrigger className="w-[280px]">
+    <main className="mx-auto max-w-6xl">
+      <h2 className="mb-4 text-2xl font-bold">Stock Journal</h2>
+      <div className="container border-2 bg-white pb-6 shadow-xl">
+        <div className="my-4 flex justify-between">
+          <div className="w-[300px]">
+            <Input
+              type="text"
+              placeholder="Search"
+              name="search"
+              onChange={(e) => {
+                handleSearch(e.target.value);
+              }}
+            />
+          </div>
+          <div className="flex justify-between gap-4">
+            <Select onValueChange={(value) => setStatus(value)}>
+              <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
+                  <SelectItem value="all">All</SelectItem>
                   <SelectItem value="WAITING_ADMIN_CONFIRMATION">
                     WAITING_ADMIN_CONFIRMATION
                   </SelectItem>
+                  <SelectItem value="REJECT">REJECT</SelectItem>
                   <SelectItem value="ON_PROGRESS">ON_PROGRESS</SelectItem>
+                  <SelectItem value="AUTOMATED">AUTOMATED</SelectItem>
+                  <SelectItem value="SUCCESS">SUCCESS</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
+            <Select
+              name="month"
+              onValueChange={handleChangeFilterMonth}
+              defaultValue={`${now.getMonth() + 1}`}
+            >
+              <SelectTrigger className="w-[150px]">
+                <SelectValue placeholder={"Month"} />
+              </SelectTrigger>
+              <ItemFilterMonth />
+            </Select>
+            <Select
+              name="sortYear"
+              onValueChange={handleChangeFilterYear}
+              defaultValue="2024"
+            >
+              <SelectTrigger className="w-[130px]">
+                <SelectValue placeholder={"Sort By"} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="2024">2024</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
+        </div>
+        <div>
           <Table>
             <TableHeader>
               <TableRow>
@@ -171,12 +203,12 @@ const DialogStockActionStoreAdmin: React.FC<
                             </TooltipProvider>
                           </DialogTrigger>
                           <DialogContent className="sm:max-w-[600px]">
-                            <DialogHeader>
+                            <AlertDialogHeader>
                               <DialogTitle>Stock Journal Detail</DialogTitle>
                               <DialogDescription>
                                 Details of the stock journal.
                               </DialogDescription>
-                            </DialogHeader>
+                            </AlertDialogHeader>
                             <div className="grid w-full grid-cols-11">
                               <div className="col-span-5 font-semibold">
                                 From Store
@@ -258,46 +290,6 @@ const DialogStockActionStoreAdmin: React.FC<
                                 )}
                               </div>
                             </div>
-                            <div className="mt-4 flex justify-center gap-2">
-                              {storeId === journalDetail.toStoreId &&
-                              journal.status ===
-                                "WAITING_ADMIN_CONFIRMATION" ? (
-                                <>
-                                  <Button
-                                    disabled={isReject}
-                                    onClick={() => handleReject(journal.id)}
-                                    className="bg-red-500 px-4 py-2 hover:bg-red-600"
-                                  >
-                                    {isReject ? (
-                                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    ) : null}
-                                    REJECT
-                                  </Button>
-                                  <Button
-                                    disabled={isConfirm}
-                                    onClick={() => handleConfirm(journal.id)}
-                                    className="bg-green-500 px-4 py-2 hover:bg-green-600"
-                                  >
-                                    {isConfirm ? (
-                                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    ) : null}
-                                    CONFIRM
-                                  </Button>
-                                </>
-                              ) : storeId === journal.fromStoreId &&
-                                journal.status === "ON_PROGRESS" ? (
-                                <Button
-                                  disabled={isArrive}
-                                  onClick={() => handleArrive(journal.id)}
-                                  className="bg-blue-500 px-4 py-2 hover:bg-blue-600"
-                                >
-                                  {isArrive ? (
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                  ) : null}
-                                  ARRIVE
-                                </Button>
-                              ) : null}
-                            </div>
                           </DialogContent>
                         </Dialog>
                       </TableCell>
@@ -306,28 +298,32 @@ const DialogStockActionStoreAdmin: React.FC<
                 )
               ) : (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center">
-                    Data Not Found
+                  <TableCell colSpan={8} className="text-center">
+                    No stock journals found.
                   </TableCell>
                 </TableRow>
               )}
             </TableBody>
           </Table>
-          <div className="flex justify-center py-4">
-            {stockJournals.length > 0 && (
-              <div className="mx-auto w-fit">
-                <Pagination
-                  total={total}
-                  take={take}
-                  onChangePage={handleChangePaginate}
-                />
-              </div>
-            )}
+          <div className="ml-4 mt-2 flex justify-start">
+            <div className="mr-10 mt-2 flex gap-4">
+              <p>Total Products In Store: </p>
+              <p className="font-bold">{store?.qty ?? "0"}</p>
+            </div>
           </div>
+          {stockJournals.length > 0 && (
+            <div className="mx-auto w-fit">
+              <Pagination
+                total={total}
+                take={take}
+                onChangePage={handleChangePaginate}
+              />
+            </div>
+          )}
         </div>
-      </DrawerContent>
-    </Drawer>
+      </div>
+    </main>
   );
 };
 
-export default DialogStockActionStoreAdmin;
+export default StoreAdmin;

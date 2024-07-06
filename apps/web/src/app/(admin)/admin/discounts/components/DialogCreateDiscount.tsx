@@ -89,7 +89,7 @@ const DialogCreateDiscount: React.FC<DialogCreateDiscountProps> = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger>
-        <div className="mt-1 flex cursor-pointer items-center gap-2">
+        <div className="inline-flex h-10 items-center justify-center gap-1 whitespace-nowrap rounded-md bg-[#ff6100] px-4 py-2 text-sm font-medium text-white">
           <ClipboardPlus />
           Discount
         </div>

@@ -15,7 +15,7 @@ export class ProductRouter {
 
   private initializeRoutes(): void {
     this.router.get(
-      '/filter',
+      '/filters',
       this.productController.getProductsByParamsController,
     );
     this.router.get(
@@ -37,7 +37,7 @@ export class ProductRouter {
     this.router.get('/', this.productController.getProducts);
     this.router.get('/:id', this.productController.getProduct);
     this.router.delete(
-      '/delete',
+      '/records',
       verifyToken,
       this.productController.deleteManyProducts,
     );

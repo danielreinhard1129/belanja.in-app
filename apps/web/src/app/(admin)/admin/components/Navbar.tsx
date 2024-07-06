@@ -20,6 +20,7 @@ import defaultAvatar from "../../../../../public/default-avatar.png";
 import { lists, baseClass, listsSuper, listsNoStore } from "./helpers";
 import Logo from "@/components/Logo";
 import useGetStoreByStoreAdmin from "@/hooks/api/store/useGetStoreByStoreAdmin";
+import Accordions from "./Accordions";
 
 const Navbar = () => {
   const { provider, id, name, email, avatarUrl, role } = useAppSelector(
@@ -35,6 +36,10 @@ const Navbar = () => {
     localStorage.removeItem("Authorization");
     dispatch(logoutAction());
     router.push("/");
+  };
+
+  const canViewAccordions = () => {
+    return store || role === "SUPERADMIN" || (role === "STOREADMIN" && store);
   };
 
   return (
@@ -100,6 +105,7 @@ const Navbar = () => {
               ))}
             </React.Fragment>
           )}
+          {canViewAccordions() && <Accordions />}
         </div>
         <div className="hidden w-full gap-8 md:flex md:flex-col">
           <div className="items-center justify-between px-3">
