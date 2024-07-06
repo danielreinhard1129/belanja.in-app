@@ -1,5 +1,6 @@
 import { CartController } from '@/controllers/cart.controller';
 import { PaymentController } from '@/controllers/payment.controller';
+import { uploader } from '@/libs/uploader';
 import { verifyToken } from '@/middlewares/verifyToken';
 import { Router } from 'express';
 
@@ -17,6 +18,12 @@ export class PaymentRouter {
     this.router.post(
       '/midtrans/',
       this.paymentController.midtransNotificationHandlerController,
+    );
+    this.router.patch(
+      '/upload-proof/',
+      verifyToken,
+      uploader('IMG', '/images').array('paymentProof', 1),
+      this.paymentController.uploadPaymentProofController,
     );
   }
 

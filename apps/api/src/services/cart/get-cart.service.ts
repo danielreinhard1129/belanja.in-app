@@ -9,7 +9,10 @@ export const getCartService = async (userId: number) => {
 
     const cart = await prisma.cart.findMany({
       where: { userId, isActive: true },
-      include: { products: { include: { images: true } }, stores: true },
+      include: {
+        products: { include: { images: true } },
+        stores: { include: { City: true } },
+      },
     });
 
     if (!cart) {
