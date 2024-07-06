@@ -1,35 +1,14 @@
-import React, { useEffect } from "react";
+import { FormInput } from "@/components/FormInput";
+import { FormSelect } from "@/components/FormSelect";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Loader2, Pencil } from "lucide-react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Controller,
-  FormProvider,
-  SubmitHandler,
-  useForm,
-  useFormState,
-} from "react-hook-form";
-import { Switch } from "@/components/ui/switch";
-import {
-  SchemaDiscount,
-  schemaDiscount,
-  defaultValues,
-} from "./validationSchema/schemaDiscount";
-import { FormInput } from "@/components/FormInput";
-import { FormSelect } from "@/components/FormSelect";
-import { Button } from "@/components/ui/button";
-import useGetProducts from "@/hooks/api/product/useGetProducts";
-import useGetDiscount from "@/hooks/api/discounts/useGetDiscount";
-import useUpdateDiscount from "@/hooks/api/discounts/useUpdateDiscount";
-import { toast } from "sonner";
 import {
   Select,
   SelectContent,
@@ -37,14 +16,32 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
+import { Switch } from "@/components/ui/switch";
+import useGetDiscount from "@/hooks/api/discounts/useGetDiscount";
+import useUpdateDiscount from "@/hooks/api/discounts/useUpdateDiscount";
+import useGetProducts from "@/hooks/api/product/useGetProducts";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2, Pencil } from "lucide-react";
+import React, { useEffect } from "react";
+import {
+  Controller,
+  FormProvider,
+  SubmitHandler,
+  useForm,
+  useFormState,
+} from "react-hook-form";
+import { toast } from "sonner";
+import {
+  defaultValues,
+  SchemaDiscount,
+  schemaDiscount,
+} from "./validationSchema/schemaDiscount";
 interface DialogEditDiscountProps {
   discountId: number;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   refetch: () => void;
 }
-
 const DialogEditDiscount: React.FC<DialogEditDiscountProps> = ({
   discountId,
   onOpenChange,
@@ -63,16 +60,11 @@ const DialogEditDiscount: React.FC<DialogEditDiscountProps> = ({
   const { isDirty, isValid } = useFormState({
     control,
   });
-
   const discountTypeOptions = [
-    {
-      value: "BOGO",
-      label: "BOGO",
-    },
+    { value: "BOGO", label: "BOGO" },
     { value: "PRODUCT", label: "PRODUCT" },
     { value: "MIN_PURCHASE", label: "MIN_PURCHASE" },
   ];
-
   useEffect(() => {
     if (discount) {
       reset({
@@ -87,10 +79,8 @@ const DialogEditDiscount: React.FC<DialogEditDiscountProps> = ({
       });
     }
   }, [discount, reset]);
-
   const onSubmit: SubmitHandler<SchemaDiscount> = async (data) => {
     const payload = { ...data, storeId: String(discount?.storeId) };
-    // console.log(payload);
     try {
       await updateDiscount(payload, discountId);
       refetchDiscount();

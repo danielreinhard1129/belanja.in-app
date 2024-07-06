@@ -8,14 +8,12 @@ import Link from "next/link";
 import React from "react";
 import DialogDeleteStore from "./DialogDeleteStore";
 import { DialogEditStore } from "./DialogEditStore";
-
 interface PopoverMenuProps {
   storeId: number;
   isDeleting: boolean;
   handleDelete: (storeId: number) => void;
   refetch: () => void;
 }
-
 const PopoverStoreMenu: React.FC<PopoverMenuProps> = ({
   storeId,
   isDeleting,

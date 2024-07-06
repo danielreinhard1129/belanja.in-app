@@ -29,12 +29,10 @@ import useRejectStockMutation from "@/hooks/api/store-product/useRejectStockMuta
 import { format } from "date-fns";
 import { Eye, Loader2, NotebookPen } from "lucide-react";
 import React, { useEffect, useState } from "react";
-
 interface DialogStockActionSuperAdminProps {
   storeId: number;
   refetch: () => void;
 }
-
 const DialogStockActionSuperAdmin: React.FC<
   DialogStockActionSuperAdminProps
 > = ({ storeId, refetch }) => {
@@ -53,36 +51,27 @@ const DialogStockActionSuperAdmin: React.FC<
   });
   const { confirmMutation, isLoading: isConfirm } = useConfirmStockMutation();
   const { rejectMutation, isLoading: isReject } = useRejectStockMutation();
-
   useEffect(() => {
     setPage(1);
   }, [storeId, status]);
-
   const handleChangePaginate = ({ selected }: { selected: number }) => {
     setPage(selected + 1);
   };
-
   const handleConfirm = async (id: number) => {
     await confirmMutation(id);
     refetchStockJournals();
     refetch();
   };
-
   const handleReject = async (id: number) => {
     await rejectMutation(id);
     refetchStockJournals();
     refetch();
   };
-
   const total = meta?.total || 0;
   const take = meta?.take || 10;
-
   if (!stockJournals) {
     return <div>Data Not Found</div>;
   }
-
-  // console.log(stockJournals);
-
   return (
     <Drawer>
       <DrawerTrigger>

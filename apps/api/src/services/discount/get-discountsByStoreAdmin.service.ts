@@ -17,7 +17,6 @@ export const getDiscountsByStoreAdminService = async (
     const { take, page, discountType } = query;
     const userId = Number(userToken.id);
 
-    // Cari user beserta informasi storeAdmin dan stores-nya
     const user = await prisma.user.findFirst({
       where: { id: userId },
       include: {

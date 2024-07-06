@@ -12,7 +12,6 @@ interface UpdateStore
 const getCoordinates = async (
   cityId: number,
 ): Promise<{ lat: number; long: number }> => {
-  // Ganti dengan API key Anda
   const apiKey = '507f6bfa89b3461682ca3f53ac93e815';
   const city = await prisma.city.findUnique({
     where: {
@@ -44,7 +43,6 @@ export const updateStoreService = async (
   try {
     const { name, cityId, storeAdminId } = body;
 
-    // Check if store exists
     const store = await prisma.store.findFirst({
       where: { id },
     });
@@ -80,10 +78,8 @@ export const updateStoreService = async (
       }
     }
 
-    // Tentukan nilai storeAdminId
     const adminId = storeAdminId ? Number(storeAdminId) : null;
 
-    // Cek apakah storeAdminId sudah digunakan oleh store lain
     if (adminId) {
       const existingAdminStore = await prisma.store.findFirst({
         where: {
@@ -100,7 +96,6 @@ export const updateStoreService = async (
     let lat = store.lat;
     let long = store.long;
 
-    // Jika ada perubahan cityId, dapatkan koordinat lat dan long yang baru dari OpenCage API
     if (cityId && cityId !== store.cityId) {
       const coordinates = await getCoordinates(cityId);
       lat = coordinates.lat;

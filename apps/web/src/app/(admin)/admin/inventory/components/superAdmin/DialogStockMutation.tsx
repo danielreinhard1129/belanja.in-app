@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import useCreateStockSuperAdmin from "@/hooks/api/store-product/useCreateStockSuperAdmin";
 import useGetProductsByStore from "@/hooks/api/store-product/useGetStoreProductByStore";
 import useGetStores from "@/hooks/api/store/useGetStores";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,21 +32,18 @@ import {
   useForm,
   useFormState,
 } from "react-hook-form";
+import { toast } from "sonner";
 import {
   SchemaCreateStockMutation,
   defaultValues,
   schemaCreateStockMutation,
 } from "../validationSchema/schemaCreateStockMutation";
-import useCreateStockSuperAdmin from "@/hooks/api/store-product/useCreateStockSuperAdmin";
-import { toast } from "sonner";
-
 interface DialogStockMutationProps {
   storeId: number;
   refetch: () => void;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
-
 const DialogStockMutation: React.FC<DialogStockMutationProps> = ({
   storeId,
   refetch,
@@ -67,32 +65,26 @@ const DialogStockMutation: React.FC<DialogStockMutationProps> = ({
     control,
   });
   const { append, fields, remove } = useFieldArray({ control, name: "stocks" });
-
   const handleReset = () => {
     reset(defaultValues);
     setSelectedProductIds([]);
   };
-
   const handleAddStock = () => append({ productId: "", qty: 0 });
-
   const storeOptions = stores.map((store) => ({
     value: store.id.toString(),
     label: store.name,
     disabled: store.id === storeId,
   }));
-
   const productsOptions = products.map((product) => ({
     value: product.id.toString(),
     label: product.name,
     disabled: selectedProductIds.includes(product.id.toString()),
   }));
-
   const handleProductChange = (productId: string, index: number) => {
     const updatedSelectedProductIds = [...selectedProductIds];
     updatedSelectedProductIds[index] = productId;
     setSelectedProductIds(updatedSelectedProductIds);
   };
-
   const handleRemoveStock = (index: number) => {
     const updatedSelectedProductIds = selectedProductIds.filter(
       (_, idx) => idx !== index,
@@ -100,11 +92,9 @@ const DialogStockMutation: React.FC<DialogStockMutationProps> = ({
     setSelectedProductIds(updatedSelectedProductIds);
     remove(index);
   };
-
   const isProductsAvailable = productsOptions.some(
     (product) => !product.disabled,
   );
-
   const onSubmit = async (data: SchemaCreateStockMutation) => {
     const payload = { ...data, type: activeTab };
     try {
@@ -122,11 +112,9 @@ const DialogStockMutation: React.FC<DialogStockMutationProps> = ({
       }
     }
   };
-
   if (!products) {
     return <div>Data Not Found</div>;
   }
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger>
@@ -347,5 +335,4 @@ const DialogStockMutation: React.FC<DialogStockMutationProps> = ({
     </Dialog>
   );
 };
-
 export default DialogStockMutation;

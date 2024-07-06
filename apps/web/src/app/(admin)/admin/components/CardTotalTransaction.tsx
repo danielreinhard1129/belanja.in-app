@@ -2,7 +2,6 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import useGetSalesReport from "@/hooks/api/report/useGetSalesReport";
-import { formatToRupiah } from "@/utils/formatCurrency";
 import { ArrowRightLeft } from "lucide-react";
 import { useState } from "react";
 
@@ -28,7 +27,10 @@ const CardTotalTransaction = () => {
           </p>
         </div>
       </CardContent>
-      <ArrowRightLeft className="absolute -bottom-10 -right-10 -rotate-12 text-slate-900 z-10" size={200} />
+      <ArrowRightLeft
+        className="absolute -bottom-10 -right-10 z-10 -rotate-12 text-slate-900"
+        size={200}
+      />
     </Card>
   );
 };

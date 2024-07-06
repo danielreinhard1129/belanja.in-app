@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,8 +7,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ClipboardPlus, Loader2 } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ClipboardPlus, Loader2 } from "lucide-react";
+import React from "react";
 import {
   FormProvider,
   SubmitHandler,
@@ -17,18 +17,18 @@ import {
   useFormState,
 } from "react-hook-form";
 
+import { FormInput } from "@/components/FormInput";
+import { FormSelect } from "@/components/FormSelect";
+import { Button } from "@/components/ui/button";
+import useCreateDiscount from "@/hooks/api/discounts/useCreateDiscount";
+import useGetProducts from "@/hooks/api/product/useGetProducts";
+import useGetStores from "@/hooks/api/store/useGetStores";
+import { toast } from "sonner";
 import {
   CreateStore,
   createStore,
   defaultValues,
 } from "./validationSchema/createDiscountSuperAdmin";
-import { FormInput } from "@/components/FormInput";
-import { FormSelect } from "@/components/FormSelect";
-import { Button } from "@/components/ui/button";
-import useGetProducts from "@/hooks/api/product/useGetProducts";
-import useCreateDiscount from "@/hooks/api/discounts/useCreateDiscount";
-import useGetStores from "@/hooks/api/store/useGetStores";
-import { toast } from "sonner";
 
 interface DialogCreateDiscountSuperAdminProps {
   open: boolean;

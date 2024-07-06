@@ -1,5 +1,5 @@
 "use client";
-import { formatToRupiah } from "@/utils/formatCurrency";
+import Pagination from "@/components/Pagination";
 import {
   Select,
   SelectContent,
@@ -15,14 +15,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import useDeleteDiscount from "@/hooks/api/discounts/useDeleteDiscount";
 import useGetDiscountsBySuperAdmin from "@/hooks/api/discounts/useGetDiscountsBySuperAdmin";
 import useGetStores from "@/hooks/api/store/useGetStores";
+import { formatToRupiah } from "@/utils/formatCurrency";
 import { Ban, Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import DialogCreateDiscountSuperAdmin from "./DialogCreateDiscountSuperAdmin";
-import Pagination from "@/components/Pagination";
 import PopoverDiscountMenu from "./PopoverMenu";
-import useDeleteDiscount from "@/hooks/api/discounts/useDeleteDiscount";
 
 const DiscountsSuperAdmin = () => {
   const [page, setPage] = useState<number>(1);

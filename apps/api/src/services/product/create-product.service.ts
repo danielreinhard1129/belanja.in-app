@@ -15,7 +15,6 @@ export const createProductService = async (
   try {
     const { name, description, price, weight, categories, user } = body;
 
-    // Check if user exists and is admin
     const checkUser = await prisma.user.findUnique({
       where: {
         id: Number(user),
@@ -28,14 +27,12 @@ export const createProductService = async (
 
     if (checkUser.role !== 'SUPERADMIN') throw new Error('Unauthorized access');
 
-    // Check if product name is already used
     const existingName = await prisma.product.findUnique({
       where: { name },
     });
 
     if (existingName) {
       if (existingName.isDelete) {
-        // Update product that has isDelete true with new data
         const reactivatedProduct = await prisma.product.update({
           where: {
             id: existingName.id,
@@ -78,12 +75,11 @@ export const createProductService = async (
       }
     }
 
-    // Check if categories is empty
     if (!categories || categories.length === 0) {
       throw new Error('Category cannot be empty');
     }
 
-    const categoriesArray = JSON.parse(categories); // Parse JSON string to array
+    const categoriesArray = JSON.parse(categories);
 
     const createProduct = await prisma.product.create({
       data: {
@@ -118,7 +114,6 @@ export const createProductService = async (
       data: createProduct,
     };
   } catch (error) {
-    // If there's an error, delete files that have already been saved to the temporary folder
     files.forEach((file) => {
       if (fs.existsSync(file.path)) {
         fs.unlinkSync(file.path);

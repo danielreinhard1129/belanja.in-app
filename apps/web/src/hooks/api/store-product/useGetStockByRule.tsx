@@ -1,7 +1,6 @@
 import { axiosInstance } from "@/libs/axios";
 import { IPaginationMeta, IPaginationQueries } from "@/types/pagination.type";
 import { Stock } from "@/types/stock.type";
-import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
 interface IGetStocksQuery extends IPaginationQueries {
@@ -22,9 +21,7 @@ const useGetStockByRule = (queries: IGetStocksQuery) => {
       setStocks(data);
       setMetaStock(data.storeProducts.meta);
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error);
-      }
+      setStocks(null);
     } finally {
       setIsLoading(false);
     }

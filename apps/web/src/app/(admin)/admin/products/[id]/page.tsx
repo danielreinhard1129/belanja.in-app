@@ -1,20 +1,19 @@
 "use client";
-import { Badge } from "@/components/ui/badge";
-import { appConfig } from "@/utils/config";
-import Image from "next/image";
-import { notFound } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import useGetProduct from "@/hooks/api/product/useGetProduct";
 import ProductSkeleton from "@/app/(product)/[id]/components/ProductSkeleton";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
   CarouselApi,
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import useGetProduct from "@/hooks/api/product/useGetProduct";
+import { appConfig } from "@/utils/config";
+import Image from "next/image";
+import { notFound } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const ProductDetail = ({ params }: { params: { id: string } }) => {
   const { product, isLoading } = useGetProduct(Number(params.id));

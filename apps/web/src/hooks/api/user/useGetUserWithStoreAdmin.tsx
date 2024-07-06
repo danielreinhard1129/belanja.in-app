@@ -1,6 +1,5 @@
 import { axiosInstance } from "@/libs/axios";
 import { User } from "@/types/user.type";
-import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
 const useGetUser = (id: number) => {
@@ -12,9 +11,7 @@ const useGetUser = (id: number) => {
       const { data } = await axiosInstance.get<User>(`/users/${id}`);
       setUser(data);
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error);
-      }
+      setUser(null);
     } finally {
       setIsLoading(false);
     }

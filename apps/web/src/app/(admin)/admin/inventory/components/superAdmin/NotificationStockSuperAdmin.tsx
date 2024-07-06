@@ -17,7 +17,6 @@ import useUpdateIsReadStockJournalSuperAdmin from "@/hooks/api/stock-journal/use
 import useGetNotificationSuperAdmin from "@/hooks/api/store-product/useGetNotificationSuperAdmin";
 import { Bell, Loader2 } from "lucide-react";
 import React from "react";
-
 const NotificationIcon: React.FC = () => {
   const { notifications, refetch } = useGetNotificationSuperAdmin();
   const { updateIsReadStockJournalSuperAdmin, isLoading } =
@@ -26,13 +25,9 @@ const NotificationIcon: React.FC = () => {
     await updateIsReadStockJournalSuperAdmin();
     refetch();
   };
-
   if (!notifications) {
     return <div>No notifications found.</div>;
   }
-
-  //   console.log(notifications);
-
   return (
     <div style={{ position: "relative", display: "inline-block" }}>
       <Popover>
@@ -120,5 +115,4 @@ const NotificationIcon: React.FC = () => {
     </div>
   );
 };
-
 export default NotificationIcon;

@@ -1,5 +1,4 @@
 import { FormInput } from "@/components/FormInput";
-import { FormSelect } from "@/components/FormSelect";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,7 +9,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import useGetStoreAdmin from "@/hooks/api/store-admin/useGetStoreAdmin";
+import useGetCities from "@/hooks/api/store/useGetCities";
 import useGetStoreById from "@/hooks/api/store/useGetStoreById";
 import useUpdateStore from "@/hooks/api/store/useUpdateStore";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,20 +30,12 @@ import {
   useForm,
   useFormState,
 } from "react-hook-form";
-import {
-  SchemaStore,
-  schemaStore,
-  defaultValues,
-} from "../validationSchema/schemaStore";
-import useGetCities from "@/hooks/api/store/useGetCities";
 import { toast } from "sonner";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  defaultValues,
+  SchemaStore,
+  schemaStore,
+} from "../validationSchema/schemaStore";
 
 interface DialogEditStoreProps {
   storeId: number;

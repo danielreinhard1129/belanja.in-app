@@ -1,9 +1,8 @@
 "use client";
 
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import useGetMostBuyProducts from "@/hooks/api/report/useGetMostBuyProducts";
 import { appConfig } from "@/utils/config";
-import { formatToRupiah } from "@/utils/formatCurrency";
 import { Crown } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
@@ -17,14 +16,14 @@ const CardRanking = () => {
   }
 
   return (
-    <Card className="relative h-fit w-full md:w-[600px] rounded-xl">
+    <Card className="relative h-fit w-full rounded-xl md:w-[600px]">
       <CardContent className="relative z-20">
         <div className="flex flex-col gap-3 rounded-3xl p-6">
-          <div className="flex mb-4 items-center justify-between">
-            <h1 className="text-lg font-semibold">
-              Most Ordered Products
-            </h1>
-            <p className="text-sm text-end text-gray-600 font-medium">Order Count</p>
+          <div className="mb-4 flex items-center justify-between">
+            <h1 className="text-lg font-semibold">Most Ordered Products</h1>
+            <p className="text-end text-sm font-medium text-gray-600">
+              Order Count
+            </p>
           </div>
           {data?.data.slice(0, 5).map((product) => (
             <div
@@ -41,7 +40,7 @@ const CardRanking = () => {
                 />
               </div>
               <div className="w-full">
-                <h2 className="text-lg line-clamp-1 font-medium text-black">
+                <h2 className="line-clamp-1 text-lg font-medium text-black">
                   {product.name}
                 </h2>
                 <p className="text-sm font-medium text-gray-600">

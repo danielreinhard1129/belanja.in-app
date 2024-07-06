@@ -3,7 +3,6 @@
 import { axiosInstance } from "@/libs/axios";
 import { Discount } from "@/types/discount.type";
 import { IPaginationMeta, IPaginationQueries } from "@/types/pagination.type";
-import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
 interface IGetDiscountsQuery extends IPaginationQueries {
@@ -22,9 +21,6 @@ const useGetDiscountsBySuperAdmin = (queries: IGetDiscountsQuery) => {
       setData(data.data);
       setMeta(data.meta);
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.error("Error fetching product:", error);
-      }
       setData([]);
     } finally {
       setIsLoading(false);

@@ -21,12 +21,10 @@ export const deleteManyProductsService = async (
 
     if (checkUser.role !== 'SUPERADMIN') throw new Error('Unauthorized access');
 
-    // Validasi apakah array productId tidak kosong
     if (productId.length === 0) {
       throw new Error('productId array is empty');
     }
 
-    // Update banyak produk dengan array productId
     await prisma.product.updateMany({
       where: {
         id: {

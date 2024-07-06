@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const schemaCreateCategory = z.object({
-  id: z.number().optional(), // Menambahkan id untuk keperluan update
+  id: z.number().optional(),
   name: z.string().min(4, "Name must be at least 4 characters long"),
 });
 

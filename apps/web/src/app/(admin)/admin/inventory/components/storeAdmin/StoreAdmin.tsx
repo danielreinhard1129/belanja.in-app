@@ -8,12 +8,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Stock } from "@/types/stock.type";
-import React from "react";
-import PopoverStockRequest from "./PopoverStockRequest";
 import useGetStoreByStoreAdmin from "@/hooks/api/store/useGetStoreByStoreAdmin";
 import { useAppSelector } from "@/redux/hooks";
+import { Stock } from "@/types/stock.type";
 import { Ban, Check } from "lucide-react";
+import React from "react";
+import PopoverStockRequest from "./PopoverStockRequest";
 
 interface StoreAdminProps {
   stocks: Stock;
