@@ -43,7 +43,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="flex w-full flex-row items-center justify-between gap-4 border-b-2 px-5 py-6 md:h-screen md:max-w-[240px] md:flex-col md:justify-start md:border-b-0 md:border-r-2">
+    <nav className="sticky top-0 flex w-full flex-row items-center z-50 justify-between gap-4 border-b-2 bg-white px-5 py-6 md:h-screen md:max-w-[240px] md:flex-col md:justify-start md:border-b-0 md:border-r-2">
       <div className="flex md:hidden">
         <Logo />
       </div>
@@ -113,7 +113,7 @@ const Navbar = () => {
               className="flex w-full cursor-pointer items-center justify-start gap-4"
               onClick={() => router.push(`/user/${id}`)}
             >
-              <div className="relative flex h-9 w-12 items-center overflow-hidden rounded-full bg-black">
+              <div className="relative flex items-center overflow-hidden rounded-full">
                 <Image
                   src={
                     (avatarUrl
@@ -121,8 +121,8 @@ const Navbar = () => {
                       : defaultAvatar) as string
                   }
                   alt="pfp"
-                  height={200}
-                  width={200}
+                  height={48}
+                  width={48}
                   className="object-cover"
                 />
               </div>

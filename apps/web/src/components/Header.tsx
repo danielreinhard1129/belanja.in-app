@@ -16,6 +16,7 @@ import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTrigger } from "@/co
 import { useEffect, useState } from "react";
 import Logo from "./Logo";
 import useGetUser from "@/hooks/api/auth/useGetUser";
+import { googleLogout } from "@react-oauth/google";
 
 export const Header = () => {
   const router = useRouter();
@@ -24,8 +25,6 @@ export const Header = () => {
   const [hideHeader, setHideHeader] = useState(false);
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const { user, isLoading } = useGetUser(id);
-
-  const { logout } = useGoogleAuth();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const userLogout = () => {
@@ -33,14 +32,21 @@ export const Header = () => {
     localStorage.removeItem("Authorization");
     localStorage.removeItem("token");
     setIsLoggedIn(false);
+    setIsLoggedIn(false);
     router.replace("/");
+  };
+
+  const logout = () => {
+    googleLogout();
+    localStorage.removeItem("Authorization");
+    dispatch(logoutAction());
+    setIsLoggedIn(false);
+    router.push("/");
   };
 
   const scrollThreshold = 40;
 
   useEffect(() => {
-    const checkHeader = localStorage.getItem("Authorization");
-    setIsLoggedIn(!!checkHeader);
 
     const handleScroll = () => {
       const currentScrollTop =
@@ -75,17 +81,18 @@ export const Header = () => {
                 className="hidden cursor-pointer items-center gap-2 hover:underline md:flex"
                 onClick={() => router.push(`/user/${id}`)}
               >
-                <Avatar>
-                  <AvatarImage
+                <div className="relative h-6 w-6 overflow-hidden rounded-full">
+                  <Image
                     src={
                       (user.avatarUrl
                         ? `${appConfig.baseUrl}/assets${user.avatarUrl}`
                         : defaultAvatar) as string
                     }
-                    alt="avatar"
+                    alt="pfp"
+                    fill
                     className="object-cover"
                   />
-                </Avatar>
+                </div>
                 <div className="text-sm font-medium">{name}</div>
               </div>
               <div>
@@ -149,10 +156,6 @@ export const Header = () => {
                         </div>
                         <ChevronRight size={20} />
                       </div>
-                      <Separator />
-                      <div>Cart</div>
-                      <div>Cart</div>
-                      <div>Cart</div>
                       <Separator />
                       <div
                         className="cursor-pointer text-red-500 hover:underline"

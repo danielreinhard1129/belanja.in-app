@@ -1,3 +1,4 @@
+import { getMostBuyProductService } from '@/services/report/get-most-buy-product.service';
 import { getSalesReportService } from '@/services/report/get-salesReport.service';
 import { getSalesReportByCategoryService } from '@/services/report/get-salesReportByCategory.service';
 import { getSalesReportByProductService } from '@/services/report/get-salesReportByProduct.service';
@@ -61,6 +62,24 @@ export class ReportController {
         query,
         res.locals.user,
       );
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async getMostBuyProductController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const query = {
+        storeId: (req.query.storeId as string) || undefined,
+        productId: (req.query.productId as string) || undefined,
+      };
+      const id = res.locals.user;
+      const result = await getMostBuyProductService(query, id);
 
       return res.status(200).send(result);
     } catch (error) {
