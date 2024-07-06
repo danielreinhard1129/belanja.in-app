@@ -30,6 +30,7 @@ export default function AuthGuardAdmin(Component: any) {
         }
       }
     }, [id, role, isLoading, toast]);
+
     return <Component {...props} />;
   };
 }

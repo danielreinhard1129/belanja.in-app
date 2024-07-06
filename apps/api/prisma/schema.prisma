@@ -52,7 +52,6 @@ model City {
 
   addresses Address[]
   Store     Store[]
-  storeId   Int?
 
   @@map("cities")
 }
@@ -87,7 +86,6 @@ model User {
   role       Role      @default(USER)
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
-  // addressId  Int?
   avatarUrl  String?
   provider   String?
   gender     String?
@@ -198,16 +196,15 @@ enum JournalType {
   INCREASE @map("INCREASE")
   DECREASE @map("DECREASE")
   PURCHASE @map("PURCHASE")
-  REFUND @map("REFUND")
+  REFUND   @map("REFUND")
 }
 
 enum JournalStatus {
   WAITING_ADMIN_CONFIRMATION @map("WAITING_ADMIN_CONFIRMATION")
-  SUCCESS @map("SUCCESS")
-  REJECTED @map("REJECTED")
-  ON_PROGRESS @map("ON_PROGRESS")
-  AUTOMATED  @map("AUTOMATED")
-
+  SUCCESS                    @map("SUCCESS")
+  REJECTED                   @map("REJECTED")
+  ON_PROGRESS                @map("ON_PROGRESS")
+  AUTOMATED                  @map("AUTOMATED")
 }
 
 model JournalDetail {
@@ -454,12 +451,12 @@ enum PaymentMethod {
 }
 
 model Delivery {
-  id             Int            @id @default(autoincrement())
-  deliveryNumber String
-  deliveryFee    Int
-  status         DeliveryStatus @default(PENDING)
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  id              Int            @id @default(autoincrement())
+  deliveryNumber  String
+  deliveryFee     Int
+  status          DeliveryStatus @default(PENDING)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
   deliveryService String?
   deliveryCourier String?
 

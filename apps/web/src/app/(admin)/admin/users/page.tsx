@@ -77,135 +77,138 @@ const Users = () => {
   const take = meta?.take || 10;
 
   return (
-    <main className="container mx-auto">
-      <div className="container my-20 max-w-6xl border-2 pb-10 shadow-xl">
-        <div className="my-4 flex justify-between">
-          <div className="flex justify-between gap-4">
-            <Select
-              onValueChange={(value) => setRole(value)}
-              defaultValue={role}
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Role" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">ALL</SelectItem>
-                <SelectItem value="STOREADMIN">STOREADMIN</SelectItem>
-                <SelectItem value="USER">USER</SelectItem>
-              </SelectContent>
-            </Select>
-            <Input
-              type="text"
-              placeholder="Search"
-              name="search"
-              onChange={(e) => {
-                handleSearch(e.target.value);
-              }}
+    <main className="container py-16">
+      <div className="mx-auto max-w-6xl">
+        <h2 className="mb-4 text-2xl font-bold">Users</h2>
+        <div className="container border-2 pb-6 shadow-xl">
+          <div className="my-4 flex justify-between">
+            <div className="flex justify-between gap-4">
+              <Select
+                onValueChange={(value) => setRole(value)}
+                defaultValue={role}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">ALL</SelectItem>
+                  <SelectItem value="STOREADMIN">STOREADMIN</SelectItem>
+                  <SelectItem value="USER">USER</SelectItem>
+                </SelectContent>
+              </Select>
+              <Input
+                type="text"
+                placeholder="Search"
+                name="search"
+                onChange={(e) => {
+                  handleSearch(e.target.value);
+                }}
+              />
+            </div>
+            <DialogCreateStoreAdmin
+              refetch={refetch}
+              open={isOpenDialogCreate}
+              onOpenChange={setIsOpenDialogCreate}
             />
           </div>
-          <DialogCreateStoreAdmin
-            refetch={refetch}
-            open={isOpenDialogCreate}
-            onOpenChange={setIsOpenDialogCreate}
-          />
-        </div>
-        <div>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>No</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {users && users.length > 0 ? (
-                users.map((user, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{(page - 1) * take + index + 1}</TableCell>
-                    <TableCell>{user.name}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>{user.role}</TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        {user.role === "STOREADMIN" ? (
-                          <button
-                            onClick={() => handleEdit(user.id, "STOREADMIN")}
-                          >
-                            <FilePenLine />
+          <div>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>No</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Role</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {users && users.length > 0 ? (
+                  users.map((user, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{(page - 1) * take + index + 1}</TableCell>
+                      <TableCell>{user.name}</TableCell>
+                      <TableCell>{user.email}</TableCell>
+                      <TableCell>{user.role}</TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          {user.role === "STOREADMIN" ? (
+                            <button
+                              onClick={() => handleEdit(user.id, "STOREADMIN")}
+                            >
+                              <FilePenLine />
+                            </button>
+                          ) : user.role === "USER" ? (
+                            <button onClick={() => handleEdit(user.id, "USER")}>
+                              <FilePenLine />
+                            </button>
+                          ) : null}
+                          <button onClick={() => handleEdit(user.id, "DELETE")}>
+                            <Trash2 />
                           </button>
-                        ) : user.role === "USER" ? (
-                          <button onClick={() => handleEdit(user.id, "USER")}>
-                            <FilePenLine />
-                          </button>
-                        ) : null}
-                        <button onClick={() => handleEdit(user.id, "DELETE")}>
-                          <Trash2 />
-                        </button>
-                      </div>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center">
+                      Data not found
                     </TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center">
-                    Data not found
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+          <div className="mx-auto w-fit">
+            <Pagination
+              total={total}
+              take={take}
+              onChangePage={handleChangePaginate}
+            />
+          </div>
         </div>
-        <div className="mx-auto w-fit">
-          <Pagination
-            total={total}
-            take={take}
-            onChangePage={handleChangePaginate}
+        {selectedUserId !== null && dialogType === "USER" && (
+          <DialogEditUser
+            refetch={refetch}
+            userId={selectedUserId}
+            open={selectedUserId !== null && dialogType === "USER"}
+            onOpenChange={(open) => {
+              if (!open) {
+                setSelectedUserId(null);
+                setDialogType(null);
+              }
+            }}
           />
-        </div>
+        )}
+        {selectedUserId !== null && dialogType === "STOREADMIN" && (
+          <DialogEditStoreAdmin
+            userId={selectedUserId}
+            refetch={refetch}
+            open={selectedUserId !== null && dialogType === "STOREADMIN"}
+            onOpenChange={(open) => {
+              if (!open) {
+                setSelectedUserId(null);
+                setDialogType(null);
+              }
+            }}
+          />
+        )}
+        {selectedUserId !== null && dialogType === "DELETE" && (
+          <DialogDeleteUser
+            userId={selectedUserId}
+            isDeleting={isDeleting}
+            handleDelete={handleDelete}
+            open={selectedUserId !== null && dialogType === "DELETE"}
+            onOpenChange={(open) => {
+              if (!open) {
+                setSelectedUserId(null);
+                setDialogType(null);
+              }
+            }}
+          />
+        )}
       </div>
-      {selectedUserId !== null && dialogType === "USER" && (
-        <DialogEditUser
-          refetch={refetch}
-          userId={selectedUserId}
-          open={selectedUserId !== null && dialogType === "USER"}
-          onOpenChange={(open) => {
-            if (!open) {
-              setSelectedUserId(null);
-              setDialogType(null);
-            }
-          }}
-        />
-      )}
-      {selectedUserId !== null && dialogType === "STOREADMIN" && (
-        <DialogEditStoreAdmin
-          userId={selectedUserId}
-          refetch={refetch}
-          open={selectedUserId !== null && dialogType === "STOREADMIN"}
-          onOpenChange={(open) => {
-            if (!open) {
-              setSelectedUserId(null);
-              setDialogType(null);
-            }
-          }}
-        />
-      )}
-      {selectedUserId !== null && dialogType === "DELETE" && (
-        <DialogDeleteUser
-          userId={selectedUserId}
-          isDeleting={isDeleting}
-          handleDelete={handleDelete}
-          open={selectedUserId !== null && dialogType === "DELETE"}
-          onOpenChange={(open) => {
-            if (!open) {
-              setSelectedUserId(null);
-              setDialogType(null);
-            }
-          }}
-        />
-      )}
     </main>
   );
 };

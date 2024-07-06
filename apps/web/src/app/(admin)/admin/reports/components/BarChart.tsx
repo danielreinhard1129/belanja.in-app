@@ -13,13 +13,11 @@ import {
 
 interface BarChartComponentProps {
   data: { label: string; amount: number }[];
-  barColor: string;
   title: string;
 }
 
 const BarChartComponent: React.FC<BarChartComponentProps> = ({
   data,
-  barColor,
   title,
 }) => {
   return (
@@ -43,7 +41,7 @@ const BarChartComponent: React.FC<BarChartComponentProps> = ({
           />
           <Tooltip formatter={(amount: number) => formatToRupiah(amount)} />
           <Legend />
-          <Bar dataKey="amount" fill={barColor} />
+          <Bar dataKey="amount" fill="#FF6100" />
         </BarChart>
       </ResponsiveContainer>
     </div>

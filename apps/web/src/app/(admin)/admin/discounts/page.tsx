@@ -7,7 +7,7 @@ import DiscountsSuperAdmin from "./components/SuperAdmin";
 const Discounts = () => {
   const { role } = useAppSelector((state) => state.user);
   return (
-    <main className="container py-20">
+    <main className="container py-16">
       {role === "SUPERADMIN" ? (
         <DiscountsSuperAdmin />
       ) : (

@@ -172,26 +172,19 @@ const Product = () => {
         </div>
       </div>
       <div className="grid grid-cols-2">
+        <BarChartComponent data={incomeDailyData} title="Daily Income Report" />
         <BarChartComponent
-          data={incomeDailyData}
-          barColor="#8884d8"
-          title="Daily Income Report"
-        />
-        <BarChartComponent
-          data={transactionDailyData}
-          barColor="#82ca9d"
-          title="Daily Transaction Report"
+          data={incomeMonthlyData}
+          title="Monthly Income Report"
         />
       </div>
       <div className="grid grid-cols-2">
         <BarChartComponent
-          data={incomeMonthlyData}
-          barColor="#8884d8"
-          title="Monthly Income Report"
+          data={transactionDailyData}
+          title="Daily Transaction Report"
         />
         <BarChartComponent
           data={transactionMonthlyData}
-          barColor="#82ca9d"
           title="Monthly Transaction Report"
         />
       </div>

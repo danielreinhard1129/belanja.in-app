@@ -30,6 +30,13 @@ import useGetProducts from "@/hooks/api/product/useGetProducts";
 import useGetDiscount from "@/hooks/api/discounts/useGetDiscount";
 import useUpdateDiscount from "@/hooks/api/discounts/useUpdateDiscount";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface DialogEditDiscountProps {
   discountId: number;
@@ -57,11 +64,6 @@ const DialogEditDiscount: React.FC<DialogEditDiscountProps> = ({
     control,
   });
 
-  const productsOptions = products.map((product) => ({
-    value: product.id.toString(),
-    label: product.name,
-  }));
-
   const discountTypeOptions = [
     {
       value: "BOGO",
@@ -80,7 +82,7 @@ const DialogEditDiscount: React.FC<DialogEditDiscountProps> = ({
         discountvalue: discount.discountvalue || 0,
         discountLimit: discount.discountLimit || 0,
         minPurchase: discount.minPurchase || 0,
-        productId: discount.productId.toString() || "",
+        productId: discount.productId?.toString() || "",
         isActive: discount.isActive,
       });
     }
@@ -142,16 +144,24 @@ const DialogEditDiscount: React.FC<DialogEditDiscountProps> = ({
                 name="productId"
                 control={control}
                 render={({ field }) => (
-                  <select {...field} className="mb-2 w-full">
-                    <option value="" disabled>
-                      Select a Product
-                    </option>
-                    {products.map((product) => (
-                      <option key={product.id} value={product.id.toString()}>
-                        {product.name}
-                      </option>
-                    ))}
-                  </select>
+                  <Select
+                    value={field.value?.toString()}
+                    onValueChange={(value) => field.onChange(value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a Product" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {products.map((product) => (
+                        <SelectItem
+                          key={product.id}
+                          value={product.id.toString()}
+                        >
+                          {product.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 )}
               />
               <div className="flex justify-between gap-10">

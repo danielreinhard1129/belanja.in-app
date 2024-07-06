@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 interface IGetStocksQuery extends IPaginationQueries {
   search?: string;
   status?: string;
+  filterMonth: string;
+  filterYear: string;
 }
 
 const useGetStockJournalByStoreAdmin = (queries: IGetStocksQuery) => {
@@ -31,7 +33,13 @@ const useGetStockJournalByStoreAdmin = (queries: IGetStocksQuery) => {
 
   useEffect(() => {
     getStockJournalByStoreAdmin();
-  }, [queries?.page, queries?.search, queries?.status]);
+  }, [
+    queries?.page,
+    queries?.search,
+    queries?.status,
+    queries?.filterMonth,
+    queries?.filterYear,
+  ]);
 
   return {
     stockJournals,

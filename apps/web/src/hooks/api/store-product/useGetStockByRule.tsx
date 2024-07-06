@@ -9,12 +9,12 @@ interface IGetStocksQuery extends IPaginationQueries {
   storeId?: string | undefined;
 }
 
-const useGetStockByRuleNew = (queries: IGetStocksQuery) => {
+const useGetStockByRule = (queries: IGetStocksQuery) => {
   const [stocks, setStocks] = useState<Stock | null>(null);
   const [metaStock, setMetaStock] = useState<IPaginationMeta | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const getStockByRuleNew = async () => {
+  const getStockByRule = async () => {
     try {
       const { data } = await axiosInstance.get<Stock>("/store-products", {
         params: queries,
@@ -31,15 +31,15 @@ const useGetStockByRuleNew = (queries: IGetStocksQuery) => {
   };
 
   useEffect(() => {
-    getStockByRuleNew();
+    getStockByRule();
   }, [queries?.page, queries?.search, queries?.storeId]);
 
   return {
     stocks,
     isLoading,
     metaStock,
-    refetch: getStockByRuleNew,
+    refetch: getStockByRule,
   };
 };
 
-export default useGetStockByRuleNew;
+export default useGetStockByRule;

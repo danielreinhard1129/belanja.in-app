@@ -89,84 +89,89 @@ const DiscountsStoreAdmin = () => {
   }
 
   return (
-    <main className="container mx-auto mb-10 max-w-6xl border-2 pb-6 shadow-xl">
-      <div className="my-4 flex justify-between">
-        <Select onValueChange={handleTypeChange} defaultValue="all">
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select Discount Type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="BOGO">BOGO</SelectItem>
-            <SelectItem value="PRODUCT">PRODUCT</SelectItem>
-            <SelectItem value="MIN_PURCHASE">MIN_PURCHASE</SelectItem>
-          </SelectContent>
-        </Select>
-        <DialogCreateDiscount
-          refetch={refetch}
-          open={isOpenDialogCreate}
-          onOpenChange={setIsOpenDialogCreate}
-        />
-      </div>
-      <div>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>No</TableHead>
-              <TableHead>Title</TableHead>
-              <TableHead>Discount Type</TableHead>
-              <TableHead>Discount Value</TableHead>
-              <TableHead>Discount Limit</TableHead>
-              <TableHead>Product</TableHead>
-              <TableHead>Minimal Purchase</TableHead>
-              <TableHead>Status</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {discounts && discounts.length > 0 ? (
-              discounts.map((discount, index) => (
-                <TableRow key={discount.id}>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{discount.title}</TableCell>
-                  <TableCell>{discount.discountType}</TableCell>
-                  <TableCell>{discount.discountvalue} %</TableCell>
-                  <TableCell>{discount.discountLimit}</TableCell>
-                  <TableCell>{discount.product.name}</TableCell>
-                  <TableCell>{formatToRupiah(discount.minPurchase)}</TableCell>
-                  <TableCell>
-                    {discount.isActive ? (
-                      <Check style={{ color: "green" }} />
-                    ) : (
-                      <Ban style={{ color: "red" }} />
-                    )}
-                  </TableCell>
+    <main className="mx-auto max-w-6xl">
+      <h2 className="mb-4 text-2xl font-bold">Discounts</h2>
+      <div className="container border-2 pb-6 shadow-xl">
+        <div className="my-4 flex justify-between">
+          <Select onValueChange={handleTypeChange} defaultValue="all">
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select Discount Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="BOGO">BOGO</SelectItem>
+              <SelectItem value="PRODUCT">PRODUCT</SelectItem>
+              <SelectItem value="MIN_PURCHASE">MIN_PURCHASE</SelectItem>
+            </SelectContent>
+          </Select>
+          <DialogCreateDiscount
+            refetch={refetch}
+            open={isOpenDialogCreate}
+            onOpenChange={setIsOpenDialogCreate}
+          />
+        </div>
+        <div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>No</TableHead>
+                <TableHead>Title</TableHead>
+                <TableHead>Discount Type</TableHead>
+                <TableHead>Discount Value</TableHead>
+                <TableHead>Discount Limit</TableHead>
+                <TableHead>Product</TableHead>
+                <TableHead>Minimal Purchase</TableHead>
+                <TableHead>Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {discounts && discounts.length > 0 ? (
+                discounts.map((discount, index) => (
+                  <TableRow key={discount.id}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{discount.title}</TableCell>
+                    <TableCell>{discount.discountType}</TableCell>
+                    <TableCell>{discount.discountvalue} %</TableCell>
+                    <TableCell>{discount.discountLimit}</TableCell>
+                    {discount.product?.name ?? "Not Found"}
+                    <TableCell>
+                      {formatToRupiah(discount.minPurchase)}
+                    </TableCell>
+                    <TableCell>
+                      {discount.isActive ? (
+                        <Check style={{ color: "green" }} />
+                      ) : (
+                        <Ban style={{ color: "red" }} />
+                      )}
+                    </TableCell>
 
-                  <TableCell>
-                    <PopoverDiscountMenu
-                      discountId={discount.id}
-                      isDeleting={isDeleting}
-                      handleDelete={handleDelete}
-                      refetch={refetch}
-                    />
+                    <TableCell>
+                      <PopoverDiscountMenu
+                        discountId={discount.id}
+                        isDeleting={isDeleting}
+                        handleDelete={handleDelete}
+                        refetch={refetch}
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={8} className="text-center">
+                    Data not found
                   </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={8} className="text-center">
-                  Data not found
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-      <div className="mx-auto w-fit">
-        <Pagination
-          total={total}
-          take={take}
-          onChangePage={handleChangePaginate}
-        />
+              )}
+            </TableBody>
+          </Table>
+        </div>
+        <div className="mx-auto w-fit">
+          <Pagination
+            total={total}
+            take={take}
+            onChangePage={handleChangePaginate}
+          />
+        </div>
       </div>
     </main>
   );

@@ -1,5 +1,6 @@
 import Pagination from "@/components/Pagination";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import {
   Table,
   TableBody,
@@ -8,12 +9,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import React from "react";
-import DialogStockActionSuperAdmin from "./DialogStockActionSuperAdmin";
-import PopoverStockRequest from "./PopoverStockRequest";
-import { Ban, Check } from "lucide-react";
-import { Switch } from "@/components/ui/switch";
 import useUpdateIsActiveStoreProduct from "@/hooks/api/store-product/useUpdateIsActiveStoreProduct";
+import React from "react";
+import PopoverStockRequest from "./PopoverStockRequest";
 
 interface StoreInventoryTableProps {
   storeId: number;
@@ -43,7 +41,7 @@ const StoreInventoryTable: React.FC<StoreInventoryTableProps> = ({
     refetch();
   };
   return (
-    <main>
+    <main className="mx-auto max-w-6xl">
       <h3 className="text-xl font-bold">Store Inventory</h3>
       <div className="mt-4 flex items-center justify-between">
         <Input

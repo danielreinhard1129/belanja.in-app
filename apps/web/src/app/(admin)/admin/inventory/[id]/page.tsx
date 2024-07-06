@@ -1,12 +1,20 @@
 "use client";
-import useGetStore from "@/hooks/api/store/useGetStore";
+import useGetStoreById from "@/hooks/api/store/useGetStoreById";
 import ImgAvatar from "../../../../../../public/male_avatar.svg";
 import Image from "next/image";
 import React from "react";
 import ImageDataNotFound from "../../../../../../public/no-store.svg";
+import { Store } from "lucide-react";
+import { Fingerprint } from "lucide-react";
+import { Map } from "lucide-react";
+import { Building2 } from "lucide-react";
+import { Package } from "lucide-react";
+import { User } from "lucide-react";
+import { Mail } from "lucide-react";
+import { ScanFace } from "lucide-react";
 
 const StoreDetail = ({ params }: { params: { id: string } }) => {
-  const { store } = useGetStore(Number(params.id));
+  const { store } = useGetStoreById(Number(params.id));
   if (!store) {
     return (
       <div className="mx-auto flex flex-col items-center justify-center gap-7">
@@ -25,53 +33,70 @@ const StoreDetail = ({ params }: { params: { id: string } }) => {
     );
   }
   return (
-    <main className="container mx-auto my-auto max-w-6xl border-2 p-8 shadow-xl">
-      <div className="mx-auto my-auto flex items-center justify-between">
-        <div className="mx-auto flex flex-col gap-8">
-          <h1 className="text-4xl font-bold">{store.name} Store</h1>
-          <div className="grid w-full grid-cols-6 gap-2">
-            <div className="col-span-2 font-semibold">Store Admin</div>
-            <div className="col-span-1 text-center">:</div>
-            <div className="col-span-3">
-              {store.storeAdmin?.user?.name ?? "Not Found"}
-            </div>
-            <div className="col-span-2 font-semibold">NIP</div>
-            <div className="col-span-1 text-center">:</div>
-            <div className="col-span-3">
-              {store.storeAdmin?.nip ?? "Not Found"}
-            </div>
-            <div className="col-span-2 font-semibold">Email</div>
-            <div className="col-span-1 text-center">:</div>
-            <div className="col-span-3">
-              {store.storeAdmin?.user?.email ?? "Not Found"}
-            </div>
-            <div className="col-span-2 font-semibold">Gender</div>
-            <div className="col-span-1 text-center">:</div>
-            <div className="col-span-3">
-              {store.storeAdmin?.user?.gender ?? "Not Found"}
-            </div>
-            <div className="col-span-2 font-semibold">Store ID</div>
-            <div className="col-span-1 text-center">:</div>
-            <div className="col-span-3">{store.id ?? "Not Found"}</div>
-            <div className="col-span-2 font-semibold">Quantity</div>
-            <div className="col-span-1 text-center">:</div>
-            <div className="col-span-3">{store.qty ?? "Not Found"}</div>
-            <div className="col-span-2 font-semibold">City</div>
-            <div className="col-span-1 text-center">:</div>
-            <div className="col-span-3">
-              {store.City?.citName ?? "Not Found"}
-            </div>
+    <main className="container mx-96 my-auto max-w-xl rounded-xl border-2 p-8 shadow-xl">
+      <div className="mx-auto flex flex-col items-center justify-center gap-4">
+        <div className="grid w-full grid-cols-5 gap-2 p-6">
+          <div className="col-span-5 mb-4 flex flex-col items-center justify-center gap-4">
+            <Image
+              src={ImgAvatar}
+              alt="ImgAvatar"
+              width={120}
+              height={120}
+              priority
+            />
+            <h1 className="text-center text-xl font-bold">
+              {store.name} Store
+            </h1>
           </div>
-        </div>
-        <div>
-          <Image
-            src={ImgAvatar}
-            alt="ImgAvatar"
-            width={200}
-            height={200}
-            style={{ width: "auto", height: "auto" }}
-            priority
-          />
+          <div className="gep-4 col-span-2 flex items-center gap-12 font-semibold text-gray-400">
+            <Store size={20} color="gray" /> <span>Store Name</span>
+          </div>
+          <div className="col-span-1 text-center">:</div>
+          <div className="col-span-2">{store.name ?? "Not Found"}</div>
+          <div className="col-span-2 flex gap-12 font-semibold text-gray-400">
+            <Fingerprint size={20} color="gray" />
+            Store ID
+          </div>
+          <div className="col-span-1 text-center">:</div>
+          <div className="col-span-2">{store.id ?? "Not Found"}</div>
+          <div className="col-span-2 flex gap-12 font-semibold text-gray-400">
+            <Map size={20} color="gray" /> Province
+          </div>
+          <div className="col-span-1 text-center">:</div>
+          <div className="col-span-2">
+            {store.City?.province.provinceName ?? "Not Found"}
+          </div>
+          <div className="col-span-2 flex gap-12 font-semibold text-gray-400">
+            <Building2 size={20} color="gray" /> City
+          </div>
+          <div className="col-span-1 text-center">:</div>
+          <div className="col-span-2">{store.City?.citName ?? "Not Found"}</div>
+          <div className="col-span-2 flex gap-12 font-semibold text-gray-400">
+            <Package size={20} color="gray" /> Quantity
+          </div>
+          <div className="col-span-1 text-center">:</div>
+          <div className="col-span-2">{store.qty ?? "Not Found"}</div>
+          <div className="col-span-2 flex gap-12 font-semibold text-gray-400">
+            <User size={20} color="gray" /> Store Admin
+          </div>
+          <div className="col-span-1 text-center">:</div>
+          <div className="col-span-2">
+            {store.storeAdmin?.user?.name ?? "Not Found"}
+          </div>
+          <div className="col-span-2 flex gap-12 font-semibold text-gray-400">
+            <Mail size={20} color="gray" /> Email
+          </div>
+          <div className="col-span-1 text-center">:</div>
+          <div className="col-span-2">
+            {store.storeAdmin?.user?.email ?? "Not Found"}
+          </div>
+          <div className="col-span-2 flex gap-12 font-semibold text-gray-400">
+            <ScanFace size={20} color="gray" /> NIP
+          </div>
+          <div className="col-span-1 text-center">:</div>
+          <div className="col-span-2">
+            {store.storeAdmin?.nip ?? "Not Found"}
+          </div>
         </div>
       </div>
     </main>

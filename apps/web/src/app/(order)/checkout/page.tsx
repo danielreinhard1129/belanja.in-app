@@ -50,13 +50,16 @@ const Checkout = () => {
     destination: selectedAddress?.cityId.toString() || "",
     origin: /*carts[0].stores.city ||*/ "501",
   });
-  
-  const selectedShipping =
-    shippingMethods.length ?
-    shippingMethods.find((method) => method.isSelected): undefined
 
-  const selectedMethod =
-    selectedShipping ? selectedShipping.costs.find((cost) => cost.isSelected): undefined
+  console.log(selectedAddress?.cityId!);
+
+  const selectedShipping = shippingMethods.length
+    ? shippingMethods.find((method) => method.isSelected)
+    : undefined;
+
+  const selectedMethod = selectedShipping
+    ? selectedShipping.costs.find((cost) => cost.isSelected)
+    : undefined;
 
   const deliveryFee = selectedMethod && selectedMethod.cost[0].value;
   const handleCreateOrder = (cartItems: ICart[]) => {
@@ -69,10 +72,10 @@ const Checkout = () => {
       userId: id,
       storeId: 1,
       deliveryFee: String(deliveryFee),
-      addressId: selectedAddress?.cityId!,
+      addressId: selectedAddress?.id!,
       paymentMethod: PaymentMethodArgs.DIGITAL_PAYMENT,
       deliveryCourier: selectedShipping?.name,
-      deliveryService: selectedMethod?.description
+      deliveryService: selectedMethod?.description,
     });
   };
   // console.log(shippingMethods);
