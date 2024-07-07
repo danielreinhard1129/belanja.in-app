@@ -3,10 +3,11 @@ import { NextFunction, Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 
 export const updateUserDetailsValidator = [
-  body('name').isLength({ min: 4 }).withMessage('Name is too short').optional(),
+  body('name').optional().isLength({ min: 4 }).withMessage('Name is too short'),
   body('gender').optional(),
   body('birthDate').optional(),
   body('email')
+    .optional()
     .custom(async (value) => {
       const existingUser = await prisma.user.findFirst({
         where: { email: value },
@@ -22,7 +23,6 @@ export const updateUserDetailsValidator = [
     if (!errors.isEmpty()) {
       res.status(400).send({ errors: errors.array() });
     }
-
     next();
   },
 ];

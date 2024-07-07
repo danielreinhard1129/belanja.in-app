@@ -1,3 +1,4 @@
+import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from '@/config';
 import { OAuth2Client, Credentials } from 'google-auth-library';
 
 interface Credential extends Credentials {
@@ -10,8 +11,8 @@ export const getTokens = async (
 ): Promise<Credential | undefined> => {
   try {
     const oAuth2Client = new OAuth2Client(
-      process.env.GOOGLE_CLIENT_ID,
-      process.env.GOOGLE_CLIENT_SECRET,
+      GOOGLE_CLIENT_ID,
+      GOOGLE_CLIENT_SECRET,
       'postmessage',
     );
 

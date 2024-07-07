@@ -41,7 +41,7 @@ const useUpdateUserDetails = (userId: number) => {
         `/auth/update-user-details/${userId}`,
         userUpdateForm,
       );
-      
+
       toast.success(`${response.data.message}`);
 
       router.push(`/user/${userId}`);
