@@ -7,6 +7,7 @@ export const updateUserDetailsValidator = [
   body('gender').optional(),
   body('birthDate').optional(),
   body('email')
+    .optional()
     .custom(async (value) => {
       const existingUser = await prisma.user.findFirst({
         where: { email: value },
