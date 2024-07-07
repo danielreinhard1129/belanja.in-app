@@ -41,7 +41,7 @@ const ProductDetail = ({ params }: { params: { id: string } }) => {
   }
 
   return (
-    <main className="container flex h-screen flex-col px-48 py-40 md:flex-row md:pt-20">
+    <main className="px-auto container flex h-screen flex-col py-40 md:flex-row md:pt-20">
       <div className="relative h-fit w-full px-4 md:w-1/2">
         <Carousel className="w-full" setApi={setApi}>
           <CarouselContent>
