@@ -21,7 +21,6 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 import PopoverProductMenu from "./PopoverProductMenu";
-import { BASE_API_URL } from "@/utils/config";
 
 interface ProductTableProps {
   products: any[];
