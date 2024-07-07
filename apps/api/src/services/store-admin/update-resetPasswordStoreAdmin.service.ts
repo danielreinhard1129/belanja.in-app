@@ -32,7 +32,7 @@ export const updateResetPasswordStoreAdminService = async (
     const users = await prisma.user.update({
       where: { id },
       data: {
-        password: await hashPassword('Admin123'),
+        password: await hashPassword('Admin123!'),
       },
     });
 

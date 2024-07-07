@@ -52,7 +52,7 @@ export const createStoreAdminService = async (
         },
         data: {
           name,
-          password: await hashPassword('Admin123'),
+          password: await hashPassword('Admin123!'),
           isDelete: false,
           isVerified: true,
         },

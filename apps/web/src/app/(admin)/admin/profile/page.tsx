@@ -35,7 +35,7 @@ const Profile = () => {
   }, [onSuccess, user]);
   if (!user || !store)
     return (
-      <main className="container mx-96 my-auto max-w-xl rounded-xl border-2 bg-white p-8 shadow-xl">
+      <main className="container mx-auto my-auto max-w-xl rounded-xl border-2 bg-white p-8 shadow-xl">
         <div className="mx-auto flex flex-col items-center justify-center gap-4">
           <div className="grid w-full grid-cols-5 gap-2 p-6">
             <div className="col-span-5 mb-4 flex flex-col items-center justify-center gap-4">
@@ -84,7 +84,7 @@ const Profile = () => {
       </main>
     );
   return (
-    <main className="container mx-96 my-auto max-w-xl rounded-xl border-2 bg-white p-8 shadow-xl">
+    <main className="container mx-auto my-auto max-w-xl rounded-xl border-2 bg-white p-8 shadow-xl">
       <div className="mx-auto flex flex-col items-center justify-center gap-4">
         <div className="grid w-full grid-cols-5 gap-2 p-6">
           <div className="col-span-5 mb-4 flex flex-col items-center justify-center gap-4">

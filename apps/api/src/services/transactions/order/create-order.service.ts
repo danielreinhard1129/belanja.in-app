@@ -213,7 +213,7 @@ export const createOrderService = async (body: IOrderArgs) => {
             }
           }
         }
-        
+
         // Apply product-specific vouchers
         // if (userVoucherIds && userVoucherIds.length) {
         //   const userVouchers = await tx.userVoucher.findMany({
@@ -541,7 +541,6 @@ export const createOrderService = async (body: IOrderArgs) => {
             where: { id: findDelivery?.id },
             data: { status: 'CANCELLED' },
           });
-          console.log('ini cron dari create order');
         }
       });
     });
