@@ -100,7 +100,7 @@ const UploadPaymentProofDialog: FC<UploadPaymentProofDialogProps> = ({
           <p className="text-lg font-semibold">a.n. Valerie Vincent Setiawan</p>
           <p className="font-semibold underline">BEFORE</p>
           <Countdown
-            className="font-mono"
+            className="font-mono text-4xl"
             date={new Date(order.createdAt).getTime() + 60 * 60 * 1000}
           />
         </div>
