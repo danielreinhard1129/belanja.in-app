@@ -47,7 +47,7 @@ const useUpdateUserDetails = (userId: number) => {
       router.push(`/user/${userId}`);
     } catch (error) {
       if (error instanceof AxiosError) {
-        console.error("Axios Error:", error.response?.data || error.message);
+        toast.error("Error:", error.response?.data || error.message);
       } else {
         console.error("Unknown Error:", error);
       }

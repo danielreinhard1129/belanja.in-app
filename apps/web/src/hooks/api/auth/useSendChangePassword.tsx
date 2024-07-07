@@ -20,7 +20,6 @@ const useSendChangePassword = () => {
   const sendChangePassword = async (userId: SendChangePwArgs) => {
     try {
       setIsLoading(true);
-      console.log(userId);
       const { data } = await axiosInstance.post<ISendChangePasswordResponse>(
         "/auth/send-change-password",
         { user: userId },

@@ -20,6 +20,7 @@ export const getProductService = async (id: number) => {
             },
           },
         },
+        discounts: true,
       },
     });
 

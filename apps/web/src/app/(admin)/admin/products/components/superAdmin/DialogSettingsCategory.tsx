@@ -91,7 +91,7 @@ const DialogSettingsCategory: React.FC<DialogSettingsCategoryProps> = ({
   return (
     <Dialog>
       <DialogTrigger className="flex items-center justify-between gap-2">
-        <div className="inline-flex h-10 items-center justify-center whitespace-nowrap rounded-md bg-[#ff6100] px-4 py-2 text-sm font-medium text-white ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
+        <div className="inline-flex h-10 items-center justify-center gap-1 whitespace-nowrap rounded-md bg-[#ff6100] px-4 py-2 text-sm font-medium text-white">
           <Plus />
           Category
         </div>

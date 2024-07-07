@@ -82,7 +82,11 @@ export const getProductsByLocationService = async (
               },
             },
           },
-          store: true,
+          store: {
+            include: {
+              City: true,
+            },
+          },
         },
         skip: (page - 1) * take,
         take: take,
@@ -112,7 +116,11 @@ export const getProductsByLocationService = async (
               images: true,
             },
           },
-          store: true,
+          store: {
+            include: {
+              City: true,
+            },
+          },
         },
         skip: (page - 1) * take,
         take: take,

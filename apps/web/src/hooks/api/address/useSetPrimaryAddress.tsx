@@ -18,7 +18,7 @@ const useSetPrimaryAddress = (addressId: number, userId: number) => {
         payload,
       );
 
-      toast.success(response.data.message || "Set primary address success");
+      toast.success("Success set primary address!");
       router.push(`/user/${userId}`);
     } catch (error) {
       if (error instanceof AxiosError) {

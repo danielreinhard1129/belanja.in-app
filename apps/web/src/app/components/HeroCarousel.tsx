@@ -12,9 +12,9 @@ import {
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import Autoplay from "embla-carousel-autoplay";
-import hero1 from "../../../public/hero1.jpg";
-import hero2 from "../../../public/202201_takayama_thumb-820x540.jpg";
-import hero3 from "../../../public/2f00ad64c6f1815605fe23e889fb643c.jpg";
+import hero1 from "../../../public/Green Yellow Modern Grocery Online Order Banner (1).png";
+import hero2 from "../../../public/Green Bold Grocery Market Store Facebook Post (1).png";
+import hero3 from "../../../public/Green Modern Fruits Sale Instagram Post (1400 x 640 px) (1).png";
 
 const HeroCarousel = () => {
   const [api, setApi] = useState<CarouselApi>();
@@ -53,20 +53,18 @@ const HeroCarousel = () => {
       <Carousel
         plugins={[plugin.current]}
         setApi={setApi}
-        className="h-48 md:h-96"
+        className="h-48 md:h-fit"
       >
         <CarouselContent className="flex">
           {images.map((image, index) => (
             <CarouselItem key={index} className="flex-shrink-0">
               <Card className="rounded-none border-none shadow-none md:rounded-lg">
-                <CardContent className="relative flex h-48 w-full items-center justify-center md:h-96">
-                  <div className="z-20 text-white">DISCOVER MORE</div>
+                <CardContent className="relative flex h-48 w-full items-center justify-center md:h-[400px]">
                   <Image
                     src={image}
                     alt={`Slide ${index + 1}`}
-                    width={1400}
-                    height={1000}
-                    className="object-cover absolute"
+                    fill
+                    className="object-cover"
                   />
                 </CardContent>
               </Card>

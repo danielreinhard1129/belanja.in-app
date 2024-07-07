@@ -4,19 +4,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { NotebookPen } from "lucide-react";
+import { BookMarked } from "lucide-react";
 import React, { useState } from "react";
 import DialogSettingStoreProducts from "./DialogSettingStoreProducts";
-// import DialogRequestStockMutation from "../storeAdmin/DialogRequestStockMutation";
-import { BookMarked } from "lucide-react";
 import DialogStockActionSuperAdmin from "./DialogStockActionSuperAdmin";
 import DialogStockMutation from "./DialogStockMutation";
-
 interface PopoverStockMenuProps {
   storeId: number;
   refetch: () => void;
 }
-
 const PopoverStockRequest: React.FC<PopoverStockMenuProps> = ({
   storeId,
   refetch,
@@ -28,7 +24,7 @@ const PopoverStockRequest: React.FC<PopoverStockMenuProps> = ({
   return (
     <Popover>
       <PopoverTrigger>
-        <div className="flex items-center gap-2">
+        <div className="inline-flex h-10 items-center justify-center gap-1 whitespace-nowrap rounded-md bg-[#ff6100] px-4 py-2 text-sm font-medium text-white">
           <BookMarked className="h-4 w-4" />
           <span>Stock</span>
         </div>
@@ -40,12 +36,6 @@ const PopoverStockRequest: React.FC<PopoverStockMenuProps> = ({
           open={isDialogSettingStoreProducts}
           onOpenChange={setIsDialogSettingStoreProducts}
         />
-        {/* <DialogRequestStockMutation
-          storeId={storeId}
-          refetch={refetch}
-          open={isDialogRequestStockMutation}
-          onOpenChange={setIsDialogRequestStockMutation}
-        /> */}
         <DialogStockMutation
           storeId={storeId}
           refetch={refetch}

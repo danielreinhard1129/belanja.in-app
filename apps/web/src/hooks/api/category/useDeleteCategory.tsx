@@ -1,9 +1,9 @@
 "use client";
 
-import { toast } from "sonner";
 import { axiosInstance } from "@/lib/axios";
 import { AxiosError } from "axios";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const useDeleteCategory = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);

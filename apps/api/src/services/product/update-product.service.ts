@@ -11,7 +11,6 @@ interface UpdateProductBody
   categories?: string;
 }
 
-// jika pindah admin tambah ../ satu
 const defaultDir = '../../../public/images';
 
 export const updateProductService = async (
@@ -20,10 +19,8 @@ export const updateProductService = async (
   files: Express.Multer.File[],
 ) => {
   try {
-    // tambahin userId jika redux sudah berhasil
     const { name, description, price, weight, categories, user } = body;
 
-    // Check if product exists
     const product = await prisma.product.findFirst({
       where: { id },
     });
@@ -32,7 +29,6 @@ export const updateProductService = async (
       throw new Error('product not found');
     }
 
-    // Check if user exists and is admin
     const checkUser = await prisma.user.findUnique({
       where: {
         id: Number(user),
@@ -60,20 +56,17 @@ export const updateProductService = async (
       }
     }
 
-    // Check if categoryIds is empty
     if (!categories || categories.length === 0) {
       throw new Error('Category cannot be empty');
     }
 
-    const categoriesArray = JSON.parse(categories); // Parse JSON string to array
+    const categoriesArray = JSON.parse(categories);
 
-    // Handle file uploads and deletions
     if (files && files.length > 0) {
       const existingImages = await prisma.productImage.findMany({
         where: { productId: id },
       });
 
-      // Delete existing images from storage
       existingImages.forEach((images) => {
         const imagePath = join(__dirname, defaultDir, images.images);
         if (fs.existsSync(imagePath)) {
@@ -81,12 +74,10 @@ export const updateProductService = async (
         }
       });
 
-      // Delete existing images from database
       await prisma.productImage.deleteMany({
         where: { productId: id },
       });
 
-      // Create new images
       await prisma.productImage.createMany({
         data: files.map((file) => ({
           productId: id,
@@ -95,7 +86,6 @@ export const updateProductService = async (
       });
     }
 
-    // Update product
     const updatedProduct = await prisma.product.update({
       where: { id },
       data: {

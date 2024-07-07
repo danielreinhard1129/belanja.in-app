@@ -1,7 +1,7 @@
-import { toast } from "sonner";
 import { axiosInstance } from "@/libs/axios";
 import { AxiosError } from "axios";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const useDeleteProducts = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -9,7 +9,7 @@ const useDeleteProducts = () => {
   const deleteProducts = async (productId: number[]) => {
     try {
       setIsLoading(true);
-      const response = await axiosInstance.delete("/products/delete", {
+      const response = await axiosInstance.delete("/products/records", {
         data: { productId },
       });
       toast.success(response.data.message);

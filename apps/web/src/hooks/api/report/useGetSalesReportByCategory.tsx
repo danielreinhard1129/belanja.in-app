@@ -1,5 +1,4 @@
 import { axiosInstance } from "@/libs/axios";
-import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
 interface ChartData {
@@ -31,9 +30,7 @@ const useGetSalesReportByCategory = (queries: IGetReportsQuery) => {
       });
       setData(data);
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error);
-      }
+      setData(null);
       setData(null);
     } finally {
       setIsLoading(false);

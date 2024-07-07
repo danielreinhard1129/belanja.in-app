@@ -2,7 +2,6 @@
 
 import { axiosInstance } from "@/lib/axios";
 import { Product } from "@/types/product.type";
-import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
 const useGetProductsByStore = (id: number) => {
@@ -14,9 +13,7 @@ const useGetProductsByStore = (id: number) => {
       );
       setProducts(data);
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.error("Error fetching product:", error.message);
-      }
+      setProducts([]);
     }
   };
   useEffect(() => {

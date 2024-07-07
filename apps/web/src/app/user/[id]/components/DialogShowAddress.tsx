@@ -80,19 +80,13 @@ const DialogShowAddress = ({
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>
-        <Button variant="link" className="px-3 py-2">
+        <Button variant="link" className="p-0 text-xs text-gray-600 font-normal">
           Show All
         </Button>
       </DialogTrigger>
       <DialogContent className="md:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Your address</DialogTitle>
-          <Button
-            className="px-3 py-2"
-            onClick={() => router.push(`/user/${userId}/add-address`)}
-          >
-            Add Address
-          </Button>
         </DialogHeader>
         {addresses ? (
           <div className="grid gap-4 py-4">

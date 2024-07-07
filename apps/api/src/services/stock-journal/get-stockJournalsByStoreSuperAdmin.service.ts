@@ -41,17 +41,14 @@ export const getStockJournalsByStoreSuperAdminService = async (
 
   let where: any = {};
 
-  // Filter berdasarkan status jika didefinisikan
   if (status && status !== 'all') {
     where.status = status;
   }
 
-  // Filter berdasarkan storeId jika didefinisikan
   if (storeId && storeId !== '') {
     where.storeId = Number(storeId);
   }
 
-  // Filter berdasarkan tipe jurnal INCREASE dan DECREASE
   where.type = {
     in: ['INCREASE', 'DECREASE'],
   };

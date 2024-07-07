@@ -12,6 +12,7 @@ import useDecrementCart from "@/hooks/api/cart/useDecrementCart";
 import useRemoveItem from "@/hooks/api/cart/useRemoveItem";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import AuthGuardTrx from "@/hoc/AuthGuardTrx";
 
 const Cart = () => {
   const router = useRouter()
@@ -138,4 +139,4 @@ const Cart = () => {
   );
 };
 
-export default Cart;
+export default AuthGuardTrx(Cart);

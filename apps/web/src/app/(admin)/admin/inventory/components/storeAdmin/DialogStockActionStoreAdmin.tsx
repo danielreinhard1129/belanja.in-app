@@ -38,15 +38,16 @@ import useRejectStockMutation from "@/hooks/api/store-product/useRejectStockMuta
 import { format } from "date-fns";
 import { Eye, Loader2, NotebookPen } from "lucide-react";
 import React, { useState } from "react";
-
 interface DialogStockActionStoreAdminProps {
   storeId: number;
   refetch: () => void;
 }
-
 const DialogStockActionStoreAdmin: React.FC<
   DialogStockActionStoreAdminProps
 > = ({ storeId, refetch }) => {
+  const now = new Date();
+  const [filterMonth, setFilterMonth] = useState(`${now.getMonth() + 1}`);
+  const [filterYear, setFilterYear] = useState("2024");
   const [page, setPage] = useState<number>(1);
   const [status, setStatus] = useState<string>("WAITING_ADMIN_CONFIRMATION");
   const {
@@ -58,41 +59,36 @@ const DialogStockActionStoreAdmin: React.FC<
     page,
     take: 5,
     status,
+    filterMonth,
+    filterYear,
   });
   const { confirmMutation, isLoading: isConfirm } = useConfirmStockMutation();
   const { rejectMutation, isLoading: isReject } = useRejectStockMutation();
   const { arriveMutation, isLoading: isArrive } = useArriveStockMutation();
-
   const handleChangePaginate = ({ selected }: { selected: number }) => {
     setPage(selected + 1);
   };
-
   const handleConfirm = async (id: number) => {
     refetch();
     await confirmMutation(id);
     refetchStockJournals();
     refetch();
   };
-
   const handleReject = async (id: number) => {
     await rejectMutation(id);
     refetchStockJournals();
     refetch();
   };
-
   const handleArrive = async (id: number) => {
     await arriveMutation(id);
     refetchStockJournals();
     refetch();
   };
-
   const total = meta?.total || 0;
   const take = meta?.take || 10;
-
   if (!stockJournals) {
     return <div>Data Not Found</div>;
   }
-
   return (
     <Drawer>
       <DrawerTrigger>
@@ -324,5 +320,4 @@ const DialogStockActionStoreAdmin: React.FC<
     </Drawer>
   );
 };
-
 export default DialogStockActionStoreAdmin;

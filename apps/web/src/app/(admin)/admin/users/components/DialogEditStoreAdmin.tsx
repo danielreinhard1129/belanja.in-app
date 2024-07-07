@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { FilePenLine, Loader2 } from "lucide-react";
+import { FormInput } from "@/components/FormInput";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -7,27 +7,26 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
+import useResetPasswordStoreAdmin from "@/hooks/api/store-admin/useResetPasswordStoreAdmin";
+import useUpdateStoreAdmin from "@/hooks/api/store-admin/useUpdateStoreAdmin";
 import useGetUser from "@/hooks/api/user/useGetUserWithStoreAdmin";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import {
   FormProvider,
   SubmitHandler,
   useForm,
   useFormState,
 } from "react-hook-form";
+import { toast } from "sonner";
+import DialogResetPasswordStoreAdmin from "./DialogResetPasswordStoreAdmin";
 import {
+  defaultValues,
   editStoreAdmin,
   EditStoreAdmin,
-  defaultValues,
 } from "./validationSchema/editStoreAdmin";
-import { FormInput } from "@/components/FormInput";
-import { Button } from "@/components/ui/button";
-import useUpdateStoreAdmin from "@/hooks/api/store-admin/useUpdateStoreAdmin";
-import DialogResetPasswordStoreAdmin from "./DialogResetPasswordStoreAdmin";
-import useResetPasswordStoreAdmin from "@/hooks/api/store-admin/useResetPasswordStoreAdmin";
-import { toast } from "sonner";
 
 interface DialogEditStoreAdminProps {
   userId: number;

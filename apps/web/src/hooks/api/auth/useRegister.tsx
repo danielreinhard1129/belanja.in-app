@@ -29,7 +29,7 @@ const useRegister = () => {
       toast.success(`${data.message}`);
     } catch (error) {
       if (error instanceof AxiosError) {
-        toast.error(`Error: ${error.response?.data}!`);
+        toast.error(error.response?.data.errors[0].msg);
       }
     } finally {
       setIsLoading(false);

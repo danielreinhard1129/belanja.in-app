@@ -3,7 +3,6 @@
 import { axiosInstance } from "@/lib/axios";
 import { IPaginationMeta, IPaginationQueries } from "@/types/pagination.type";
 import { Store } from "@/types/store.type";
-import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
 interface IGetEventsQuery extends IPaginationQueries {
@@ -16,15 +15,12 @@ const useGetStoresByParams = (queries: IGetEventsQuery) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const getStores = async () => {
     try {
-      const { data } = await axiosInstance.get("/stores/filter", {
+      const { data } = await axiosInstance.get("/stores/filters", {
         params: queries,
       });
       setData(data.data);
       setMeta(data.meta);
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.error("Error fetching stores:", error.message);
-      }
       setData([]);
       setMeta(null);
     } finally {

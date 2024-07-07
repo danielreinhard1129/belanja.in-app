@@ -1,9 +1,9 @@
 "use client";
 
-import { toast } from "sonner";
 import { axiosInstance } from "@/libs/axios";
 import { AxiosError } from "axios";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface UpdateUser {
   name: string;

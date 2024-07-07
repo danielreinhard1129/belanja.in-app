@@ -6,14 +6,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import useDeleteStore from "@/hooks/api/store/useDeleteStore";
 import useGetStoresByParams from "@/hooks/api/store/useGetStoresByParams";
+import { debounce } from "lodash";
 import React, { useState } from "react";
 import { AddStoreModal } from "./AddStoreModal";
 import NotificationIcon from "./NotificationStockSuperAdmin";
 import PopoverStoreMenu from "./PopoverStoreMenu";
-import { debounce } from "lodash";
-import { Input } from "@/components/ui/input";
 
 interface StoresProps {
   activeStoreId: string;
@@ -58,15 +58,14 @@ const Stores: React.FC<StoresProps> = ({ onStoreClick, activeStoreId }) => {
     return <div>Data Not Found</div>;
   }
 
-  // console.log(stores);
   const handleCardClick = (storeId: number) => {
     onStoreClick(storeId);
     setActivePopoverStoreId(storeId);
   };
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold">Inventory</h2>
+    <main className="mx-auto max-w-6xl">
+      <h2 className="mb-4 text-2xl font-bold">Inventory</h2>
       <div className="my-4">
         <div className="flex items-center justify-between">
           <div className="w-[300px]">
@@ -85,11 +84,11 @@ const Stores: React.FC<StoresProps> = ({ onStoreClick, activeStoreId }) => {
           </div>
         </div>
       </div>
-      <div className="flex gap-5">
+      <div className="flex gap-7">
         {stores.map((store, i) => (
           <div key={i} onClick={() => handleCardClick(store.id)}>
             <Card
-              className={`h-36 w-48 cursor-pointer rounded-lg border p-4 transition duration-300 hover:shadow-md hover:shadow-orange-500 ${
+              className={`h-36 w-52 cursor-pointer rounded-lg border p-4 transition duration-300 hover:shadow-md hover:shadow-orange-500 ${
                 store.id === Number(activeStoreId)
                   ? "shadow-md shadow-orange-500"
                   : !store.storeAdmin?.user.name
@@ -139,7 +138,7 @@ const Stores: React.FC<StoresProps> = ({ onStoreClick, activeStoreId }) => {
           onChangePage={handleChangePaginate}
         />
       </div>
-    </div>
+    </main>
   );
 };
 
