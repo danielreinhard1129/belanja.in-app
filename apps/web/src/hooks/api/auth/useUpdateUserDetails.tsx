@@ -36,7 +36,7 @@ const useUpdateUserDetails = (userId: number) => {
         Array.from(avatarUrl).forEach((file: FileWithPath) => {
           userUpdateForm.append("avatarUrl", file);
         });
-      
+
       const response = await axiosInstance.patch(
         `/auth/update-user-details/${userId}`,
         userUpdateForm,
@@ -47,9 +47,7 @@ const useUpdateUserDetails = (userId: number) => {
       router.push(`/user/${userId}`);
     } catch (error) {
       if (error instanceof AxiosError) {
-        toast.error("Error:", error.response?.data || error.message);
-      } else {
-        console.error("Unknown Error:", error);
+        toast.error(`Error: ${error.response?.data}`);
       }
     } finally {
       setIsLoading(false);

@@ -19,7 +19,9 @@ const TodaysPick = () => {
   const [search, setSearch] = useState<string>(
     searchParams.get("search") || "",
   );
-  const [category, setCategory] = useState<string>("");
+  const [category, setCategory] = useState<string>(
+    searchParams.get("category") || "",
+  );
 
   useEffect(() => {
     window.navigator.geolocation.getCurrentPosition(
@@ -90,53 +92,61 @@ const TodaysPick = () => {
     return <div>Loading...</div>;
   }
 
-  if (!data || data.length === 0) {
-    return <div>No products found</div>;
-  }
-
   return (
-    <div className="container flex flex-col gap-4 p-0 px-4">
-      <div className="flex items-center gap-2">
-        <svg className="h-[24px] w-[12px]">
-          <rect className="h-full w-full" fill="#FF6100" />
-        </svg>
-        <p className="text-base font-medium">Discover Product</p>
-      </div>
-      <div className="flex items-center gap-2">
-        <Input
-          type="text"
-          placeholder="Search product"
-          name="search"
-          onChange={(e) => {
-            handleSearch(e.target.value);
-          }}
-          defaultValue={search}
-        />
-        <CategoryPicker
-          onChange={handleCategoryChange}
-          defaultValue={category}
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-6">
-        {data.map((storeProduct, index) => (
-          <CardProduct
-            key={index}
-            images={`${appConfig.baseUrl}/assets${storeProduct.product.images[0].images}`}
-            discount={0}
-            name={storeProduct.product.name}
-            price={storeProduct.product.price}
-            productId={storeProduct.product.id}
-            store={storeProduct.store.City.citName}
-          />
-        ))}
-      </div>
-      <div className="mx-auto w-fit">
-        <Pagination
-          total={total}
-          take={take}
-          onChangePage={handleChangePaginate}
-        />
-      </div>
+    <div className="container p-0 px-4">
+      {!productsLoading ? (
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-2">
+            <svg className="h-[24px] w-[12px]">
+              <rect className="h-full w-full" fill="#FF6100" />
+            </svg>
+            <p className="text-base font-medium">Discover Product</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Input
+              type="text"
+              placeholder="Search product"
+              name="search"
+              onChange={(e) => {
+                handleSearch(e.target.value);
+              }}
+              defaultValue={search}
+            />
+            <CategoryPicker
+              onChange={handleCategoryChange}
+              defaultValue={category}
+            />
+          </div>
+          {!data || data.length === 0 ? (
+            <div>No Product FOund</div>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-6">
+                {data.map((storeProduct, index) => (
+                  <CardProduct
+                    key={index}
+                    images={`${appConfig.baseUrl}/assets${storeProduct.product.images[0].images}`}
+                    discount={0}
+                    name={storeProduct.product.name}
+                    price={storeProduct.product.price}
+                    productId={storeProduct.product.id}
+                    store={storeProduct.store.City.citName}
+                  />
+                ))}
+              </div>
+              <div className="mx-auto w-fit">
+                <Pagination
+                  total={total}
+                  take={take}
+                  onChangePage={handleChangePaginate}
+                />
+              </div>
+            </>
+          )}
+        </div>
+      ) : (
+        <div>Loading...</div>
+      )}
     </div>
   );
 };
