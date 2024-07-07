@@ -83,6 +83,8 @@ const TodaysPick = () => {
   useEffect(() => {
     if (latitude !== null && longitude !== null) {
       refetch();
+      const latlong = { lat: latitude, long: longitude };
+      localStorage.setItem("location", JSON.stringify(latlong));
     }
   }, [latitude, longitude, page]);
 
