@@ -108,10 +108,7 @@ const Navbar = () => {
         </div>
         <div className="hidden w-full gap-8 md:flex md:flex-col">
           <div className="items-center justify-between px-3">
-            <div
-              className="flex w-full cursor-pointer items-center justify-start gap-4"
-              onClick={() => router.push(`/user/${id}`)}
-            >
+            <div className="flex w-full cursor-pointer items-center justify-start gap-4">
               <div className="relative flex items-center overflow-hidden rounded-full">
                 <Image
                   src={
@@ -157,10 +154,7 @@ const Navbar = () => {
             </SheetHeader>
             <div className="flex h-[80vh] flex-col gap-4 px-4">
               <div className="mt-6 flex items-center justify-between">
-                <div
-                  className="flex cursor-pointer items-center gap-4"
-                  onClick={() => router.push(`/user/${id}`)}
-                >
+                <div className="flex cursor-pointer items-center gap-4">
                   <div className="relative h-12 w-12 overflow-hidden rounded-full">
                     <Image
                       src={

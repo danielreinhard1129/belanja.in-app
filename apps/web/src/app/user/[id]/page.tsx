@@ -6,7 +6,7 @@ import { useAppSelector } from "@/redux/hooks";
 import { appConfig } from "@/utils/config";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import avatarDefault from "../../../../public/default-avatar.png";
 import { ChevronLeft, Pencil } from "lucide-react";
 import {
@@ -19,10 +19,11 @@ import useGetUser from "@/hooks/api/auth/useGetUser";
 import { TabsUser } from "./components/TabsUser";
 import { Card, CardContent } from "@/components/ui/card";
 import CardAddresses from "./components/CardAddresses";
+import { toast } from "sonner";
 
 const UserDetail = () => {
   const { id } = useAppSelector((state) => state.user);
-  const { user } = useGetUser(id);
+  const { user, isLoading: loadingUser } = useGetUser(id);
   const router = useRouter();
 
   const { isLoading: isSendingChangePassword, sendChangePassword } =
@@ -39,6 +40,11 @@ const UserDetail = () => {
       setIsLoading(false);
     }
   };
+
+  if (id === 0) {
+    router.push("/");
+    toast.error("Session Expired!");
+  }
 
   return (
     <>
@@ -122,16 +128,16 @@ const UserDetail = () => {
                 gender={user.gender}
                 id={user.id}
               />
-              <div className="w-full flex gap-2">
+              <div className="flex w-full gap-2">
                 <Button
-                  className="px-4 py-2 w-full"
+                  className="w-full px-4 py-2"
                   onClick={() => sendChangePassword({ id })}
                   disabled={isSendingChangePassword}
                 >
                   {isSendingChangePassword ? "Loading..." : "Change Password"}
                 </Button>
                 <Button
-                  className="px-4 py-2 w-full"
+                  className="w-full px-4 py-2"
                   onClick={() => router.push("/recent-orders")}
                 >
                   Recent Orders

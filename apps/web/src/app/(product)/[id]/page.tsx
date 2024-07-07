@@ -52,7 +52,6 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
       router.push("/login");
     }
   };
-  console.log(carts);
 
   if (isLoading) {
     return <ProductSkeleton />;

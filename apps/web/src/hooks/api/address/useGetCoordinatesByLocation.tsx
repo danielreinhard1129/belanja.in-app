@@ -49,11 +49,5 @@ export default function useGetCoordinatesByLocation() {
     }
   };
 
-  useEffect(() => {
-    if (data) {
-      console.log("data", data);
-    }
-  }, [data]);
-
   return { getCoordinates, data, isLoading, error };
 }

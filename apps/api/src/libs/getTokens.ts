@@ -10,8 +10,8 @@ export const getTokens = async (
 ): Promise<Credential | undefined> => {
   try {
     const oAuth2Client = new OAuth2Client(
-      "839845136676-ntkgv48oeubdgvgnblaejejkfc8rs6kp.apps.googleusercontent.com",
-      "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",
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET,
       'postmessage',
     );
 
