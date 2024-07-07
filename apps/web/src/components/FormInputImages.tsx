@@ -20,11 +20,10 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   handleRemoveImage,
 }) => {
   const { control } = useFormContext();
-  // Function to clear input file
   const clearInputFile = () => {
     const input = document.getElementById("fileInput") as HTMLInputElement;
     if (input) {
-      input.value = ""; // Clear the input file value
+      input.value = "";
     }
   };
   return (
@@ -72,7 +71,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
               className="absolute right-1 top-1 rounded-full bg-red-500 p-1 text-white"
               onClick={() => {
                 handleRemoveImage(index);
-                clearInputFile(); // Clear input file after removing image
+                clearInputFile();
               }}
             >
               <Trash2 />

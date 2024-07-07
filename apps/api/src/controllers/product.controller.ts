@@ -58,7 +58,19 @@ export class ProductController {
 
   async getProduct(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await getProductService(Number(req.params.id));
+      const { lat, long, radius, productId } = req.query;
+      const query = {
+        take: parseInt(req.query.take as string) || 8,
+        page: parseInt(req.query.page as string) || 1,
+        sortBy: (req.query.sortBy as string) || 'name',
+        sortOrder: (req.query.sortOrder as string) || 'desc',
+        lat: parseFloat(lat as string),
+        long: parseFloat(long as string),
+        radius: parseFloat(radius as string) || 10,
+        productId: parseInt(productId as string),
+      };
+
+      const result = await getProductService(query);
 
       return res.status(200).send(result);
     } catch (error) {

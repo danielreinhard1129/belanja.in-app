@@ -59,7 +59,6 @@ const OrderTable: FC<OrderTableProps> = ({
   const { sendOrderByAdmin } = useSendOrderByAdmin();
   const {confirmPayment} = useConfirmPayment()
 
-  //
   const handleOpenDetailsDialog = (orderId: number) => {
     setOrderId(orderId);
     setOpenState(true);
