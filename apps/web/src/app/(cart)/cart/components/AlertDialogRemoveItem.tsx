@@ -43,8 +43,8 @@ const AlertDialogRemoveItem: FC<AlertDialogRemoveItemProps> = ({
           <AlertDialogDescription></AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>No</AlertDialogCancel>
-          <AlertDialogAction onClick={() => handleRemoveItem(index, cartId)}>
+          <AlertDialogCancel className="px-4 py-2">No</AlertDialogCancel>
+          <AlertDialogAction onClick={() => handleRemoveItem(index, cartId)} className="px-4 py-2">
             Yes
           </AlertDialogAction>
         </AlertDialogFooter>
