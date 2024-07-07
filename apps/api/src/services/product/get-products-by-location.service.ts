@@ -28,9 +28,21 @@ export const getProductsByLocationService = async (
 
     const storeIds = nearbyStores.map((store) => store.id);
 
+    const categoryArgs = category && category === 'all' ? undefined : category;
+
     const where: Prisma.StoreProductWhereInput = {
       product: {
         isDelete: false,
+        categories: {
+          every: {
+            category: {
+              name: categoryArgs,
+            },
+          },
+        },
+        name: {
+          contains: search,
+        },
       },
       isActive: true,
       store: {
@@ -39,25 +51,25 @@ export const getProductsByLocationService = async (
       },
     };
 
-    if (category && category !== 'all') {
-      where.product = {
-        categories: {
-          some: {
-            category: {
-              name: category,
-            },
-          },
-        },
-      };
-    }
+    // if (category && category !== 'all') {
+    //   where.product = {
+    //     categories: {
+    //       some: {
+    //         category: {
+    //           name: category,
+    //         },
+    //       },
+    //     },
+    //   };
+    // }
 
-    if (search) {
-      where.product = {
-        name: {
-          contains: search,
-        },
-      };
-    }
+    // if (search) {
+    //   where.product = {
+    //     name: {
+    //       contains: search,
+    //     },
+    //   };
+    // }
 
     let storeProduct;
     let count;
