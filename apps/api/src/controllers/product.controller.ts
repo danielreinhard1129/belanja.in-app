@@ -2,6 +2,7 @@ import { createProductService } from '@/services/product/create-product.service'
 import { deleteManyProductsService } from '@/services/product/delete-many.product.service';
 import { deleteProductService } from '@/services/product/delete-product.service';
 import { getProductService } from '@/services/product/get-product.service';
+import { getProductByIdService } from '@/services/product/get-productById.service';
 import { getProductsByLocationService } from '@/services/product/get-products-by-location.service';
 import { getProductsService } from '@/services/product/get-products.service';
 import { getProductsByParamsService } from '@/services/product/get-productsByParams.service';
@@ -59,6 +60,16 @@ export class ProductController {
   async getProduct(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await getProductService(Number(req.params.id));
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getProductById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await getProductByIdService(Number(req.params.id));
 
       return res.status(200).send(result);
     } catch (error) {

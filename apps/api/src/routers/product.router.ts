@@ -40,6 +40,7 @@ export class ProductRouter {
     );
     this.router.get('/', this.productController.getProducts);
     this.router.get('/:id', this.productController.getProduct);
+    this.router.get('/:id', this.productController.getProductById);
     this.router.delete(
       '/records',
       verifyToken,
