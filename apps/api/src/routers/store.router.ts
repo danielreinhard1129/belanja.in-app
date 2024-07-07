@@ -1,5 +1,7 @@
 import { StoreController } from '@/controllers/store.controller';
 import { verifyToken } from '@/middlewares/verifyToken';
+import { createStoreValidator } from '@/middlewares/createStoreValidator';
+import { updateStoreValidator } from '@/middlewares/updateStoreValidator';
 import { Router } from 'express';
 
 export class StoreRouter {
@@ -19,10 +21,20 @@ export class StoreRouter {
       '/store-admin/:id',
       this.storeController.getStoreByStoreAdmin,
     );
-    this.router.post('/', verifyToken, this.storeController.createStore);
+    this.router.post(
+      '/',
+      verifyToken,
+      createStoreValidator,
+      this.storeController.createStore,
+    );
     this.router.get('/filters', this.storeController.getStoresByParams);
     this.router.get('/:id', this.storeController.getStore);
-    this.router.patch('/:id', verifyToken, this.storeController.updateStore);
+    this.router.patch(
+      '/:id',
+      verifyToken,
+      updateStoreValidator,
+      this.storeController.updateStore,
+    );
     this.router.delete('/:id', verifyToken, this.storeController.deleteStore);
   }
 
