@@ -29,7 +29,6 @@ const Cart = () => {
   const { removeItem } = useRemoveItem();
   const baseURL = process.env.NEXT_PUBLIC_BASE_API_URL;
 
-  console.log("ini carts", carts);
 
   const handleRemoveItem = async (index: number, id: number) => {
     setIsLoadingIndex(index);

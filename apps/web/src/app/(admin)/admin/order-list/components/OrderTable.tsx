@@ -59,7 +59,6 @@ const OrderTable: FC<OrderTableProps> = ({
   const { sendOrderByAdmin } = useSendOrderByAdmin();
   const {confirmPayment} = useConfirmPayment()
 
-  console.log("ini orderID", orderId);
   //
   const handleOpenDetailsDialog = (orderId: number) => {
     setOrderId(orderId);
@@ -127,9 +126,9 @@ const OrderTable: FC<OrderTableProps> = ({
                 style: "currency",
                 currency: "IDR",
                 maximumSignificantDigits: Math.trunc(
-                  Math.abs(order.totalAmount),
+                  Math.abs(order.Payment.amount),
                 ).toFixed().length,
-              }).format(order.totalAmount)}
+              }).format(order.Payment.amount)}
                 </TableCell>
                 <TableCell className="w-fit">
                   <OrderStatusBadge orderStatus={order.status} />

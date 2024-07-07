@@ -69,7 +69,6 @@ const DialogSettingsCategory: React.FC<DialogSettingsCategoryProps> = ({
     refetchCategories();
     reset(defaultValues);
     setEditingCategory(null);
-    console.log(data);
   };
 
   const handleEdit = (category: SchemaCreateCategory) => {

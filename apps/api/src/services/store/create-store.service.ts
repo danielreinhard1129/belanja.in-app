@@ -1,6 +1,7 @@
 import axios from 'axios';
 import prisma from '@/prisma';
 import { Store } from '@prisma/client';
+import { OPENCAGE_API_KEY } from '@/config';
 
 interface CreateStore
   extends Omit<
@@ -15,7 +16,6 @@ interface UserToken {
 const getCoordinates = async (
   cityId: number,
 ): Promise<{ lat: number; long: number }> => {
-  const apiKey = '507f6bfa89b3461682ca3f53ac93e815';
   const city = await prisma.city.findUnique({
     where: {
       id: Number(cityId),
@@ -27,7 +27,7 @@ const getCoordinates = async (
   }
 
   const response = await axios.get(
-    `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(city.citName)}&key=${apiKey}`,
+    `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(city.citName)}&key=${OPENCAGE_API_KEY}`,
   );
 
   if (response.data.results.length === 0) {

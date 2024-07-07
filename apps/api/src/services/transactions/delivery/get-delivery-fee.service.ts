@@ -16,7 +16,7 @@ const getOptions = (origin: string, destination: string, weight: number, courier
   url: 'https://api.rajaongkir.com/starter/cost',
   headers: {
     // key: RAJAONGKIR_API_KEY,
-    key: RO_KEY,
+    key: RAJAONGKIR_API_KEY,
     'Content-Type': 'application/x-www-form-urlencoded',
   },
   data: new URLSearchParams({
@@ -47,9 +47,10 @@ export const getDeliveryFeeService = async (body: DeliveryArgs) => {
     return results;
   } catch (error) {
     if (error instanceof AxiosError) {
-      const errorMessage = error.response?.data?.message || error.message;
+      const errorMessage = error.response?.data?.rajaongkir.status.description;
+
       console.error(errorMessage);
-      throw new Error(`Error occurred when calculating shipping cost: ${errorMessage}`);
+      throw new Error(`Error occurred when calculating shipping cost: ${errorMessage} `);
     }
     throw error;
   }

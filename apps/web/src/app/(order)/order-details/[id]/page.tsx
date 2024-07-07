@@ -15,10 +15,11 @@ import { useEffect, useState } from "react";
 import { OrderStatus } from "@/types/order.type";
 import UploadPaymentProofDialog from "./components/UploadPaymentProofDialog";
 import PaymentProofDialog from "./components/PaymentProofDialog";
+import { toast } from "sonner";
 
 const OrderDetails = ({ params }: { params: { id: string } }) => {
-  const [openUploadDialog, setOpenUploadDialog] = useState<boolean>(false)
-  const [openProofDialog, setOpenProofDialog] = useState<boolean>(false)
+  const [openUploadDialog, setOpenUploadDialog] = useState<boolean>(false);
+  const [openProofDialog, setOpenProofDialog] = useState<boolean>(false);
   const {
     order,
     isLoading: isLoadingOrder,
@@ -26,7 +27,6 @@ const OrderDetails = ({ params }: { params: { id: string } }) => {
   } = useGetUserOrder({
     orderId: Number(params.id),
   });
-  console.log("in order dari FE", order);
   const { cancelOrderByUser } = useCancelOrderByUser();
   const { finishOrderByUser } = useFinishOrderByUser();
   const handleCancelOrder = async () => {
@@ -61,27 +61,23 @@ const OrderDetails = ({ params }: { params: { id: string } }) => {
         if (window.snap) {
           window.snap.pay(`${order.Payment.snapToken}`, {
             onSuccess: function (result: any) {
-              alert("Payment success!");
-              console.log(result);
+              toast.success("Payment success!");
             },
             onPending: function (result: any) {
-              alert("Waiting for your payment!");
-              console.log(result);
+              toast("Waiting for your payment!");
             },
             onError: function (result: any) {
-              alert("Payment failed!");
-              console.log(result);
+              toast.error("Payment failed!");
             },
             onClose: function () {
-              alert("Close Kah?");
             },
           });
         } else {
-          alert("Snap is not loaded yet. Please try again.");
+          toast.error("Snap is not loaded yet. Please try again.");
         }
       }
     } catch (error) {
-      alert("Payment Error!");
+      toast.error("Payment Error!");
     }
   };
 
@@ -94,9 +90,6 @@ const OrderDetails = ({ params }: { params: { id: string } }) => {
           <div className="flex items-center gap-2 font-semibold">
             Order Status: <OrderStatusBadge orderStatus={order.status} />
           </div>
-          <p className="text-xs text-orange-400 hover:cursor-pointer">
-            See Details
-          </p>
         </div>
         <div className="flex items-center justify-between text-base">
           <div className="flex items-center gap-2 font-semibold">
@@ -116,7 +109,7 @@ const OrderDetails = ({ params }: { params: { id: string } }) => {
       <div className="flex flex-col gap-y-2 p-4 text-xs">
         <div className="flex items-center justify-between text-base">
           <p className="font-semibold">Product Details</p>
-          <p className="text-xs text-orange-400 hover:cursor-pointer">
+          <p className="text-xs text-orange-400">
             {order.stores.name}, {order.stores.City.citName}
           </p>
         </div>
@@ -184,16 +177,33 @@ const OrderDetails = ({ params }: { params: { id: string } }) => {
                 {!order.Payment.paymentProof ? (
                   "No payment proof found"
                 ) : (
-                  <p className="underline text-orange-400 cursor-pointer" onClick={()=>setOpenProofDialog(true)}>See payment proof</p>
+                  <p
+                    className="cursor-pointer text-orange-400 underline"
+                    onClick={() => setOpenProofDialog(true)}
+                  >
+                    See payment proof
+                  </p>
                 )}
               </p>
-              <PaymentProofDialog open={openProofDialog} setOpen={setOpenProofDialog} order={order}/>
+              <PaymentProofDialog
+                open={openProofDialog}
+                setOpen={setOpenProofDialog}
+                order={order}
+              />
             </div>
           ) : null}
           <Separator />
           <div className="flex items-center justify-between text-lg font-semibold">
             <p>Total</p>
-            <p>{order.Delivery[0].deliveryFee + order.totalAmount}</p>
+            <p>
+              {new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                maximumSignificantDigits: Math.trunc(
+                  Math.abs(Number(order.Delivery[0].deliveryFee + order.totalAmount)),
+                ).toFixed().length,
+              }).format(Number(order.Delivery[0].deliveryFee + order.totalAmount))}
+            </p>
           </div>
         </div>
       </div>
@@ -203,7 +213,7 @@ const OrderDetails = ({ params }: { params: { id: string } }) => {
           <Button
             className="w-full px-4 py-2"
             disabled={order.status !== OrderStatus.WAITING_FOR_PAYMENT}
-            onClick={()=>setOpenUploadDialog(true)}
+            onClick={() => setOpenUploadDialog(true)}
           >
             Upload Payment Proof
           </Button>
@@ -216,11 +226,16 @@ const OrderDetails = ({ params }: { params: { id: string } }) => {
             Pay
           </Button>
         ) : null}
-        <UploadPaymentProofDialog order={order} refetchOrder={refetchOrder} openState={openUploadDialog} setOpenState={setOpenUploadDialog} />
+        <UploadPaymentProofDialog
+          order={order}
+          refetchOrder={refetchOrder}
+          openState={openUploadDialog}
+          setOpenState={setOpenUploadDialog}
+        />
       </div>
       <Separator className="mb-4 h-1" />
 
-      <div className="flex justify-center gap-x-4">
+      <div className="flex justify-center gap-x-4 pb-4">
         <CancelOrderDialog order={order} handleDelete={handleCancelOrder} />
         <FinishOrderDialog order={order} handleFinish={handleFinishOrder} />
       </div>

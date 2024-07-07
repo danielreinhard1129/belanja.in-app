@@ -1,5 +1,6 @@
 "use client";
 import NonLandingHeader from "@/components/NonLandingHeader";
+import AuthGuardTrx from "@/hoc/AuthGuardTrx";
 import { FC, ReactNode } from "react";
 
 interface OrderLayoutProps {
@@ -14,4 +15,4 @@ const RecentOrders: FC<OrderLayoutProps> = ({ children }) => {
   );
 };
 
-export default RecentOrders;
+export default AuthGuardTrx(RecentOrders);

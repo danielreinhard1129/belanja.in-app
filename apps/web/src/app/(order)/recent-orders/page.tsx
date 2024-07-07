@@ -10,8 +10,11 @@ import FilterComponent from "./components/FilterComponent";
 import SkeletonOrderCard from "./components/SkeletonOrderCard";
 import { DateRange } from "react-day-picker";
 import { addDays, toDate } from "date-fns";
+import { Input } from "@/components/ui/input";
+import { debounce } from "lodash";
 
 const RecentOrders = () => {
+  const [search, setSearch] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const [orderStatus, setOrderStatus] = useState<OrderStatus | null>(null);
   const [category, setCategory] = useState<string>("all");
@@ -29,14 +32,17 @@ const RecentOrders = () => {
     status: orderStatus,
     category,
     fromDate: date?.from?.toISOString(),
-    toDate: date?.to?.toISOString()
+    toDate: date?.to?.toISOString(),
+    search
   });
   const handleChangePaginate = ({ selected }: { selected: number }) => {
     setPage(selected + 1);
   };
   const baseURL = process.env.NEXT_PUBLIC_BASE_API_URL;
 
-  console.log("ini orders", orders);
+  const handleSearch = debounce((value: string) => {
+    setSearch(value);
+  }, 300);
 
   return isLoadingOrders ? (
     // <p className="">Loading...</p>
@@ -45,6 +51,15 @@ const RecentOrders = () => {
     </div>
   ) : !orders.length ? (
     <main className="mx-auto md:container">
+      <Input
+          type="text"
+          placeholder="Search for order number..."
+          name="search"
+          onChange={(e) => {
+            handleSearch(e.target.value);
+          }}
+          className="ml-4 w-52 mt-2"
+        />
       <FilterComponent
         setValueStatus={setOrderStatus}
         setCategory={setCategory}
@@ -59,6 +74,15 @@ const RecentOrders = () => {
     </main>
   ) : (
     <main className="mx-auto md:container">
+      <Input
+          type="text"
+          placeholder="Search for order number..."
+          name="search"
+          onChange={(e) => {
+            handleSearch(e.target.value);
+          }}
+          className="ml-4 w-52 mt-2"
+        />
       <FilterComponent
         setValueStatus={setOrderStatus}
         setCategory={setCategory}
