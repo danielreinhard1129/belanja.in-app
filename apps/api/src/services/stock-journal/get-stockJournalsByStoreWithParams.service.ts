@@ -5,6 +5,8 @@ interface GetStockJournalsByParams extends PaginationQueryParams {
   search?: string;
   status?: string;
   storeId?: string;
+  filterMonth?: string;
+  filterYear?: string;
 }
 
 interface UserToken {
@@ -15,7 +17,8 @@ export const getStockJournalsByStoreWithParamsService = async (
   userToken: UserToken,
   query: GetStockJournalsByParams,
 ) => {
-  const { take, page, storeId, status, search } = query;
+  const { take, page, storeId, status, search, filterMonth, filterYear } =
+    query;
   const userId = Number(userToken.id);
 
   const user = await prisma.user.findFirst({
@@ -35,18 +38,16 @@ export const getStockJournalsByStoreWithParamsService = async (
     throw new Error("Can't find your account");
   }
 
-  if (user.role === 'USER' || user.role === 'STOREADMIN') {
+  if (user.role === 'USER') {
     throw new Error('You do not have access');
   }
 
-  let where: any = {}; // Deklarasikan where sebagai objek kosong
+  let where: any = {};
 
-  // Tambahkan filter berdasarkan status jika status didefinisikan dan tidak bernilai 'all'
   if (status && status !== 'all') {
     where.status = status;
   }
 
-  // Jika storeId didefinisikan, tambahkan filter berdasarkan storeId
   if (storeId && storeId !== 'all') {
     where = {
       ...where,
@@ -74,7 +75,6 @@ export const getStockJournalsByStoreWithParamsService = async (
     };
   }
 
-  // Tambahkan filter berdasarkan search jika didefinisikan
   if (search && search !== '') {
     where = {
       ...where,
@@ -82,6 +82,30 @@ export const getStockJournalsByStoreWithParamsService = async (
         name: {
           contains: search,
         },
+      },
+    };
+  }
+
+  if (filterMonth && filterYear) {
+    const startDate = new Date(Number(filterYear), Number(filterMonth) - 1, 1);
+    const endDate = new Date(Number(filterYear), Number(filterMonth), 0);
+
+    where = {
+      ...where,
+      createdAt: {
+        gte: startDate,
+        lte: endDate,
+      },
+    };
+  } else if (filterYear) {
+    const startDate = new Date(Number(filterYear), 0, 1);
+    const endDate = new Date(Number(filterYear), 11, 31);
+
+    where = {
+      ...where,
+      createdAt: {
+        gte: startDate,
+        lte: endDate,
       },
     };
   }

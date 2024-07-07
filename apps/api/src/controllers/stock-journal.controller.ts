@@ -20,6 +20,8 @@ export class StockJournalController {
         search: (req.query.search as string) || '',
         status: (req.query.status as string) || 'all',
         storeId: (req.query.storeId as string) || undefined,
+        filterMonth: req.query.filterMonth as string,
+        filterYear: req.query.filterYear as string,
       };
       const result = await getStockJournalsByStoreWithParamsService(
         res.locals.user,
@@ -69,6 +71,8 @@ export class StockJournalController {
         sortOrder: (req.query.sortOrder as string) || 'desc',
         status: (req.query.status as string) || 'all',
         search: (req.query.search as string) || '',
+        filterMonth: req.query.filterMonth as string,
+        filterYear: req.query.filterYear as string,
       };
       const result = await getStockJournalByStoreAdminService(
         res.locals.user,
@@ -122,29 +126,4 @@ export class StockJournalController {
       next(error);
     }
   }
-
-  // async getStockJournalsActionStoreAdmin(
-  //   req: Request,
-  //   res: Response,
-  //   next: NextFunction,
-  // ) {
-  //   try {
-  //     const query = {
-  //       take: parseInt(req.query.take as string) || 8,
-  //       page: parseInt(req.query.page as string) || 1,
-  //       sortBy: (req.query.sortBy as string) || 'name',
-  //       sortOrder: (req.query.sortOrder as string) || 'desc',
-  //       search: (req.query.search as string) || '',
-  //       status: (req.query.status as string) || 'all',
-  //     };
-  //     const result = await getStockJournalActionStoreAdminService(
-  //       res.locals.user,
-  //       query,
-  //     );
-
-  //     return res.status(200).send(result);
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
 }

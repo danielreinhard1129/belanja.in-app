@@ -1,6 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { formatToRupiah } from "@/utils/formatCurrency";
-import { formatWeight } from "@/utils/formatWeight";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Popover,
@@ -15,12 +13,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { BASE_API_URL } from "@/utils/config";
+import { formatToRupiah } from "@/utils/formatCurrency";
+import { formatWeight } from "@/utils/formatWeight";
 import { ImageIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 import PopoverProductMenu from "./PopoverProductMenu";
-import { BASE_API_URL } from "@/utils/config";
 
 interface ProductTableProps {
   products: any[];
@@ -126,7 +126,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
               <TableCell>
                 {product.categories.map((categories: any, cti: any) => (
                   <div className="my-1" key={cti}>
-                    <div className="inline-block rounded-full bg-slate-300 px-2 py-1 text-black">
+                    <div className="inline-block rounded-full bg-orange-300 px-2 py-1 text-orange-800">
                       {categories.category.name}
                     </div>
                   </div>

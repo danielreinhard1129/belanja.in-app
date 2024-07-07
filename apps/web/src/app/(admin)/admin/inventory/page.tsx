@@ -1,21 +1,21 @@
 "use client";
-import useGetStockByRuleNew from "@/hooks/api/store-product/useGetStockByRuleNew";
+import useGetStockByRule from "@/hooks/api/store-product/useGetStockByRule";
 import { useAppSelector } from "@/redux/hooks";
+import { debounce } from "lodash";
 import Image from "next/image";
 import { useState } from "react";
-import ImageChooseStore from "../../../../../public/superAdminCS.svg";
 import ImageNotFoundStore from "../../../../../public/no-store.svg";
+import ImageChooseStore from "../../../../../public/superAdminCS.svg";
 import StoreAdmin from "./components/storeAdmin/StoreAdmin";
 import StoreInventoryTable from "./components/superAdmin/StoreInventoryTable";
 import Stores from "./components/superAdmin/Stores";
-import { debounce } from "lodash";
 
 const Inventory = () => {
   const { role } = useAppSelector((state) => state.user);
   const [stockPage, setStockPage] = useState<number>(1);
   const [search, setSearch] = useState<string>("");
   const [activeStoreId, setActiveStoreId] = useState<string>("");
-  const { stocks, isLoading, refetch, metaStock } = useGetStockByRuleNew({
+  const { stocks, isLoading, refetch, metaStock } = useGetStockByRule({
     page: stockPage,
     take: 5,
     search,
@@ -32,10 +32,6 @@ const Inventory = () => {
 
   const handleChangePaginateStock = ({ selected }: { selected: number }) => {
     setStockPage(selected + 1);
-  };
-
-  const handleDelete = async (id: number) => {
-    refetch();
   };
 
   const takeStock = metaStock?.take || 1;
@@ -66,12 +62,10 @@ const Inventory = () => {
     );
   }
 
-  // console.log(stocks);
-
   return (
-    <>
+    <main className="container py-16">
       {role === "SUPERADMIN" && (
-        <div className="container mx-auto my-10 max-w-6xl">
+        <div>
           <Stores
             onStoreClick={handleStoreClick}
             activeStoreId={activeStoreId}
@@ -118,7 +112,7 @@ const Inventory = () => {
           refetch={refetch}
         />
       )}
-    </>
+    </main>
   );
 };
 

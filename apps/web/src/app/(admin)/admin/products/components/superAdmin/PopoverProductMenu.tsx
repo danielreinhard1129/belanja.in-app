@@ -4,11 +4,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Eye, MoreHorizontal } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 import DeleteAlertDialog from "./DeleteAlertDialog";
-import DialogDetailProduct from "./DialogDetailProduct";
 import DialogEditProduct from "./DialogEditProduct";
-import Link from "next/link";
 
 interface PopoverMenuProps {
   productId: number;
@@ -25,7 +24,6 @@ const PopoverProductMenu: React.FC<PopoverMenuProps> = ({
 }) => {
   const [deleteAlertDialog, isDeleteAlertDialog] = React.useState(false);
   const [dialogEditProduct, isDialogEditProduct] = React.useState(false);
-  const [dialogDetailProduct, isDialogDetailProduct] = React.useState(false);
   return (
     <Popover>
       <PopoverTrigger>
@@ -47,11 +45,6 @@ const PopoverProductMenu: React.FC<PopoverMenuProps> = ({
             open={deleteAlertDialog}
             onOpenChange={isDeleteAlertDialog}
           />
-          {/* <DialogDetailProduct
-            open={dialogDetailProduct}
-            onOpenChange={isDialogDetailProduct}
-            productId={productId}
-          /> */}
           <Link href={`/admin/products/${productId}`}>
             <div className="flex cursor-pointer items-center gap-2">
               <Eye size={16} /> View Detail

@@ -1,11 +1,11 @@
 "use client";
 
-import { toast } from "sonner";
 import { axiosInstance } from "@/lib/axios";
 import { useAppSelector } from "@/redux/hooks";
 import { IFormCategory } from "@/types/category.type";
 import { AxiosError } from "axios";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const useUpdateCategory = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);

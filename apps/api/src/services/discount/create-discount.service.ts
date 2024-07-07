@@ -24,7 +24,6 @@ export const createDiscountService = async (
       storeId,
     } = body;
 
-    // Cari user berdasarkan user.id
     const checkUser = await prisma.user.findUnique({
       where: {
         id: Number(user.id),
@@ -40,11 +39,10 @@ export const createDiscountService = async (
     let finalStoreId = storeId;
     let storeName: string | null = null;
 
-    if (checkUser.role === 'SUPERADMIN') {
-      // Ambil nama store untuk SUPERADMIN
+    if (checkUser.role === 'SUPERADMIN' && storeId) {
       const store = await prisma.store.findUnique({
         where: {
-          id: Number(finalStoreId),
+          id: Number(storeId),
         },
       });
 
@@ -54,7 +52,6 @@ export const createDiscountService = async (
 
       storeName = store.name;
     } else {
-      // Cari storeAdmin berdasarkan user.id
       const storeAdmin = await prisma.storeAdmin.findUnique({
         where: {
           userId: Number(user.id),
@@ -65,7 +62,6 @@ export const createDiscountService = async (
         throw new Error("Can't find store admin associated with your account");
       }
 
-      // Cari store berdasarkan storeAdmin.id
       const store = await prisma.store.findUnique({
         where: {
           storeAdminId: storeAdmin.id,
@@ -76,43 +72,42 @@ export const createDiscountService = async (
         throw new Error("Can't find store associated with your account");
       }
 
-      // Gunakan store.id jika body.storeId kosong
       finalStoreId = finalStoreId || store.id;
       storeName = store.name;
     }
 
-    // Melakukan pengecekan productId yang ada di store
-    const checkProductInStore = await prisma.storeProduct.findFirst({
-      where: {
-        storeId: Number(finalStoreId),
-        productId: Number(productId),
-      },
-    });
-
-    if (!checkProductInStore) {
-      // Ambil informasi produk
-      const product = await prisma.product.findUnique({
+    if (productId) {
+      const checkProductInStore = await prisma.storeProduct.findFirst({
         where: {
-          id: Number(productId),
+          storeId: Number(finalStoreId),
+          productId: Number(productId),
         },
       });
 
-      if (!product) {
-        throw new Error('Product not found');
-      }
+      if (!checkProductInStore) {
+        // Ambil informasi produk
+        const product = await prisma.product.findUnique({
+          where: {
+            id: Number(productId),
+          },
+        });
 
-      if (checkUser.role === 'SUPERADMIN') {
-        throw new Error(
-          `Product ${product.name} is not found in store ${storeName}`,
-        );
-      } else {
-        throw new Error(
-          `Product ${product.name} is not found in your store ${storeName}`,
-        );
+        if (!product) {
+          throw new Error('Product not found');
+        }
+
+        if (checkUser.role === 'SUPERADMIN') {
+          throw new Error(
+            `Product ${product.name} is not found in store ${storeName}`,
+          );
+        } else {
+          throw new Error(
+            `Product ${product.name} is not found in your store ${storeName}`,
+          );
+        }
       }
     }
 
-    // Buat discount baru
     const createDiscount = await prisma.discount.create({
       data: {
         title,
@@ -123,7 +118,7 @@ export const createDiscountService = async (
         minPurchase: Number(minPurchase),
         isActive: true,
         storeId: Number(finalStoreId),
-        productId: Number(productId),
+        productId: productId ? Number(productId) : undefined,
       },
     });
 

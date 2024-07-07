@@ -24,20 +24,18 @@ import {
   useForm,
   useFormState,
 } from "react-hook-form";
+import { toast } from "sonner";
 import {
   SchemaCreateStockMutation,
   defaultValues,
   schemaCreateStockMutation,
 } from "../validationSchema/schemaCreateStockMutation";
-import { toast } from "sonner";
-
 interface DialogRequestStockMutationProps {
   storeId: number;
   refetch: () => void;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
-
 const DialogRequestStockMutation: React.FC<DialogRequestStockMutationProps> = ({
   storeId,
   refetch,
@@ -58,32 +56,26 @@ const DialogRequestStockMutation: React.FC<DialogRequestStockMutationProps> = ({
     control,
   });
   const { append, fields, remove } = useFieldArray({ control, name: "stocks" });
-
   const handleReset = () => {
     reset(defaultValues);
     setSelectedProductIds([]);
   };
-
   const handleAddStock = () => append({ productId: "", qty: 0 });
-
   const storeOptions = stores.map((store) => ({
     value: store.id.toString(),
     label: store.name,
     disabled: store.id === storeId,
   }));
-
   const productsOptions = products.map((product) => ({
     value: product.id.toString(),
     label: product.name,
     disabled: selectedProductIds.includes(product.id.toString()),
   }));
-
   const handleProductChange = (productId: string, index: number) => {
     const updatedSelectedProductIds = [...selectedProductIds];
     updatedSelectedProductIds[index] = productId;
     setSelectedProductIds(updatedSelectedProductIds);
   };
-
   const handleRemoveStock = (index: number) => {
     const updatedSelectedProductIds = selectedProductIds.filter(
       (_, idx) => idx !== index,
@@ -91,11 +83,9 @@ const DialogRequestStockMutation: React.FC<DialogRequestStockMutationProps> = ({
     setSelectedProductIds(updatedSelectedProductIds);
     remove(index);
   };
-
   const isProductsAvailable = productsOptions.some(
     (product) => !product.disabled,
   );
-
   const onSubmit = async (data: SchemaCreateStockMutation) => {
     const payload = { ...data, type: "MUTATION" };
     try {
@@ -113,11 +103,9 @@ const DialogRequestStockMutation: React.FC<DialogRequestStockMutationProps> = ({
       }
     }
   };
-
   if (!products) {
     return <div>Data Not Found</div>;
   }
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger>

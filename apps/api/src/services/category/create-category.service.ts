@@ -19,15 +19,30 @@ export const createCategoryService = async (body: CreateCategory) => {
 
     if (!user) throw new Error('user not found');
 
-    if (user.role !== 'SUPERADMIN') throw new Error("User do'nt have access");
+    if (user.role !== 'SUPERADMIN') throw new Error("User don't have access");
 
-    const existingName = await prisma.category.findFirst({
+    const existingCategory = await prisma.category.findFirst({
       where: {
         name,
       },
     });
 
-    if (existingName) throw new Error('Name already exist');
+    if (existingCategory) {
+      if (existingCategory.isDelete) {
+        const updatedCategory = await prisma.category.update({
+          where: {
+            id: existingCategory.id,
+          },
+          data: {
+            isDelete: false,
+          },
+        });
+
+        return { message: 'Category reactivated', data: updatedCategory };
+      } else {
+        throw new Error('Name already exist');
+      }
+    }
 
     const createCategory = await prisma.category.create({
       data: {

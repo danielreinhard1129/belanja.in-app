@@ -1,7 +1,4 @@
 "use client";
-import React, { useState } from "react";
-import BarChartComponent from "../components/BarChart";
-import useGetStores from "@/hooks/api/store/useGetStores";
 import {
   Select,
   SelectContent,
@@ -9,13 +6,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { format, getDaysInMonth } from "date-fns";
 import useGetSalesReport from "@/hooks/api/report/useGetSalesReport";
+import useGetStores from "@/hooks/api/store/useGetStores";
 import { useAppSelector } from "@/redux/hooks";
-import ItemFilterMonth from "../components/ItemFilterMonth";
 import { formatToRupiah } from "@/utils/formatCurrency";
-import ImageDataNotFound from "../../../../../../public/no-store.svg";
 import Image from "next/image";
+import { useState } from "react";
+import ImageDataNotFound from "../../../../../../public/no-store.svg";
+import BarChartComponent from "../components/BarChart";
+import ItemFilterMonth from "../components/ItemFilterMonth";
 
 const Sales = () => {
   const { role } = useAppSelector((state) => state.user);
@@ -86,7 +85,7 @@ const Sales = () => {
     })) || [];
 
   return (
-    <main className="container my-10 max-w-6xl border-2 shadow-xl">
+    <main className="container my-10 max-w-6xl border-2 bg-white shadow-xl">
       <div className="mb-4 flex items-center justify-between gap-4">
         <div className="grid grid-cols-2 items-center gap-5">
           <div className="col-span-1">
@@ -152,26 +151,19 @@ const Sales = () => {
         </div>
       </div>
       <div className="grid grid-cols-2">
+        <BarChartComponent data={incomeDailyData} title="Daily Income Report" />
         <BarChartComponent
-          data={incomeDailyData}
-          barColor="#8884d8"
-          title="Daily Income Report"
-        />
-        <BarChartComponent
-          data={transactionDailyData}
-          barColor="#82ca9d"
-          title="Daily Transaction Report"
+          data={incomeMonthlyData}
+          title="Monthly Income Report"
         />
       </div>
       <div className="grid grid-cols-2">
         <BarChartComponent
-          data={incomeMonthlyData}
-          barColor="#8884d8"
-          title="Monthly Income Report"
+          data={transactionDailyData}
+          title="Daily Transaction Report"
         />
         <BarChartComponent
           data={transactionMonthlyData}
-          barColor="#82ca9d"
           title="Monthly Transaction Report"
         />
       </div>

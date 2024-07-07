@@ -13,7 +13,7 @@ export const createProductSchema = z.object({
   images: z
     .array(z.any())
     .min(1, { message: "You must upload at least one image" })
-    .max(5, { message: "You can only upload up to 5 images" }),
+    .max(4, { message: "You can only upload up to 4 images" }),
 });
 
 export type TCreateProductSchema = z.infer<typeof createProductSchema>;

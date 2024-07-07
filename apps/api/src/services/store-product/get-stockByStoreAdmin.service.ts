@@ -29,13 +29,9 @@ export const getStocksByStoreAdminService = async (storeAdminId: number) => {
         },
       },
     });
-
-    // const JournalDetails = await prisma.stockJournal.findMany({});
-
     if (!storeProducts.length) {
       throw new Error('No storeProducts found for this storeAdmin');
     }
-
     return storeProducts;
   } catch (error) {
     throw error;

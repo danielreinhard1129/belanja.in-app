@@ -4,11 +4,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import React, { useState } from "react";
-import DialogSettingStoreProducts from "./DialogSettingStoreProducts";
-import DialogRequestStockMutation from "./DialogRequestStockMutation";
-import DialogStockActionStoreAdmin from "./DialogStockActionStoreAdmin";
 import { BookMarked } from "lucide-react";
+import React, { useState } from "react";
+import DialogRequestStockMutation from "./DialogRequestStockMutation";
+import DialogSettingStoreProducts from "./DialogSettingStoreProducts";
+import DialogStockActionStoreAdmin from "./DialogStockActionStoreAdmin";
 
 interface PopoverStockMenuProps {
   storeId: number;
@@ -28,7 +28,7 @@ const PopoverStockRequest: React.FC<PopoverStockMenuProps> = ({
   return (
     <Popover>
       <PopoverTrigger>
-        <div className="flex items-center gap-2">
+        <div className="inline-flex h-10 items-center justify-center gap-1 whitespace-nowrap rounded-md bg-[#ff6100] px-4 py-2 text-sm font-medium text-white">
           <BookMarked className="h-4 w-4" />
           <span>Stock</span>
         </div>

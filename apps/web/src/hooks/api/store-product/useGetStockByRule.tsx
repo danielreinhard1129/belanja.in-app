@@ -1,7 +1,6 @@
 import { axiosInstance } from "@/libs/axios";
 import { IPaginationMeta, IPaginationQueries } from "@/types/pagination.type";
 import { Stock } from "@/types/stock.type";
-import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
 interface IGetStocksQuery extends IPaginationQueries {
@@ -9,12 +8,12 @@ interface IGetStocksQuery extends IPaginationQueries {
   storeId?: string | undefined;
 }
 
-const useGetStockByRuleNew = (queries: IGetStocksQuery) => {
+const useGetStockByRule = (queries: IGetStocksQuery) => {
   const [stocks, setStocks] = useState<Stock | null>(null);
   const [metaStock, setMetaStock] = useState<IPaginationMeta | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const getStockByRuleNew = async () => {
+  const getStockByRule = async () => {
     try {
       const { data } = await axiosInstance.get<Stock>("/store-products", {
         params: queries,
@@ -22,24 +21,22 @@ const useGetStockByRuleNew = (queries: IGetStocksQuery) => {
       setStocks(data);
       setMetaStock(data.storeProducts.meta);
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error);
-      }
+      setStocks(null);
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    getStockByRuleNew();
+    getStockByRule();
   }, [queries?.page, queries?.search, queries?.storeId]);
 
   return {
     stocks,
     isLoading,
     metaStock,
-    refetch: getStockByRuleNew,
+    refetch: getStockByRule,
   };
 };
 
-export default useGetStockByRuleNew;
+export default useGetStockByRule;

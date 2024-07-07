@@ -1,7 +1,6 @@
 "use client";
 
 import { Product } from "@/types/product.type";
-import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import useAxios from "../useAxios";
 
@@ -15,9 +14,7 @@ const useGetProduct = (id: number) => {
       const { data } = await axiosInstance.get<Product>(`/products/${id}`);
       setProduct(data);
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.error("Error fetching product:", error.message);
-      }
+      setProduct(null);
     } finally {
       setIsLoading(false);
     }

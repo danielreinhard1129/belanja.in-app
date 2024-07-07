@@ -1,6 +1,5 @@
 import { axiosInstance } from "@/libs/axios";
 import { StockJournal } from "@/types/stockJournal.type";
-import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
 const useGetStockJournalById = (id: number) => {
@@ -14,9 +13,7 @@ const useGetStockJournalById = (id: number) => {
       );
       setJournal(data);
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error);
-      }
+      setJournal(null);
     } finally {
       setIsLoading(false);
     }

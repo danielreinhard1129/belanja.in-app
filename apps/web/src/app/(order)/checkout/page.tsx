@@ -85,7 +85,6 @@ const Checkout = () => {
 
   const baseURL = process.env.NEXT_PUBLIC_BASE_API_URL;
   console.log(paymentMethodState);
-  
 
   if (!carts || !carts.length) {
     return (
@@ -185,7 +184,10 @@ const Checkout = () => {
           )}
 
           <Separator className="h-0.5" />
-          <div className="flex items-center justify-between px-4 pt-2" onClick={()=>setOpenPaymentMethodDrawer(true)}>
+          <div
+            className="flex items-center justify-between px-4 pt-2"
+            onClick={() => setOpenPaymentMethodDrawer(true)}
+          >
             <p>Payment method</p>
             <div className="flex justify-end">
               <ChevronRight className="max-h-4 max-w-4 font-light" />

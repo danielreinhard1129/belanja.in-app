@@ -1,7 +1,6 @@
 import { arriveStockProductMutationService } from '@/services/store-product/arrive-stockProductMutation.service';
 import { confirmStockProductMutationService } from '@/services/store-product/confirm-stockProductMutation.service';
 import { createRequestStockProductMutationService } from '@/services/store-product/create-requestStockMutation.service';
-import { createStockProductMutationService } from '@/services/store-product/create-stockProductMutation.service';
 import { createStockSuperAdminService } from '@/services/store-product/create-stockSuperAdmin.service';
 import { getProductsByStoreService } from '@/services/store-product/get-productsByStore.service';
 import { getStocksByStoreAdminService } from '@/services/store-product/get-stockByStoreAdmin.service';
@@ -41,20 +40,6 @@ export class StoreProductController {
     try {
       const result = await getProductsByStoreService(Number(req.params.id));
       res.status(200).send(result);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async createStoreProductMutation(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
-    try {
-      const result = await createStockProductMutationService(req.body);
-
-      return res.status(200).send(result);
     } catch (error) {
       next(error);
     }

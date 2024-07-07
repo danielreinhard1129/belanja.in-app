@@ -67,7 +67,7 @@ const DialogCreateStoreAdmin: React.FC<DialogCreateStoreAdminProps> = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger>
-        <div className="flex justify-between gap-2">
+        <div className="inline-flex h-10 items-center justify-center gap-1 whitespace-nowrap rounded-md bg-[#ff6100] px-4 py-2 text-sm font-medium text-white">
           <UserPlus /> <span> Store Admin</span>
         </div>
       </DialogTrigger>
