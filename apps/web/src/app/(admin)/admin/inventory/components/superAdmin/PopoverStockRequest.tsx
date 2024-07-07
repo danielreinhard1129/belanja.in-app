@@ -9,12 +9,10 @@ import React, { useState } from "react";
 import DialogSettingStoreProducts from "./DialogSettingStoreProducts";
 import DialogStockActionSuperAdmin from "./DialogStockActionSuperAdmin";
 import DialogStockMutation from "./DialogStockMutation";
-
 interface PopoverStockMenuProps {
   storeId: number;
   refetch: () => void;
 }
-
 const PopoverStockRequest: React.FC<PopoverStockMenuProps> = ({
   storeId,
   refetch,

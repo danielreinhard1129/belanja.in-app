@@ -1,7 +1,5 @@
 "use client";
 import Pagination from "@/components/Pagination";
-import { formatToRupiah } from "@/utils/formatCurrency";
-import { formatWeight } from "@/utils/formatWeight";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -19,13 +17,15 @@ import {
 } from "@/components/ui/table";
 import useGetCategories from "@/hooks/api/category/useGetCategories";
 import useGetProductsByFilters from "@/hooks/api/product/useGetProductsByFilters";
+import { formatToRupiah } from "@/utils/formatCurrency";
+import { formatWeight } from "@/utils/formatWeight";
 import { debounce } from "lodash";
 import { Eye, ImageIcon } from "lucide-react";
 import Image from "next/image";
-import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import React, { useState } from "react";
 import CategorySelect from "../CategorySelect";
 import SortOrderSelect from "../SortOrderSelect";
-import Link from "next/link";
 
 const StoreAdmin: React.FC = () => {
   const [page, setPage] = useState<number>(1);

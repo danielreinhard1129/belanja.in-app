@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import useGetCategories from "@/hooks/api/category/useGetCategories";
 import useGetProduct from "@/hooks/api/product/useGetProduct";
 import useUpdateProduct from "@/hooks/api/product/useUpdateProduct";
+import { BASE_API_URL } from "@/utils/config";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Pencil } from "lucide-react";
 import dynamic from "next/dynamic";
@@ -25,12 +26,11 @@ import {
   useForm,
   useFormState,
 } from "react-hook-form";
+import { toast } from "sonner";
 import {
   TEditProductSchema,
   editProductSchema,
 } from "../validationSchema/EditProductSchema";
-import { BASE_API_URL } from "@/utils/config";
-import { toast } from "sonner";
 const Select = dynamic(() => import("react-select"), { ssr: false });
 interface DialogEditProductProps {
   productId: number;
@@ -59,11 +59,9 @@ const DialogEditProduct: React.FC<DialogEditProductProps> = ({
     control,
     formState: { errors },
   } = methods;
-
   const { isDirty, isValid } = useFormState({
     control,
   });
-
   const handleFileChange = (files: FileList | null) => {
     if (files) {
       const newFiles = Array.from(files);
@@ -242,5 +240,4 @@ const DialogEditProduct: React.FC<DialogEditProductProps> = ({
     </Dialog>
   );
 };
-
 export default DialogEditProduct;

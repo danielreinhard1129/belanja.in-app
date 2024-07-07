@@ -26,12 +26,10 @@ import DialogCreateStoreAdmin from "./components/DialogCreateStoreAdmin";
 import DialogDeleteUser from "./components/DialogDeleteUser";
 import DialogEditStoreAdmin from "./components/DialogEditStoreAdmin";
 import DialogEditUser from "./components/DialogEditUser";
-
 const Users = () => {
   const [isOpenDialogCreate, setIsOpenDialogCreate] = useState<boolean>(false);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [dialogType, setDialogType] = useState<string | null>(null);
-
   const { deleteUser, isLoading: isDeleting } = useDeleteUser();
   const [page, setPage] = useState<number>(1);
   const [role, setRole] = useState<string>("all");
@@ -50,32 +48,25 @@ const Users = () => {
     sortOrder,
     search,
   });
-
   const handleSearch = debounce((value: string) => {
     setSearch(value);
   }, 300);
-
   useEffect(() => {
     setPage(1);
   }, [role]);
-
   const handleChangePaginate = ({ selected }: { selected: number }) => {
     setPage(selected + 1);
   };
-
   const handleDelete = async (id: number) => {
     await deleteUser(id);
     refetch();
   };
-
   const handleEdit = (userId: number, type: string) => {
     setSelectedUserId(userId);
     setDialogType(type);
   };
-
   const total = meta?.total || 0;
   const take = meta?.take || 10;
-
   return (
     <main className="container py-16">
       <div className="mx-auto max-w-6xl">
@@ -212,5 +203,4 @@ const Users = () => {
     </main>
   );
 };
-
 export default AuthGuardSuperAdmin(Users);

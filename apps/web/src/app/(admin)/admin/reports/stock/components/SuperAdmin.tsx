@@ -32,14 +32,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import useGetStockJournalsByStoreWithParams from "@/hooks/api/stock-journal/useGetStockJournalsByStoreWithParams";
+import useGetStoreById from "@/hooks/api/store/useGetStoreById";
 import useGetStores from "@/hooks/api/store/useGetStores";
 import { format } from "date-fns";
 import { debounce } from "lodash";
 import { Eye } from "lucide-react";
 import { useEffect, useState } from "react";
 import ItemFilterMonth from "../../components/ItemFilterMonth";
-import useGetStoreById from "@/hooks/api/store/useGetStoreById";
-
 const SuperAdmin = () => {
   const now = new Date();
   const [page, setPage] = useState<number>(1);
@@ -60,38 +59,29 @@ const SuperAdmin = () => {
       filterMonth,
       filterYear,
     });
-
   useEffect(() => {
     setPage(1);
   }, [selectedStoreId]);
-
   const handleSearch = debounce((value: string) => {
     setSearch(value);
   }, 300);
-
   const handleStoreChange = (value: string) => {
     setSelectedStoreId(value);
   };
-
   const handleChangePaginate = ({ selected }: { selected: number }) => {
     setPage(selected + 1);
   };
-
   const handleChangeFilterMonth = (value: string) => {
     setFilterMonth(value);
   };
-
   const handleChangeFilterYear = (value: string) => {
     setFilterYear(value);
   };
-
   const total = meta?.total || 0;
   const take = meta?.take || 10;
-
   if (!stockJournals) {
     return <div>Data Not Found</div>;
   }
-
   return (
     <main className="mx-auto max-w-6xl">
       <h2 className="mb-4 text-2xl font-bold">Stock Journal</h2>
@@ -330,5 +320,4 @@ const SuperAdmin = () => {
     </main>
   );
 };
-
 export default SuperAdmin;

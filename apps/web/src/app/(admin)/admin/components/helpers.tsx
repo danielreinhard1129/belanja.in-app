@@ -1,5 +1,4 @@
 import {
-  BookMarked,
   Box,
   Briefcase,
   Home,

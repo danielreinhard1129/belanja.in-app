@@ -1,12 +1,9 @@
 "use client";
-import useGetUser from "@/hooks/api/user/useGetUserWithStoreAdmin";
-import { useAppSelector } from "@/redux/hooks";
-import ImgAvatar from "../../../../../public/male_avatar.svg";
-import Image from "next/image";
-import React, { useEffect } from "react";
-import useGetStoreByStoreAdmin from "@/hooks/api/store/useGetStoreByStoreAdmin";
 import { Button } from "@/components/ui/button";
 import useSendChangePassword from "@/hooks/api/auth/useSendChangePassword";
+import useGetStoreByStoreAdmin from "@/hooks/api/store/useGetStoreByStoreAdmin";
+import useGetUser from "@/hooks/api/user/useGetUserWithStoreAdmin";
+import { useAppSelector } from "@/redux/hooks";
 import {
   Building2,
   Fingerprint,
@@ -17,6 +14,9 @@ import {
   Store,
   User2,
 } from "lucide-react";
+import Image from "next/image";
+import { useEffect } from "react";
+import ImgAvatar from "../../../../../public/male_avatar.svg";
 
 const Profile = () => {
   const { id } = useAppSelector((state) => state.user);

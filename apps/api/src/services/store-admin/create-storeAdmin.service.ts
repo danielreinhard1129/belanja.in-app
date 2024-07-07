@@ -16,7 +16,6 @@ export const createStoreAdminService = async (
 ) => {
   const { nip, name, email } = body;
 
-  // Cek apakah user yang melakukan aksi adalah SUPERADMIN
   const checkUser = await prisma.user.findUnique({
     where: {
       id: Number(user.id),
@@ -27,7 +26,6 @@ export const createStoreAdminService = async (
     throw new Error('Unauthorized access');
   }
 
-  // Cek apakah email sudah ada dalam database
   let existingUser = await prisma.user.findFirst({
     where: {
       email,
@@ -47,22 +45,19 @@ export const createStoreAdminService = async (
   }
 
   if (existingUser) {
-    // Jika user dengan email tersebut sudah ada
     if (existingUser.isDelete && existingUser.role === 'STOREADMIN') {
-      // Update user yang isDelete true dengan data baru
       existingUser = await prisma.user.update({
         where: {
           id: existingUser.id,
         },
         data: {
           name,
-          password: await hashPassword('Admin123'), // Ganti password jika diperlukan
+          password: await hashPassword('Admin123'),
           isDelete: false,
-          isVerified: true, // Misalnya, aktifkan ulang jika perlu
+          isVerified: true,
         },
       });
 
-      // update storeAdmin  untuk user yang diaktifkan kembali
       const createStoreAdmin = await prisma.storeAdmin.update({
         where: { userId: existingUser.id },
         data: {
@@ -79,8 +74,7 @@ export const createStoreAdminService = async (
     }
   }
 
-  // Jika tidak ada user dengan email tersebut, buat user baru dan storeAdmin
-  const hashedPassword = await hashPassword('Admin123'); // Ganti password jika perlu
+  const hashedPassword = await hashPassword('Admin123');
 
   const result = await prisma.$transaction(async (prisma) => {
     const newUser = await prisma.user.create({

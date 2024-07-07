@@ -1,8 +1,6 @@
 import { axiosInstance } from "@/libs/axios";
-import { useAppSelector } from "@/redux/hooks";
 import { IPaginationMeta, IPaginationQueries } from "@/types/pagination.type";
 import { StockJournal } from "@/types/stockJournal.type";
-import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
 interface IGetStocksQuery extends IPaginationQueries {

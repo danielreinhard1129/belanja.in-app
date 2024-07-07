@@ -24,7 +24,6 @@ export const createDiscountService = async (
       storeId,
     } = body;
 
-    // Cari user berdasarkan user.id
     const checkUser = await prisma.user.findUnique({
       where: {
         id: Number(user.id),
@@ -73,7 +72,6 @@ export const createDiscountService = async (
         throw new Error("Can't find store associated with your account");
       }
 
-      // Gunakan store.id jika body.storeId kosong
       finalStoreId = finalStoreId || store.id;
       storeName = store.name;
     }

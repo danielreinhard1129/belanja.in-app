@@ -1,7 +1,6 @@
 import { axiosInstance } from "@/lib/axios";
 import { IPaginationMeta, IPaginationQueries } from "@/types/pagination.type";
 import { Product } from "@/types/product.type";
-import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
 interface IGetEventsQuery extends IPaginationQueries {
@@ -23,9 +22,7 @@ const useGetProductsByFilters = (queries: IGetEventsQuery) => {
       setData(data.data);
       setMeta(data.meta);
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error);
-      }
+      setData([]);
     } finally {
       setIsLoading(false);
     }

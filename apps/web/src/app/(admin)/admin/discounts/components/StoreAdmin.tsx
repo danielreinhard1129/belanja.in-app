@@ -1,18 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { formatToRupiah } from "@/utils/formatCurrency";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import DialogCreateDiscount from "./DialogCreateDiscount";
-import useGetDiscountsByStoreAdmin from "@/hooks/api/discounts/useGetDiscountsByStoreAdmin";
-import { Ban, Check } from "lucide-react";
+import Pagination from "@/components/Pagination";
 import {
   Select,
   SelectContent,
@@ -20,13 +7,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Pagination from "@/components/Pagination";
-import PopoverDiscountMenu from "./PopoverMenu";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import useDeleteDiscount from "@/hooks/api/discounts/useDeleteDiscount";
-import ImageNotFoundStore from "../../../../../../public/no-store.svg";
-import { useAppSelector } from "@/redux/hooks";
+import useGetDiscountsByStoreAdmin from "@/hooks/api/discounts/useGetDiscountsByStoreAdmin";
 import useGetStoreByStoreAdmin from "@/hooks/api/store/useGetStoreByStoreAdmin";
+import { useAppSelector } from "@/redux/hooks";
+import { formatToRupiah } from "@/utils/formatCurrency";
+import { Ban, Check } from "lucide-react";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import ImageNotFoundStore from "../../../../../../public/no-store.svg";
+import DialogCreateDiscount from "./DialogCreateDiscount";
+import PopoverDiscountMenu from "./PopoverMenu";
 
 const DiscountsStoreAdmin = () => {
   const { id } = useAppSelector((state) => state.user);
