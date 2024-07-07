@@ -9,7 +9,7 @@ export default function AuthGuardTrx(Component: any) {
   return function IsAuth(props: any) {
     const [isLoading, setIsLoading] = useState(true);
 
-    const { id } = useAppSelector((state: any) => state.user);
+    const { role } = useAppSelector((state: any) => state.user);
 
     useEffect(() => {
       setTimeout(() => {
@@ -18,10 +18,10 @@ export default function AuthGuardTrx(Component: any) {
     }, []);
 
     useEffect(() => {
-      if (id === 0 && !isLoading) {
-        redirect("/login");
+      if (!isLoading && role !== 'USER') {
+        redirect("/");
       }
-    }, [id, isLoading]);
+    }, [role, isLoading]);
 
     if (isLoading) {
       return (

@@ -1,6 +1,7 @@
 "use client";
 
 import useAxios from "@/hooks/api/useAxios";
+import { OPENCAGE_API_KEY } from "@/utils/config";
 import { useState } from "react";
 
 interface Component {
@@ -26,7 +27,7 @@ export default function useGetLocationByCoordinates() {
   async function getLocation(lat: number, lng: number) {
     try {
       const response = await axiosInstance.get(
-        `https://api.opencagedata.com/geocode/v1/json?q=${lat}%2C${lng}&key=1fe9dce2ebaf4e918bdd67188a11377a`,
+        `https://api.opencagedata.com/geocode/v1/json?q=${lat}%2C${lng}&key=${OPENCAGE_API_KEY}`,
       );
       setData(response.data);
     } catch (error) {
