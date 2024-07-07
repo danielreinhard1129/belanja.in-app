@@ -22,13 +22,6 @@ const ShippingMethodSheet: FC<ShippingMethodSheetProps> = ({
   shippingMethods,
   closeDrawer,
 }) => {
-  // let shippingMethod:CourierService | undefined = undefined
-  // const data = shippingMethods?.filter((method)=>method.isSelected==true)
-
-  //   if(data?.length){
-  //      shippingMethod = data[0]
-
-  //   }
   const handleSelectShippingMethod = (index: number) => {
     if (shippingMethods) {
       const data = shippingMethods.map((method, idx) => {
@@ -43,14 +36,6 @@ const ShippingMethodSheet: FC<ShippingMethodSheetProps> = ({
       closeDrawer(data);
       setOpenState(false);
     }
-
-    // if (shippingMethod) {
-    //   const deliveryFee = shippingMethod.costs.map((data, idx) => {
-    //     return { ...data, isSelected: idx == index };
-    //   });
-
-    //   const result = { ...shippingMethod!, costs: deliveryFee };
-    //   const returnValue = {shippingMethods}
   };
 
   return (

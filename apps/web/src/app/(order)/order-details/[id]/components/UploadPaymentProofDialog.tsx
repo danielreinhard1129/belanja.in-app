@@ -147,8 +147,6 @@ const UploadPaymentProofDialog: FC<UploadPaymentProofDialogProps> = ({
                 <Image
                   src={URL.createObjectURL(selectedImage)}
                   alt="Selected"
-                  // width={200}
-                  // height={200}
                   fill
                   className="object-cover"
                 />

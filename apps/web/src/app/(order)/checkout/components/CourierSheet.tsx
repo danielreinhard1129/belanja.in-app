@@ -24,15 +24,6 @@ const CourierSheet: FC<ShippingMethodSheetProps> = ({
   closeDrawer,
 }) => {
   const handleSelectCourier = (index: number) => {
-    // if (shippingMethods) {
-    //   const deliveryFee = shippingMethods.map((data, idx) => {
-    //     return { ...data, isSelected: idx == index };
-    //   });
-
-    // //   const returnValue = { ...data, costs: deliveryFee };
-
-    //   closeDrawer(deliveryFee);
-    //   setOpenState(false);
     closeDrawer(
       shippingMethods.map((val, idx) => {
         return { ...val, isSelected: idx == index };
