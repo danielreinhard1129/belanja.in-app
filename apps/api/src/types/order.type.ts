@@ -9,7 +9,7 @@ export interface IOrderArgs {
   userId: number;
   storeId: number;
   products: IProductArg[]
-  userDiscountIds?: number[];
+  discountIds?: number[];
   userVoucherIds?: number[];
   addressId: number
   deliveryFee: string
