@@ -42,6 +42,7 @@ const useGoogleAuth = () => {
   const logout = () => {
     googleLogout();
     localStorage.removeItem("Authorization");
+    localStorage.removeItem("location");
     dispatch(logoutAction());
     router.push("/");
   };
