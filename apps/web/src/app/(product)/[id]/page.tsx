@@ -24,14 +24,31 @@ import {
 import DiscountCard from "./components/DiscountCard";
 
 const ProductPage = ({ params }: { params: { id: string } }) => {
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [longitude, setLongitude] = useState<number | null>(null);
   const { id: userId } = useAppSelector((state) => state.user);
   const { carts, refetch: refetchCart } = useGetCartsById(userId);
   const { addToCart } = useAddToCart();
-  const { product, isLoading } = useGetProduct(Number(params.id));
+  const router = useRouter();
+
+  useEffect(() => {
+    const storedLocation = localStorage.getItem("location");
+    if (storedLocation) {
+      const { lat, long } = JSON.parse(storedLocation);
+      setLatitude(lat);
+      setLongitude(long);
+    }
+  }, [latitude, longitude]);
+
+  const { storeProduct, isLoading } = useGetProduct({
+    lat: Number(latitude),
+    long: Number(longitude),
+    productId: Number(params.id),
+  });
+
   const [count, setCount] = useState(0);
   const [current, setCurrent] = useState(0);
   const [api, setApi] = useState<CarouselApi>();
-  const router = useRouter();
 
   useEffect(() => {
     if (!api) return;
@@ -46,7 +63,7 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
 
   const handleAddToCart = async () => {
     if (userId !== 0) {
-      await addToCart(product?.id, 1);
+      await addToCart(storeProduct?.productId, storeProduct?.storeId);
       refetchCart();
     } else {
       router.push("/login");
@@ -57,14 +74,10 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
     return <ProductSkeleton />;
   }
 
-  if (!product && !isLoading) {
+  if (!storeProduct && !isLoading) {
     return notFound();
   }
 
-  // Extract the stock quantity from the first matching store product
-  const storeProduct = product?.storeProduct?.find(
-    (sp) => sp.productId === product.id
-  );
   const stock = storeProduct?.qty || 0;
 
   return (
@@ -72,7 +85,7 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
       <div className="relative h-fit w-full px-4 md:w-1/2">
         <Carousel className="w-full" setApi={setApi}>
           <CarouselContent>
-            {product?.images.map((image, index) => (
+            {storeProduct?.product.images.map((image, index) => (
               <CarouselItem key={index}>
                 <div className="">
                   <Card className="aspect-square w-full overflow-hidden rounded-2xl bg-gray-100">
@@ -107,8 +120,8 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
         </div>
       </div>
       <div className="w-full space-y-2 px-4 pt-4 md:w-1/2 md:px-0 md:pl-20 md:pt-0">
-        {product?.categories
-          .filter((category) => category.productId === product.id)
+        {storeProduct?.product.categories
+          .filter((category) => category.productId === storeProduct.productId)
           .map((category) => (
             <Badge
               key={category.categoryId}
@@ -118,32 +131,30 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
             </Badge>
           ))}
         <h1 className="line-clamp-2 w-full pt-2 text-lg font-medium">
-          {product?.name}
+          {storeProduct?.product.name}
         </h1>
         <p className="text-2xl font-semibold">
           {new Intl.NumberFormat("id-ID", {
             style: "currency",
             currency: "IDR",
             maximumSignificantDigits: Math.trunc(
-              Math.abs(Number(product?.price)),
+              Math.abs(Number(storeProduct?.product.price)),
             ).toFixed().length,
-          }).format(Number(product?.price))}
+          }).format(Number(storeProduct?.product.price))}
         </p>
         <div className="flex gap-3">
-          {product?.storeProduct
-            .filter((storeProduct) => storeProduct.productId === product.id)
-            .map((storeProduct, index) => (
-              <p key={index} className="text-sm text-black/60">
-                Stock: {storeProduct.qty}
-              </p>
-            ))}
-          <p className="text-sm text-black/60">Weight: {product?.weight}gr</p>
+          <p className="text-sm text-black/60">Stock: {storeProduct?.qty}</p>
+          <p className="text-sm text-black/60">
+            Weight: {storeProduct?.product.weight}gr
+          </p>
         </div>
         <Separator />
         <h2 className="text-base font-medium">Description</h2>
-        <p className="text-sm text-black/60">{product?.description}</p>
-        {product?.discounts
-          .filter((discount) => discount.productId === product.id)
+        <p className="text-sm text-black/60">
+          {storeProduct?.product.description}
+        </p>
+        {storeProduct?.product.discounts
+          .filter((discount) => discount.productId === storeProduct.productId)
           .map((discount, index) => (
             <DiscountCard
               key={index}
@@ -155,36 +166,30 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
               title={discount.title}
             />
           ))}
-        {product?.storeProduct
-          .filter((storeProduct) => storeProduct.productId === product.id)
-          .map((storeProduct, index) => (
-            <Card className="rounded-lg" key={index}>
-              <CardContent className="space-y-4 p-3">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10">
-                    <Image src={defaultStore} alt="store" />
-                  </div>
-                  <p className="text-sm font-medium">
-                    {storeProduct.store.name}
-                  </p>
-                </div>
-                <Separator />
-                <div className="flex items-start gap-2 text-neutral-500">
-                  <MapPin size={16} className="mt-[2px]" />
-                  <p className="text-sm">Store Location:</p>
-                  <p className="text-sm font-medium">
-                    {storeProduct.store.City.citName}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+        <Card className="rounded-lg">
+          <CardContent className="space-y-4 p-3">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10">
+                <Image src={defaultStore} alt="store" />
+              </div>
+              <p className="text-sm font-medium">{storeProduct?.store.name}</p>
+            </div>
+            <Separator />
+            <div className="flex items-start gap-2 text-neutral-500">
+              <MapPin size={16} className="mt-[2px]" />
+              <p className="text-sm">Store Location:</p>
+              <p className="text-sm font-medium">
+                {storeProduct?.store.City.citName}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
         <div className="pb-20 md:pb-10"></div>
         <div className="hidden md:flex">
           <AddToCartButton
             carts={carts}
             handleAddToCart={handleAddToCart}
-            productId={product?.id}
+            productId={Number(params.id)}
             stock={stock}
           />
         </div>
@@ -195,7 +200,7 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
         <AddToCartButton
           carts={carts}
           handleAddToCart={handleAddToCart}
-          productId={product?.id}
+          productId={Number(params.id)}
           stock={stock}
         />
       </div>

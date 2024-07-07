@@ -1,34 +1,81 @@
+import { getDistance } from '@/libs/getDistance';
 import prisma from '@/prisma';
+import { PaginationQueryParams } from '@/types/pagination.type';
+import { Prisma } from '@prisma/client';
 
-export const getProductService = async (id: number) => {
+interface GetProductsByIdArgs extends PaginationQueryParams {
+  lat?: number;
+  long?: number;
+  radius?: number;
+  productId: number;
+}
+
+export const getProductService = async (query: GetProductsByIdArgs) => {
+  const { lat, long, radius = 10, productId } = query;
+
+  if (!productId) {
+    throw new Error('Product not found');
+  }
+
   try {
-    const product = await prisma.product.findFirst({
-      where: { id, isDelete: false },
-      include: {
-        categories: {
-          include: {
-            category: true,
-          },
-        },
-        images: true,
-        storeProduct: {
-          include: {
-            store: {
-              include: {
-                City: true,
+    const stores = await prisma.store.findMany();
+
+    let closestStoreId: number | undefined;
+    if (lat && long) {
+      const nearbyStores = stores
+        .filter((store) =>
+          lat && long
+            ? getDistance(lat, long, store.lat, store.long) <= radius
+            : true,
+        )
+        .sort((a, b) =>
+          lat && long
+            ? getDistance(lat, long, a.lat, a.long) -
+              getDistance(lat, long, b.lat, b.long)
+            : 0,
+        );
+
+      if (nearbyStores.length > 0) {
+        closestStoreId = nearbyStores[0].id;
+      }
+    }
+
+    const where: Prisma.StoreProductWhereInput = {
+      productId,
+      product: { isDelete: false },
+      isActive: true,
+      store: { isDelete: false },
+    };
+
+    const storeProduct = await prisma.storeProduct.findFirst({
+      where: {
+        ...where,
+        ...(closestStoreId
+          ? { storeId: closestStoreId }
+          : {
+              store: {
+                isPrimary: true,
+                isDelete: false,
               },
-            },
+            }),
+      },
+      include: {
+        product: {
+          include: {
+            images: true,
+            categories: { include: { category: true } },
+            discounts: true,
           },
         },
-        discounts: true,
+        store: { include: { City: true } },
       },
     });
 
-    if (!product) {
-      throw new Error('product is not found');
+    if(!storeProduct) {
+      throw new Error("Product not found")
     }
 
-    return product;
+    return storeProduct;
   } catch (error) {
     throw error;
   }

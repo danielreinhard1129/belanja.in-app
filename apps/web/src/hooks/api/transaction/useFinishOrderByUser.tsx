@@ -1,18 +1,15 @@
 import { AxiosError } from "axios";
-import React, { useEffect } from "react";
-import useAxios from "../useAxios";
 import { toast } from "sonner";
+import useAxios from "../useAxios";
 
 const useFinishOrderByUser = () => {
   const { axiosInstance } = useAxios();
 
-  const finishOrderByUser = async (orderId: number|undefined) => {
+  const finishOrderByUser = async (orderId: number | undefined) => {
     try {
-      // const token =localStorage.getItem("Authorization")
       const { data } = await axiosInstance.patch<{ message: string }>(
         "/orders/user/finish-order",
-        {orderId},
-        
+        { orderId },
       );
       toast.success(data.message);
     } catch (error) {
@@ -21,7 +18,7 @@ const useFinishOrderByUser = () => {
       }
     }
   };
-  return {finishOrderByUser};
+  return { finishOrderByUser };
 };
 
 export default useFinishOrderByUser;

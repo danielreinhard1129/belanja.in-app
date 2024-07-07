@@ -17,7 +17,6 @@ const useGetDiscountsByUser = (payload: {
       const { data } = await axiosInstance.get("/discounts/user", {
         params: payload,
       });
-      console.log(payload);
 
       setDiscounts(data);
     } catch (error) {

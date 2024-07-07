@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import prisma from '@/prisma';
 import Handlebars from 'handlebars';
+import { NEXT_BASE_URL } from '@/config';
 
 export const verifyService = async (userId: number, password: string) => {
   try {
@@ -29,12 +30,17 @@ export const verifyService = async (userId: number, password: string) => {
       },
     });
 
-    const emailTemplatePath = path.join(__dirname, '../../../templates/welcome.hbs');
-    
+    const link = NEXT_BASE_URL;
+
+    const emailTemplatePath = path.join(
+      __dirname,
+      '../../../templates/welcome.hbs',
+    );
+
     const emailTemplateSource = fs.readFileSync(emailTemplatePath, 'utf8');
 
     const template = Handlebars.compile(emailTemplateSource);
-    const htmlToSend = template({ name: user.name });
+    const htmlToSend = template({ name: user.name, link: link });
 
     await transporter.sendMail({
       from: 'Admin',
