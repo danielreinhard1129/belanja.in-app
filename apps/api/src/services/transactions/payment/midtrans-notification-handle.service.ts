@@ -14,7 +14,6 @@ export const midtransNotificationHandlerService = async (
       include: { Payment: true, OrderItems: true, Delivery: true },
     });
 
-    console.log('ini dari midtrans', body);
 
     if (!findOrder) {
       throw new Error('Order not found');

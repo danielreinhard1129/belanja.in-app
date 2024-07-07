@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import { OrderStatus } from "@/types/order.type";
 import UploadPaymentProofDialog from "./components/UploadPaymentProofDialog";
 import PaymentProofDialog from "./components/PaymentProofDialog";
+import { toast } from "sonner";
 
 const OrderDetails = ({ params }: { params: { id: string } }) => {
   const [openUploadDialog, setOpenUploadDialog] = useState<boolean>(false);
@@ -26,7 +27,6 @@ const OrderDetails = ({ params }: { params: { id: string } }) => {
   } = useGetUserOrder({
     orderId: Number(params.id),
   });
-  console.log("in order dari FE", order);
   const { cancelOrderByUser } = useCancelOrderByUser();
   const { finishOrderByUser } = useFinishOrderByUser();
   const handleCancelOrder = async () => {
@@ -61,27 +61,23 @@ const OrderDetails = ({ params }: { params: { id: string } }) => {
         if (window.snap) {
           window.snap.pay(`${order.Payment.snapToken}`, {
             onSuccess: function (result: any) {
-              alert("Payment success!");
-              console.log(result);
+              toast.success("Payment success!");
             },
             onPending: function (result: any) {
-              alert("Waiting for your payment!");
-              console.log(result);
+              toast("Waiting for your payment!");
             },
             onError: function (result: any) {
-              alert("Payment failed!");
-              console.log(result);
+              toast.error("Payment failed!");
             },
             onClose: function () {
-              alert("Close Kah?");
             },
           });
         } else {
-          alert("Snap is not loaded yet. Please try again.");
+          toast.error("Snap is not loaded yet. Please try again.");
         }
       }
     } catch (error) {
-      alert("Payment Error!");
+      toast.error("Payment Error!");
     }
   };
 

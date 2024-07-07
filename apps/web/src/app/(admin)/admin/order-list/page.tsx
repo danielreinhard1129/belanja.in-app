@@ -17,9 +17,12 @@ import {
 } from "@/components/ui/select";
 import useGetStores from "@/hooks/api/store/useGetStores";
 import { useAppSelector } from "@/redux/hooks";
+import { debounce } from "lodash";
+import { Input } from "@/components/ui/input";
 
 const OrderList = () => {
   const { role: adminRole } = useAppSelector((state) => state.user);
+  const [search, setSearch] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const [openState, setOpenState] = useState<boolean>(false);
   const [orderStatus, setOrderStatus] = useState<OrderStatus | null>(null);
@@ -42,6 +45,7 @@ const OrderList = () => {
     fromDate: date?.from?.toISOString(),
     toDate: date?.to?.toISOString(),
     storeId,
+    search,
   });
   const {
     order,
@@ -57,6 +61,10 @@ const OrderList = () => {
   const handleChangePaginate = ({ selected }: { selected: number }) => {
     setPage(selected + 1);
   };
+
+  const handleSearch = debounce((value: string) => {
+    setSearch(value);
+  }, 300);
 
   return (
     <main className="container py-16">
@@ -77,6 +85,15 @@ const OrderList = () => {
             </SelectContent>
           </Select>
         ) : null}
+        <Input
+          type="text"
+          placeholder="Search for order ... "
+          name="search"
+          onChange={(e) => {
+            handleSearch(e.target.value);
+          }}
+          className="ml-4 w-48"
+        />
         <FilterComponent
           setValueStatus={setOrderStatus}
           setCategory={setCategory}

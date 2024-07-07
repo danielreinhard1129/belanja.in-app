@@ -32,13 +32,13 @@ export const getOrdersByUserId = async (query: GetOrdersQuery) => {
       from: !fromDate ? undefined : new Date(fromDate),
       to: !toDate ? undefined : new Date(toDate),
     };
-    // console.log("ini dari getOrdersService", categoryArgs);
 
     const whereClause: Prisma.OrderWhereInput = {
       status: status,
       userId: id,
       orderNumber: { contains: search },
       updatedAt: { gte: dateRangeArgs.from, lte: dateRangeArgs.to },
+      
     };
 
     const orders = await prisma.order.findMany({
@@ -64,7 +64,6 @@ export const getOrdersByUserId = async (query: GetOrdersQuery) => {
 
     const count = await prisma.order.count({ where: whereClause });
 
-    console.log('ini order service', whereClause);
 
     return {
       data: orders,

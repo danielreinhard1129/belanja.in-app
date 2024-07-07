@@ -47,9 +47,10 @@ export const getDeliveryFeeService = async (body: DeliveryArgs) => {
     return results;
   } catch (error) {
     if (error instanceof AxiosError) {
-      const errorMessage = error.response?.data?.message || error.message;
+      const errorMessage = error.response?.data?.rajaongkir.status.description;
+
       console.error(errorMessage);
-      throw new Error(`Error occurred when calculating shipping cost: ${errorMessage}`);
+      throw new Error(`Error occurred when calculating shipping cost: ${errorMessage} `);
     }
     throw error;
   }

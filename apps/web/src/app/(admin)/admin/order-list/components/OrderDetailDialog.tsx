@@ -4,7 +4,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { IOrder } from "@/types/order.type";
 import { format } from "date-fns";
@@ -71,8 +71,41 @@ const OrderDetailDialog: FC<OrderDetailDialogProps> = ({
           </div>
         ) : (
           <div className="grid w-full grid-cols-10">
-            <GridItem label="Order ID" value={order?.id} />
-            <GridItem label="Total Purchase" value={order?.totalAmount} />
+            <GridItem label="Order ID" value={order?.orderNumber} />
+            <GridItem
+              label="Total Order"
+              value={new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                maximumSignificantDigits: Math.trunc(
+                  Math.abs(order?.totalAmount),
+                ).toFixed().length,
+              }).format(order?.totalAmount)}
+            />
+            <GridItem
+              label="Delivery Fee"
+              value={new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                maximumSignificantDigits: Math.trunc(
+                  Math.abs(order?.Delivery[0].deliveryFee),
+                ).toFixed().length,
+              }).format(order?.Delivery[0].deliveryFee)}
+            />
+            <GridItem
+              label="Paymnent Total"
+              value={new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                maximumSignificantDigits: Math.trunc(
+                  Math.abs(order?.Payment.amount),
+                ).toFixed().length,
+              }).format(order?.Payment.amount)}
+            />
+            <GridItem
+              label="Payment Status"
+              value={order?.Payment.paymentStatus}
+            />
             <GridItem
               label="Purchase Date"
               value={format(order?.createdAt, "dd MMMM yyyy")}
