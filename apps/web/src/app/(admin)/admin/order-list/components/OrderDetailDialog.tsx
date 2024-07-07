@@ -93,7 +93,7 @@ const OrderDetailDialog: FC<OrderDetailDialogProps> = ({
               }).format(order?.Delivery[0].deliveryFee)}
             />
             <GridItem
-              label="Paymnent Total"
+              label="Payment Total"
               value={new Intl.NumberFormat("id-ID", {
                 style: "currency",
                 currency: "IDR",

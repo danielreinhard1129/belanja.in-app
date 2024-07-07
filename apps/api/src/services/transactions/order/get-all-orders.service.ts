@@ -59,6 +59,13 @@ export const getAllOrdersService = async (query: GetOrdersQuery) => {
       storeId: storeIdArgs,
       orderNumber: { contains: search },
       updatedAt: { gte: dateRangeArgs.from, lte: dateRangeArgs.to },
+      OrderItems: {
+        every: {
+          products: {
+            categories: { every: { category: { name: categoryArgs } } },
+          },
+        },
+      },
     };
 
     const orders = await prisma.order.findMany({
