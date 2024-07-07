@@ -470,7 +470,6 @@ export const createOrderService = async (body: IOrderArgs) => {
         where: { id: newOrder.id },
         include: { OrderItems: true, Payment: true, Delivery: true },
       });
-      console.log('ini findOrder dari create order', findOrder);
       const autoCancel = await prisma.$transaction(async (tx) => {
         if (!findOrder) {
           throw new Error('Order not found');

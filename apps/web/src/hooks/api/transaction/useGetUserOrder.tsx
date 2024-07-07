@@ -6,7 +6,8 @@ import useAxios from "../useAxios";
 
 
 const useGetUserOrder = (queries: { orderId: number }) => {
-  const { axiosInstance } = useAxios();
+  const {axiosInstance} =useAxios()
+
   const [order, setOrder] = useState<IOrder | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const getUserOrder = async () => {

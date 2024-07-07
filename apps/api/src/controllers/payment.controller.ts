@@ -25,7 +25,6 @@ export class PaymentController {
       const files = req.files as Express.Multer.File[];
       const userId = Number(res.locals.user.id);
       const orderId = Number(req.body.orderId);
-      console.log("orderId",req.body.id);
       
       const result = await uploadPaymentProofService(userId, orderId, files[0]);
 
