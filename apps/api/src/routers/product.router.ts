@@ -1,4 +1,6 @@
 import { ProductController } from '@/controllers/product.controller';
+import { createProductValidator } from '@/middlewares/createProductValidator';
+import { updateProductValidator } from '@/middlewares/updateProductValidator';
 import { uploader } from '@/libs/uploader';
 import { verifyToken } from '@/middlewares/verifyToken';
 import { Router } from 'express';
@@ -26,12 +28,14 @@ export class ProductRouter {
       '/',
       verifyToken,
       uploader('IMG', '/images').array('images', 5),
+      createProductValidator,
       this.productController.createProduct,
     );
     this.router.patch(
       '/:id',
       verifyToken,
       uploader('IMG', '/images').array('images', 5),
+      updateProductValidator,
       this.productController.updateProduct,
     );
     this.router.get('/', this.productController.getProducts);
