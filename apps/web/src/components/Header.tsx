@@ -1,6 +1,6 @@
 "use client";
 
-import { AlignJustify, ChevronRight, X } from "lucide-react";
+import { AlignJustify, ChevronRight, LogOut, ShoppingCart, X } from "lucide-react";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import Image from "next/image";
@@ -83,6 +83,9 @@ export const Header = () => {
         <div className="flex items-center gap-2 md:gap-6">
           {isLoggedIn && user && !isLoading ? (
             <div className="flex items-center gap-10">
+              <Button className="p-2 rounded-lg hover:bg-[#FF6100]/70 border-none hidden md:block" variant="outline" onClick={() => router.push("/cart")}>
+                <ShoppingCart size={20} />
+              </Button>
               <div
                 className="hidden cursor-pointer items-center gap-2 hover:underline md:flex"
                 onClick={() => router.push(`/user/${id}`)}
@@ -163,12 +166,18 @@ export const Header = () => {
                         <ChevronRight size={20} />
                       </div>
                       <Separator />
+                      <Button className="gap-4 w-fit px-3 py-2 text-start border-none" variant="outline" onClick={() => router.push("/cart")}>
+                        <ShoppingCart size={20} />
+                        Cart
+                      </Button>
+                      <Separator />
                       <div
-                        className="cursor-pointer text-red-500 hover:underline"
+                        className="cursor-pointer flex gap-4 px-3 py-2 text-sm font-medium text-red-500 hover:underline"
                         onClick={() =>
                           provider === "GOOGLE" ? logout() : userLogout()
                         }
                       >
+                        <LogOut size={20} />
                         Logout
                       </div>
                     </div>
