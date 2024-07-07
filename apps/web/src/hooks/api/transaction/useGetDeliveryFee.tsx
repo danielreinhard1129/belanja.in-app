@@ -16,7 +16,6 @@ const useGetDeliveryFee = (payload: DeliveryArgs) => {
   const getDeliveryFee = async () => {
     try {
       
-      console.log("execute", payload);
 
       const { data } = await axiosInstance.post<CourierService[]>(
         "/delivery/fee", {payload}

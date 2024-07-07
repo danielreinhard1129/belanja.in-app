@@ -17,7 +17,7 @@ export const getOrderDetailsByAdminService = async (query: GetOrderQeuery) => {
           },
         },
         stores: { include: { City: true } },
-        Payment: true,
+        Payment: true,Delivery: true
       },
     });
     if(!order){

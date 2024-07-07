@@ -1,8 +1,8 @@
 "use client";
-import { axiosInstance } from "@/lib/axios";
 import { IOrder, OrderStatus } from "@/types/order.type";
 import { IPaginationMeta, IPaginationQueries } from "@/types/pagination.type";
 import { useEffect, useState } from "react";
+import useAxios from "../useAxios";
 
 interface IGetOrdersQuery extends IPaginationQueries {
   id: number;
@@ -14,6 +14,7 @@ interface IGetOrdersQuery extends IPaginationQueries {
 }
 
 const useGetUserOrders = (queries: IGetOrdersQuery) => {
+  const {axiosInstance} =useAxios()
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [meta, setMeta] = useState<IPaginationMeta | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);

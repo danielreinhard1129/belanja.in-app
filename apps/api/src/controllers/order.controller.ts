@@ -31,7 +31,6 @@ export class OrderController {
         toDate: (req.query.toDate as string) || '',
       };
       const result = await getOrdersByUserId(query);
-      console.log("ini dari order BE",result);
       
 
       return res.status(200).send(result);

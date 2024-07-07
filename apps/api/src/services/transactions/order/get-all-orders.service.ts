@@ -49,7 +49,6 @@ export const getAllOrdersService = async (query: GetOrdersQuery) => {
 
     const categoryArgs = category && category === 'all' ? undefined : category;
 
-    console.log('ini dari order service', storeId);
     const dateRangeArgs = {
       from: !fromDate ? undefined : new Date(fromDate),
       to: !toDate ? undefined : new Date(toDate),
