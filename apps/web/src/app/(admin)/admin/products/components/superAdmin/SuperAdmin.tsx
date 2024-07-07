@@ -1,18 +1,18 @@
 "use client";
 import Pagination from "@/components/Pagination";
+import { Input } from "@/components/ui/input";
 import useGetCategories from "@/hooks/api/category/useGetCategories";
 import useDeleteProduct from "@/hooks/api/product/useDeleteProduct";
 import useDeleteProducts from "@/hooks/api/product/useDeleteProducts";
 import useGetProductsByFilters from "@/hooks/api/product/useGetProductsByFilters";
+import { debounce } from "lodash";
 import React, { useEffect, useState } from "react";
 import CategorySelect from "../CategorySelect";
+import SortOrderSelect from "../SortOrderSelect";
 import DeleteManyAlertDialog from "./DeleteManyAlertDialog";
 import DialogCreateProduct from "./DialogCreateProduct";
-import ProductTable from "./ProductTable";
-import SortOrderSelect from "../SortOrderSelect";
-import { debounce } from "lodash";
-import { Input } from "@/components/ui/input";
 import DialogSettingsCategory from "./DialogSettingsCategory";
+import ProductTable from "./ProductTable";
 
 const SuperAdmin: React.FC = () => {
   const [selectAll, setSelectAll] = useState<boolean>(false);

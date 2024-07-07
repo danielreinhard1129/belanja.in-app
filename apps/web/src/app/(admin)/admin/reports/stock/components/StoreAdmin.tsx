@@ -60,26 +60,20 @@ const StoreAdmin = () => {
       filterMonth,
       filterYear,
     });
-
   const handleSearch = debounce((value: string) => {
     setSearch(value);
   }, 300);
-
   const handleChangePaginate = ({ selected }: { selected: number }) => {
     setPage(selected + 1);
   };
-
   const handleChangeFilterMonth = (value: string) => {
     setFilterMonth(value);
   };
-
   const handleChangeFilterYear = (value: string) => {
     setFilterYear(value);
   };
-
   const total = meta?.total || 0;
   const take = meta?.take || 10;
-
   if (!store) {
     return (
       <div className="mx-auto flex flex-col items-center justify-center gap-7">
@@ -99,7 +93,6 @@ const StoreAdmin = () => {
       </div>
     );
   }
-
   return (
     <main className="mx-auto max-w-6xl">
       <h2 className="mb-4 text-2xl font-bold">Stock Journal</h2>

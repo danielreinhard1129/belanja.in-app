@@ -1,6 +1,5 @@
 import { axiosInstance } from "@/lib/axios";
 import { Store } from "@/types/store.type";
-import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
 const useGetStoreById = (id: number) => {

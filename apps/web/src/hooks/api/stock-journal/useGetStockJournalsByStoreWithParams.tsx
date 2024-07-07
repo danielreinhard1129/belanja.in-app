@@ -1,7 +1,6 @@
 import { axiosInstance } from "@/libs/axios";
 import { IPaginationMeta, IPaginationQueries } from "@/types/pagination.type";
 import { StockJournal } from "@/types/stockJournal.type";
-import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
 interface IGetStocksQuery extends IPaginationQueries {
@@ -25,9 +24,6 @@ const useGetStockJournalsByStoreWithParams = (queries: IGetStocksQuery) => {
       setStockJournals(data.data);
       setMeta(data.meta);
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error);
-      }
       setStockJournals([]);
     } finally {
       setIsLoading(false);

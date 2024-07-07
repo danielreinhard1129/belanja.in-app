@@ -1,10 +1,10 @@
 "use client";
 
-import { toast } from "sonner";
 import { axiosInstance } from "@/libs/axios";
+import { IFormDiscount } from "@/types/discount.type";
 import { AxiosError } from "axios";
 import { useState } from "react";
-import { IFormDiscount } from "@/types/discount.type";
+import { toast } from "sonner";
 
 const useCreateDiscount = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);

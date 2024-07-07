@@ -20,6 +20,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import useGetProducts from "@/hooks/api/product/useGetProducts";
+import useCreateStockSuperAdmin from "@/hooks/api/store-product/useCreateStockSuperAdmin";
 import useGetProductsByStore from "@/hooks/api/store-product/useGetStoreProductByStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Settings2, SquarePlus, Trash2 } from "lucide-react";
@@ -30,21 +31,18 @@ import {
   useForm,
   useFormState,
 } from "react-hook-form";
+import { toast } from "sonner";
 import {
   SchemaCreateStoreProducts,
   defaultValues,
   schemaCreateStoreProducts,
 } from "../validationSchema/schemaCreateStoreProducts";
-import { toast } from "sonner";
-import useCreateStockSuperAdmin from "@/hooks/api/store-product/useCreateStockSuperAdmin";
-
 interface DialogSettingStoreProductsProps {
   storeId: number;
   refetch: () => void;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
-
 const DialogSettingStoreProducts: React.FC<DialogSettingStoreProductsProps> = ({
   storeId,
   refetch,
@@ -66,37 +64,30 @@ const DialogSettingStoreProducts: React.FC<DialogSettingStoreProductsProps> = ({
     control,
   });
   const { append, fields, remove } = useFieldArray({ control, name: "stocks" });
-
   const handleReset = () => {
     reset(defaultValues);
     setSelectedProductIds([]);
   };
-
   useEffect(() => {
     reset(defaultValues);
     setSelectedProductIds([]);
   }, [storeId, activeTab, reset]);
-
   const handleAddStock = () => append({ productId: "", qty: 0 });
-
   const productsOptions = products.map((product) => ({
     value: product.id.toString(),
     label: product.name,
     disabled: selectedProductIds.includes(product.id.toString()),
   }));
-
   const productsReduceOptions = productsReduce.map((product) => ({
     value: product.id.toString(),
     label: product.name,
     disabled: selectedProductIds.includes(product.id.toString()),
   }));
-
   const handleProductChange = (productId: string, index: number) => {
     const updatedSelectedProductIds = [...selectedProductIds];
     updatedSelectedProductIds[index] = productId;
     setSelectedProductIds(updatedSelectedProductIds);
   };
-
   const handleRemoveStock = (index: number) => {
     const updatedSelectedProductIds = selectedProductIds.filter(
       (_, idx) => idx !== index,
@@ -104,15 +95,12 @@ const DialogSettingStoreProducts: React.FC<DialogSettingStoreProductsProps> = ({
     setSelectedProductIds(updatedSelectedProductIds);
     remove(index);
   };
-
   const isProductsAvailable = productsOptions.some(
     (product) => !product.disabled,
   );
-
   const isProductsReduceAvailable = productsReduceOptions.some(
     (product) => !product.disabled,
   );
-
   const onSubmit = async (data: SchemaCreateStoreProducts) => {
     const payload = { ...data, type: activeTab, storeId: String(storeId) };
     // console.log(payload);
@@ -131,11 +119,9 @@ const DialogSettingStoreProducts: React.FC<DialogSettingStoreProductsProps> = ({
       }
     }
   };
-
   if (!products || !productsReduce) {
     return <div>Data Not Found</div>;
   }
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger>

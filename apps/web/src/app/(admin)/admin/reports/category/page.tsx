@@ -1,7 +1,4 @@
 "use client";
-import React, { useState } from "react";
-import BarChartComponent from "../components/BarChart";
-import useGetStores from "@/hooks/api/store/useGetStores";
 import {
   Select,
   SelectContent,
@@ -9,14 +6,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { format, getDaysInMonth } from "date-fns";
-import { useAppSelector } from "@/redux/hooks";
-import ItemFilterMonth from "../components/ItemFilterMonth";
-import { formatToRupiah } from "@/utils/formatCurrency";
-import useGetSalesReportByCategory from "@/hooks/api/report/useGetSalesReportByCategory";
 import useGetCategories from "@/hooks/api/category/useGetCategories";
-import ImageDataNotFound from "../../../../../../public/no-store.svg";
+import useGetSalesReportByCategory from "@/hooks/api/report/useGetSalesReportByCategory";
+import useGetStores from "@/hooks/api/store/useGetStores";
+import { useAppSelector } from "@/redux/hooks";
+import { formatToRupiah } from "@/utils/formatCurrency";
 import Image from "next/image";
+import { useState } from "react";
+import ImageDataNotFound from "../../../../../../public/no-store.svg";
+import BarChartComponent from "../components/BarChart";
+import ItemFilterMonth from "../components/ItemFilterMonth";
 
 const Category = () => {
   const { role } = useAppSelector((state) => state.user);

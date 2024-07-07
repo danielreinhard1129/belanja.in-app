@@ -4,10 +4,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Eye, MoreHorizontal } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 import DeleteAlertDialog from "./DeleteAlertDialog";
 import DialogEditProduct from "./DialogEditProduct";
-import Link from "next/link";
 
 interface PopoverMenuProps {
   productId: number;

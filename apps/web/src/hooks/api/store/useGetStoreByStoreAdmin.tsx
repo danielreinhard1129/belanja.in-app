@@ -2,7 +2,6 @@
 
 import { axiosInstance } from "@/lib/axios";
 import { Store } from "@/types/store.type";
-import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
 const useGetStoreByStoreAdmin = (id: number | null) => {
@@ -20,9 +19,7 @@ const useGetStoreByStoreAdmin = (id: number | null) => {
         );
         setStore(data);
       } catch (error) {
-        if (error instanceof AxiosError) {
-          console.error("Error fetching store:", error.message);
-        }
+        setStore(null);
       }
     };
 

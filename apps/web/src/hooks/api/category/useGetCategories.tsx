@@ -2,7 +2,6 @@
 
 import { axiosInstance } from "@/lib/axios";
 import { Category } from "@/types/category.type";
-import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
 const useGetCategories = () => {
@@ -12,9 +11,7 @@ const useGetCategories = () => {
       const { data } = await axiosInstance.get<Category[]>("/categories");
       setCategories(data);
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.error("Error fetching categories:", error.message);
-      }
+      setCategories([]);
     }
   };
   useEffect(() => {

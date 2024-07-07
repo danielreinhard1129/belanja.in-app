@@ -1,14 +1,14 @@
 "use client";
 import useGetStockByRule from "@/hooks/api/store-product/useGetStockByRule";
 import { useAppSelector } from "@/redux/hooks";
+import { debounce } from "lodash";
 import Image from "next/image";
 import { useState } from "react";
-import ImageChooseStore from "../../../../../public/superAdminCS.svg";
 import ImageNotFoundStore from "../../../../../public/no-store.svg";
+import ImageChooseStore from "../../../../../public/superAdminCS.svg";
 import StoreAdmin from "./components/storeAdmin/StoreAdmin";
 import StoreInventoryTable from "./components/superAdmin/StoreInventoryTable";
 import Stores from "./components/superAdmin/Stores";
-import { debounce } from "lodash";
 
 const Inventory = () => {
   const { role } = useAppSelector((state) => state.user);

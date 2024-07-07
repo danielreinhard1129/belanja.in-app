@@ -1,17 +1,18 @@
 "use client";
 import useGetStoreById from "@/hooks/api/store/useGetStoreById";
-import ImgAvatar from "../../../../../../public/male_avatar.svg";
+import {
+  Building2,
+  Fingerprint,
+  Mail,
+  Map,
+  Package,
+  ScanFace,
+  Store,
+  User,
+} from "lucide-react";
 import Image from "next/image";
-import React from "react";
+import ImgAvatar from "../../../../../../public/male_avatar.svg";
 import ImageDataNotFound from "../../../../../../public/no-store.svg";
-import { Store } from "lucide-react";
-import { Fingerprint } from "lucide-react";
-import { Map } from "lucide-react";
-import { Building2 } from "lucide-react";
-import { Package } from "lucide-react";
-import { User } from "lucide-react";
-import { Mail } from "lucide-react";
-import { ScanFace } from "lucide-react";
 
 const StoreDetail = ({ params }: { params: { id: string } }) => {
   const { store } = useGetStoreById(Number(params.id));

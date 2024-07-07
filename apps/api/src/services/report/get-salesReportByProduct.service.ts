@@ -33,7 +33,7 @@ export const getSalesReportByProductService = async (
     if (checkUser.role === 'USER') throw new Error('Unauthorized access');
 
     let whereClause: Prisma.OrderWhereInput = {
-      status: 'ORDER_RECEIVED', // Menambahkan filter status pesanan
+      status: 'ORDER_RECEIVED',
     };
 
     if (checkUser.role === 'STOREADMIN') {

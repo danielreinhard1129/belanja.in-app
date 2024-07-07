@@ -15,7 +15,6 @@ interface UserToken {
 const getCoordinates = async (
   cityId: number,
 ): Promise<{ lat: number; long: number }> => {
-  // Ganti dengan API key Anda
   const apiKey = '507f6bfa89b3461682ca3f53ac93e815';
   const city = await prisma.city.findUnique({
     where: {
@@ -64,10 +63,8 @@ export const createStoreService = async (
       },
     });
 
-    // Tentukan nilai storeAdminId
     const adminId = storeAdminId ? Number(storeAdminId) : null;
 
-    // Cek apakah storeAdminId sudah digunakan oleh store lain
     if (adminId) {
       const existingAdminStore = await prisma.store.findFirst({
         where: {
@@ -80,7 +77,6 @@ export const createStoreService = async (
       }
     }
 
-    // Dapatkan koordinat lat dan long dari OpenCage API
     const { lat, long } = await getCoordinates(cityId);
 
     if (existingName) {

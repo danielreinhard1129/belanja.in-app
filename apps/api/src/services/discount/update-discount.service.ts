@@ -24,7 +24,6 @@ export const updateDiscountService = async (
       isActive,
     } = body;
 
-    // Check if the requesting user exists and get their role
     const checkUser = await prisma.user.findUnique({
       where: {
         id: Number(user.id),
@@ -43,7 +42,6 @@ export const updateDiscountService = async (
     let storeName: string | null = null;
 
     if (checkUser.role === 'SUPERADMIN') {
-      // Ambil nama store untuk SUPERADMIN
       const store = await prisma.store.findUnique({
         where: {
           id: Number(finalStoreId),
@@ -56,7 +54,6 @@ export const updateDiscountService = async (
 
       storeName = store.name;
     } else {
-      // Cari storeAdmin berdasarkan user.id
       const storeAdmin = await prisma.storeAdmin.findUnique({
         where: {
           userId: Number(user.id),
@@ -67,7 +64,6 @@ export const updateDiscountService = async (
         throw new Error("Can't find store admin associated with your account");
       }
 
-      // Cari store berdasarkan storeAdmin.id
       const store = await prisma.store.findUnique({
         where: {
           storeAdminId: storeAdmin.id,
@@ -78,7 +74,6 @@ export const updateDiscountService = async (
         throw new Error("Can't find store associated with your account");
       }
 
-      // Gunakan store.id jika body.storeId kosong
       finalStoreId = finalStoreId || store.id;
       storeName = store.name;
     }
@@ -114,7 +109,6 @@ export const updateDiscountService = async (
         }
       }
     }
-    // Update discount
     const updateDiscount = await prisma.discount.update({
       where: { id },
       data: {

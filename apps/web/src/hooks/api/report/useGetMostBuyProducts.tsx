@@ -1,6 +1,6 @@
+import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import useAxios from "../useAxios";
-import { AxiosError } from "axios";
 
 interface IGetReportsQuery {
   productId?: string;

@@ -1,7 +1,6 @@
 import { axiosInstance } from "@/libs/axios";
 import { useAppSelector } from "@/redux/hooks";
 import { NotifSuperAdmin } from "@/types/notification.type";
-import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
 const useGetNotificationSuperAdmin = () => {
@@ -18,9 +17,7 @@ const useGetNotificationSuperAdmin = () => {
       );
       setNotifications(data);
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error);
-      }
+      setNotifications([]);
     } finally {
       setIsLoading(false);
     }

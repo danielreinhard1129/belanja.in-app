@@ -1,6 +1,5 @@
 "use client";
 import { useAppSelector } from "@/redux/hooks";
-import React from "react";
 import DiscountsStoreAdmin from "./components/StoreAdmin";
 import DiscountsSuperAdmin from "./components/SuperAdmin";
 

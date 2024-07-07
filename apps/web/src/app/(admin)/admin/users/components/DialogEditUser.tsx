@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { FilePenLine, Loader2 } from "lucide-react";
+import { FormInput } from "@/components/FormInput";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -7,20 +7,19 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
+import useGetUser from "@/hooks/api/user/useGetUserWithStoreAdmin";
+import useUpdateUser from "@/hooks/api/user/useUpdateUser";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import React, { useEffect } from "react";
 import {
   FormProvider,
   SubmitHandler,
   useForm,
   useFormState,
 } from "react-hook-form";
-import { editUser, EditUser, defaultValues } from "./validationSchema/editUser";
-import { FormInput } from "@/components/FormInput";
-import useGetUser from "@/hooks/api/user/useGetUserWithStoreAdmin";
-import useUpdateUser from "@/hooks/api/user/useUpdateUser";
-import { Button } from "@/components/ui/button";
+import { defaultValues, editUser, EditUser } from "./validationSchema/editUser";
 
 interface DialogEditUserProps {
   userId: number;

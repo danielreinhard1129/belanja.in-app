@@ -1,8 +1,8 @@
-import { toast } from "sonner";
 import { axiosInstance } from "@/libs/axios";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const useDeleteStore = () => {
   const router = useRouter();

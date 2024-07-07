@@ -10,7 +10,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-// import Select from 'react-select';
 import { FormInput } from "@/components/FormInput";
 import ImageUploader from "@/components/FormInputImages";
 import useCreateProduct from "@/hooks/api/product/useCreateProduct";
@@ -31,15 +30,11 @@ import {
   createProductSchema,
   defaultValues,
 } from "../validationSchema/CreateProductSchema";
-
-// Dynamic import for react-select
 const Select = dynamic(() => import("react-select"), { ssr: false });
-
 interface DialogCreateProductProps {
   refetch: () => void;
   categories: { id: number; name: string }[];
 }
-
 const DialogCreateProduct: React.FC<DialogCreateProductProps> = ({
   refetch,
   categories,
@@ -63,7 +58,6 @@ const DialogCreateProduct: React.FC<DialogCreateProductProps> = ({
   const { isDirty, isValid } = useFormState({
     control,
   });
-
   const handleFileChange = (files: FileList | null) => {
     if (files) {
       const newFiles = Array.from(files);
@@ -75,30 +69,23 @@ const DialogCreateProduct: React.FC<DialogCreateProductProps> = ({
         return;
       }
       setValue("images", allFiles);
-      // Create image previews
       const previews = allFiles.map((file) => URL.createObjectURL(file));
       setImagePreviews(previews);
     }
   };
-
   const handleRemoveImage = (index: number) => {
-    // Remove from imagePreviews
     const updatedPreviews = [...imagePreviews];
     updatedPreviews.splice(index, 1);
     setImagePreviews(updatedPreviews);
-
-    // Remove from images in form data
     const imagesFormData = getValues("images") || [];
     const updatedImages = [...imagesFormData];
     updatedImages.splice(index, 1);
     setValue("images", updatedImages);
   };
-
   const handleReset = () => {
     reset(defaultValues);
     setImagePreviews([]);
   };
-
   const onSubmit: SubmitHandler<TCreateProductSchema> = async (data) => {
     try {
       await createProduct(data);
@@ -115,7 +102,6 @@ const DialogCreateProduct: React.FC<DialogCreateProductProps> = ({
       }
     }
   };
-
   const categoryOptions = categories.map((category) => ({
     value: category.id.toString(),
     label: category.name,

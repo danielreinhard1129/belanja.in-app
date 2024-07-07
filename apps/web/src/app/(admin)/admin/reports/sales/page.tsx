@@ -1,7 +1,4 @@
 "use client";
-import React, { useState } from "react";
-import BarChartComponent from "../components/BarChart";
-import useGetStores from "@/hooks/api/store/useGetStores";
 import {
   Select,
   SelectContent,
@@ -9,13 +6,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { format, getDaysInMonth } from "date-fns";
 import useGetSalesReport from "@/hooks/api/report/useGetSalesReport";
+import useGetStores from "@/hooks/api/store/useGetStores";
 import { useAppSelector } from "@/redux/hooks";
-import ItemFilterMonth from "../components/ItemFilterMonth";
 import { formatToRupiah } from "@/utils/formatCurrency";
-import ImageDataNotFound from "../../../../../../public/no-store.svg";
 import Image from "next/image";
+import { useState } from "react";
+import ImageDataNotFound from "../../../../../../public/no-store.svg";
+import BarChartComponent from "../components/BarChart";
+import ItemFilterMonth from "../components/ItemFilterMonth";
 
 const Sales = () => {
   const { role } = useAppSelector((state) => state.user);

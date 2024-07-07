@@ -1,6 +1,6 @@
-import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { useState } from "react";
+import { toast } from "sonner";
 import useAxios from "../useAxios";
 
 const useDeleteUser = () => {
