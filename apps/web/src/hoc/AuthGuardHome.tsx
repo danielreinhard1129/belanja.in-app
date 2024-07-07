@@ -18,16 +18,61 @@ export default function AuthGuardHome(Component: any) {
     }, []);
 
     useEffect(() => {
-      if (role === "SUPERADMIN" && !isLoading || role === "STOREADMIN" && !isLoading) {
+      if (
+        (role === "SUPERADMIN" && !isLoading) ||
+        (role === "STOREADMIN" && !isLoading)
+      ) {
         redirect("/admin");
       }
     }, [role, isLoading]);
 
     if (isLoading) {
       return (
-        <div className="container flex h-screen flex-col gap-10 py-10 md:flex-row md:items-center">
-          <Skeleton className="h-1/5 w-full rounded-xl md:h-[85vh] md:w-1/2" />
-          <Skeleton className="h-4/5 w-full rounded-xl md:h-[85vh] md:w-1/2" />
+        <div className="container mt-12 flex h-screen flex-col gap-4 py-10">
+          <Skeleton className="h-1/5 w-full rounded-xl md:h-[400px]" />
+          <Skeleton className="h-[20px] w-[140px] rounded-xl" />
+          <div className="flex w-full gap-2">
+            <Skeleton className="h-[20px] w-full rounded-xl" />
+            <Skeleton className="h-[20px] w-[140px] rounded-xl" />
+          </div>
+          <div className="flex w-full gap-4">
+            <div className="flex w-full flex-col gap-2">
+              <Skeleton className="h-[220px] w-full rounded-xl" />
+              <Skeleton className="h-[20px] w-full rounded-xl" />
+              <Skeleton className="h-[20px] w-1/2 rounded-xl" />
+              <Skeleton className="h-[20px] w-1/2 rounded-xl" />
+            </div>
+            <div className="flex w-full flex-col gap-2">
+              <Skeleton className="h-[220px] w-full rounded-xl" />
+              <Skeleton className="h-[20px] w-full rounded-xl" />
+              <Skeleton className="h-[20px] w-1/2 rounded-xl" />
+              <Skeleton className="h-[20px] w-1/2 rounded-xl" />
+            </div>
+            <div className="flex w-full flex-col gap-2">
+              <Skeleton className="h-[220px] w-full rounded-xl" />
+              <Skeleton className="h-[20px] w-full rounded-xl" />
+              <Skeleton className="h-[20px] w-1/2 rounded-xl" />
+              <Skeleton className="h-[20px] w-1/2 rounded-xl" />
+            </div>
+            <div className="flex w-full flex-col gap-2">
+              <Skeleton className="h-[220px] w-full rounded-xl" />
+              <Skeleton className="h-[20px] w-full rounded-xl" />
+              <Skeleton className="h-[20px] w-1/2 rounded-xl" />
+              <Skeleton className="h-[20px] w-1/2 rounded-xl" />
+            </div>
+            <div className="flex w-full flex-col gap-2">
+              <Skeleton className="h-[220px] w-full rounded-xl" />
+              <Skeleton className="h-[20px] w-full rounded-xl" />
+              <Skeleton className="h-[20px] w-1/2 rounded-xl" />
+              <Skeleton className="h-[20px] w-1/2 rounded-xl" />
+            </div>
+            <div className="flex w-full flex-col gap-2">
+              <Skeleton className="h-[220px] w-full rounded-xl" />
+              <Skeleton className="h-[20px] w-full rounded-xl" />
+              <Skeleton className="h-[20px] w-1/2 rounded-xl" />
+              <Skeleton className="h-[20px] w-1/2 rounded-xl" />
+            </div>
+          </div>
         </div>
       );
     }

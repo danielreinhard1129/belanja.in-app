@@ -14,7 +14,7 @@ export class StockJournalRouter {
 
   private initializeRoutes(): void {
     this.router.get(
-      '/filter',
+      '/filters',
       verifyToken,
       this.stockJournalController.getStockJournalsByStoreWithParams,
     );
@@ -38,6 +38,7 @@ export class StockJournalRouter {
       verifyToken,
       this.stockJournalController.updateStockJournalsSuperAdminNotifications,
     );
+    this.router.get('/:id', this.stockJournalController.getStockJournalById);
   }
 
   getRouter(): Router {

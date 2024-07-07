@@ -30,8 +30,6 @@ const useLogin = () => {
         payload,
       );
 
-      console.log(data.data);
-
       dispatch(loginAction(data.data));
       localStorage.setItem("Authorization", `Bearer ${data.token}`);
       localStorage.setItem("token", `${data.token}`);

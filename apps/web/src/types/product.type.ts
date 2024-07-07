@@ -1,4 +1,6 @@
 import { CategoriesOnProduct, CategoryIds } from "./category.type";
+import { Discount } from "./discount.type";
+import { StoreProduct } from "./storeProduct.type";
 
 export interface Product {
   id: number;
@@ -8,6 +10,8 @@ export interface Product {
   weight: number;
   categories: CategoriesOnProduct[];
   images: ProductImage[];
+  storeProduct: StoreProduct[];
+  discounts: Discount[];
 }
 
 export interface ProductImage {

@@ -1,11 +1,11 @@
 "use client";
 
-import { toast } from "sonner";
 import { axiosInstance } from "@/lib/axios";
 import { useAppSelector } from "@/redux/hooks";
 import { IFormCategory } from "@/types/category.type";
 import { AxiosError } from "axios";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const useCreateCategory = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -18,8 +18,8 @@ const useCreateCategory = () => {
         userId: id,
       };
 
-      await axiosInstance.post("/categories/", payload);
-      toast.success("Category created succesfully");
+      const response = await axiosInstance.post("/categories/", payload);
+      toast.success(response.data.message);
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError) {

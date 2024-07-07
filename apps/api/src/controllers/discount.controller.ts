@@ -1,6 +1,7 @@
 import { createDiscountService } from '@/services/discount/create-discount.service';
 import { deleteDiscountService } from '@/services/discount/delete-discount.service';
 import { getDiscountService } from '@/services/discount/get-discount.service';
+import { getDiscountsByUserService } from '@/services/discount/get-discounts-by-user.service';
 import { getDiscountsByStoreAdminService } from '@/services/discount/get-discountsByStoreAdmin.service';
 import { getDiscountsBySuperAdminService } from '@/services/discount/get-discountsBySuperAdmin.service';
 import { updateDiscountService } from '@/services/discount/update-discount.service';
@@ -94,6 +95,24 @@ export class DiscountController {
         Number(req.params.id),
         res.locals.user,
       );
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+  async getDiscountsByUserController(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const payload = {
+        storeId: parseInt(req.query.storeId as string),
+        productIds: req.query.productIds as string[],
+      };
+
+      const result = await getDiscountsByUserService(payload);
 
       return res.status(200).send(result);
     } catch (error) {

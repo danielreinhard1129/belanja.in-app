@@ -16,6 +16,17 @@ export const getOrderService = async (query: GetOrderQeuery) => {
           },
         },
         stores: { include: { City: true } },
+        Payment: true,
+        Delivery: {
+          include: {
+            addresses: {
+              include: {
+                cities: { include: { province: true } },
+                subdistricts: true,
+              },
+            },
+          },
+        },
       },
     });
     return { data: order, message: 'Get order success' };

@@ -16,7 +16,13 @@ export class StoreProductRouter {
     this.router.get('/', verifyToken, this.storeProductController.getStocks);
     this.router.post(
       '/request-mutation',
+      verifyToken,
       this.storeProductController.createRequestStoreProductMutation,
+    );
+    this.router.post(
+      '/super-admin',
+      verifyToken,
+      this.storeProductController.createStockSuperAdmin,
     );
     this.router.post(
       '/confirm/:id',
@@ -28,10 +34,20 @@ export class StoreProductRouter {
       verifyToken,
       this.storeProductController.rejectStockProductMutation,
     );
+    this.router.post(
+      '/arrive/:id',
+      verifyToken,
+      this.storeProductController.arriveStockProductMutation,
+    );
     this.router.get('/:id', this.storeProductController.getProductsByStore);
     this.router.get(
       '/by-super-admin',
       this.storeProductController.getStocksBySuperAdmin,
+    );
+    this.router.post(
+      '/:id',
+      verifyToken,
+      this.storeProductController.updateIsActiveStockSuperAdmin,
     );
   }
 

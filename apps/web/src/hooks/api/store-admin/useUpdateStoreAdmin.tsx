@@ -1,9 +1,9 @@
 "use client";
 
-import { toast } from "sonner";
 import { axiosInstance } from "@/libs/axios";
 import { AxiosError } from "axios";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface UpdateStoreAdmin {
   nip: number;
@@ -27,7 +27,7 @@ const useUpdateStoreAdmin = () => {
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError) {
-        toast.error(error?.response?.data);
+        throw error.response?.data;
       }
     } finally {
       setIsLoading(false);

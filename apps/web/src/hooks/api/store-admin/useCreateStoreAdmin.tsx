@@ -1,9 +1,9 @@
 "use client";
 
-import { toast } from "sonner";
 import { axiosInstance } from "@/libs/axios";
 import { AxiosError } from "axios";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface CreateStoreAdmin {
   nip: number;
@@ -22,17 +22,12 @@ const useCreateStoreAdmin = () => {
         email: data.email,
       };
 
-      // Lakukan permintaan POST
       const response = await axiosInstance.post("/store-admins", payload);
-
-      // Jika berhasil, tampilkan pesan toast success dengan pesan dari server
-      toast.success(
-        response.data.message || "Store Admin created successfully!",
-      );
+      toast.success(response.data.message);
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError) {
-        toast.error(error?.response?.data);
+        throw error.response?.data;
       }
     } finally {
       setIsLoading(false);

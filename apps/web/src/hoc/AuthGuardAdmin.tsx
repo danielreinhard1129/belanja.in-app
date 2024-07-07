@@ -31,14 +31,6 @@ export default function AuthGuardAdmin(Component: any) {
       }
     }, [id, role, isLoading, toast]);
 
-    if (isLoading || !id) {
-      return (
-        <h1 className="container flex h-screen justify-center px-4 pt-24 text-4xl font-extrabold">
-          Loading...
-        </h1>
-      );
-    }
-
     return <Component {...props} />;
   };
 }

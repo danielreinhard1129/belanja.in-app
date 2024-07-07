@@ -1,4 +1,5 @@
 import prisma from '@/prisma';
+import { DateRange } from '@/types/date-range.type';
 import { PaginationQueryParams } from '@/types/pagination.type';
 import { OrderStatus, Prisma } from '@prisma/client';
 
@@ -7,30 +8,37 @@ interface GetOrdersQuery extends PaginationQueryParams {
   search: string;
   status: OrderStatus | undefined;
   category: string;
+  toDate: string;
+  fromDate: string;
 }
 
 export const getOrdersByUserId = async (query: GetOrdersQuery) => {
   try {
-    const { page, search, sortBy, sortOrder, take, id, status, category } =
-      query;
+    const {
+      page,
+      search,
+      sortBy,
+      sortOrder,
+      take,
+      id,
+      status,
+      category,
+      fromDate,
+      toDate,
+    } = query;
 
-      
-      const categoryArgs = category && category === "all" ? undefined : category
-      // console.log("ini dari getOrdersService", categoryArgs);
-      
+    const categoryArgs = category && category === 'all' ? undefined : category;
+    const dateRangeArgs = {
+      from: !fromDate ? undefined : new Date(fromDate),
+      to: !toDate ? undefined : new Date(toDate),
+    };
+
     const whereClause: Prisma.OrderWhereInput = {
       status: status,
       userId: id,
-      OrderItems: {
-        some: {
-          products: {
-            name: { contains: search },
-            categories: {
-              some: { category: { name: { contains: categoryArgs } } },
-            },
-          },
-        },
-      },
+      orderNumber: { contains: search },
+      updatedAt: { gte: dateRangeArgs.from, lte: dateRangeArgs.to },
+      
     };
 
     const orders = await prisma.order.findMany({
@@ -46,6 +54,8 @@ export const getOrdersByUserId = async (query: GetOrdersQuery) => {
             products: { include: { images: true } },
           },
         },
+        stores: { include: { City: true } },
+        Payment: true,
       },
     });
     if (!orders) {
@@ -53,6 +63,7 @@ export const getOrdersByUserId = async (query: GetOrdersQuery) => {
     }
 
     const count = await prisma.order.count({ where: whereClause });
+
 
     return {
       data: orders,

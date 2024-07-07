@@ -1,16 +1,49 @@
+import axios from 'axios';
 import prisma from '@/prisma';
 import { Store } from '@prisma/client';
+import { OPENCAGE_API_KEY } from '@/config';
 
 interface CreateStore
-  extends Omit<Store, 'id' | 'updatedAt' | 'qty' | 'createdAt'> {
-  user: {
-    id: number;
-  };
+  extends Omit<
+    Store,
+    'id' | 'updatedAt' | 'qty' | 'createdAt' | 'lat' | 'long'
+  > {}
+
+interface UserToken {
+  id: number;
 }
 
-export const createStoreService = async (body: CreateStore) => {
+const getCoordinates = async (
+  cityId: number,
+): Promise<{ lat: number; long: number }> => {
+  const city = await prisma.city.findUnique({
+    where: {
+      id: Number(cityId),
+    },
+  });
+
+  if (!city || !city.citName) {
+    throw new Error('City not found or citName is null');
+  }
+
+  const response = await axios.get(
+    `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(city.citName)}&key=${OPENCAGE_API_KEY}`,
+  );
+
+  if (response.data.results.length === 0) {
+    throw new Error('Location not found');
+  }
+
+  const { lat, lng } = response.data.results[0].geometry;
+  return { lat, long: lng };
+};
+
+export const createStoreService = async (
+  body: CreateStore,
+  user: UserToken,
+) => {
   try {
-    const { name, cityId, lat, long, storeAdminId, user } = body;
+    const { name, cityId, storeAdminId } = body;
 
     const checkUser = await prisma.user.findUnique({
       where: {
@@ -30,15 +63,51 @@ export const createStoreService = async (body: CreateStore) => {
       },
     });
 
-    if (existingName) throw new Error('Name already exist');
-
-    // Tentukan nilai storeAdminId
     const adminId = storeAdminId ? Number(storeAdminId) : null;
+
+    if (adminId) {
+      const existingAdminStore = await prisma.store.findFirst({
+        where: {
+          storeAdminId: adminId,
+        },
+      });
+
+      if (existingAdminStore) {
+        throw new Error('Store admin is already responsible for another store');
+      }
+    }
+
+    const { lat, long } = await getCoordinates(cityId);
+
+    if (existingName) {
+      if (existingName.isDelete) {
+        const reactivatedStore = await prisma.store.update({
+          where: {
+            id: existingName.id,
+          },
+          data: {
+            name,
+            cityId: Number(cityId),
+            lat: lat,
+            long: long,
+            storeAdminId: adminId,
+            isDelete: false,
+          },
+        });
+
+        return {
+          message: 'Store has been reactivated',
+          data: reactivatedStore,
+        };
+      } else {
+        throw new Error('Store name already used');
+      }
+    }
 
     const createStore = await prisma.store.create({
       data: {
         name: name,
-        cityId: cityId,
+        cityId: Number(cityId),
         lat: lat,
         long: long,
         storeAdminId: adminId,

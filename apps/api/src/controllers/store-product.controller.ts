@@ -1,10 +1,12 @@
+import { arriveStockProductMutationService } from '@/services/store-product/arrive-stockProductMutation.service';
 import { confirmStockProductMutationService } from '@/services/store-product/confirm-stockProductMutation.service';
 import { createRequestStockProductMutationService } from '@/services/store-product/create-requestStockMutation.service';
-import { createStockProductMutationService } from '@/services/store-product/create-stockProductMutation.service';
+import { createStockSuperAdminService } from '@/services/store-product/create-stockSuperAdmin.service';
 import { getProductsByStoreService } from '@/services/store-product/get-productsByStore.service';
 import { getStocksByStoreAdminService } from '@/services/store-product/get-stockByStoreAdmin.service';
 import { getStocksService } from '@/services/store-product/get-stocks.service';
 import { rejectStockProductMutationService } from '@/services/store-product/reject-stockProductMutation.service';
+import { updateIsActiveStockSuperAdminService } from '@/services/store-product/update-isActiveStockSuperAdmin.service';
 import { NextFunction, Request, Response } from 'express';
 export class StoreProductController {
   async getStocks(req: Request, res: Response, next: NextFunction) {
@@ -43,27 +45,16 @@ export class StoreProductController {
     }
   }
 
-  async createStoreProductMutation(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
-    try {
-      const result = await createStockProductMutationService(req.body);
-
-      return res.status(200).send(result);
-    } catch (error) {
-      next(error);
-    }
-  }
-
   async createRequestStoreProductMutation(
     req: Request,
     res: Response,
     next: NextFunction,
   ) {
     try {
-      const result = await createRequestStockProductMutationService(req.body);
+      const result = await createRequestStockProductMutationService(
+        req.body,
+        res.locals.user,
+      );
 
       return res.status(200).send(result);
     } catch (error) {
@@ -94,6 +85,54 @@ export class StoreProductController {
     try {
       const result = await rejectStockProductMutationService(
         Number(req.params.id),
+        res.locals.user,
+      );
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async arriveStockProductMutation(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const result = await arriveStockProductMutationService(
+        Number(req.params.id),
+        res.locals.user,
+      );
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async createStockSuperAdmin(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await createStockSuperAdminService(
+        req.body,
+        res.locals.user,
+      );
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updateIsActiveStockSuperAdmin(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const result = await updateIsActiveStockSuperAdminService(
+        Number(req.params.id),
+        req.body,
         res.locals.user,
       );
 

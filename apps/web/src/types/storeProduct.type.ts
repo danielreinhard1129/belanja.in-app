@@ -10,11 +10,11 @@ export interface StoreProduct {
   productId: number;
   store: Store;
   product: Product;
+  isActive: boolean;
 }
 
 export interface IFormStoreProduct {
   storeId: string;
-  // fromStoreId?: string;
   stocks: {
     productId: string;
     qty: number;
@@ -23,7 +23,6 @@ export interface IFormStoreProduct {
 
 export interface IFormRequestStoreProduct {
   storeId: string;
-  // fromStoreId?: string;
   type: string;
   stocks: {
     productId: string;

@@ -1,5 +1,5 @@
-import React from "react";
-import { Loader2, UserPlus } from "lucide-react";
+import { FormInput } from "@/components/FormInput";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,16 +9,22 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import useCreateStoreAdmin from "@/hooks/api/store-admin/useCreateStoreAdmin";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { Loader2, UserPlus } from "lucide-react";
+import React from "react";
 import {
-  createStoreAdmin,
+  FormProvider,
+  SubmitHandler,
+  useForm,
+  useFormState,
+} from "react-hook-form";
+import { toast } from "sonner";
+import {
   CreateStoreAdmin,
+  createStoreAdmin,
   defaultValues,
 } from "./validationSchema/createStoreAdmin";
-import { FormInput } from "@/components/FormInput";
-import useCreateStoreAdmin from "@/hooks/api/store-admin/useCreateStoreAdmin";
 
 interface DialogCreateStoreAdminProps {
   open: boolean;
@@ -37,19 +43,31 @@ const DialogCreateStoreAdmin: React.FC<DialogCreateStoreAdminProps> = ({
     resolver: zodResolver(createStoreAdmin),
     defaultValues,
   });
-  const { reset, handleSubmit } = methods;
+  const { reset, handleSubmit, control } = methods;
+  const { isDirty, isValid } = useFormState({
+    control,
+  });
 
   const onSubmit: SubmitHandler<CreateStoreAdmin> = async (data) => {
-    // console.log(data);
-    await createSA(data);
-    refetch();
-    reset(defaultValues);
-    onOpenChange(false);
+    try {
+      await createSA(data);
+      refetch();
+      reset(defaultValues);
+      onOpenChange(false);
+    } catch (error) {
+      if (typeof error === "string") {
+        toast.error(error);
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unknown error occurred");
+      }
+    }
   };
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger>
-        <div className="flex justify-between gap-2">
+        <div className="inline-flex h-10 items-center justify-center gap-1 whitespace-nowrap rounded-md bg-[#ff6100] px-4 py-2 text-sm font-medium text-white">
           <UserPlus /> <span> Store Admin</span>
         </div>
       </DialogTrigger>
@@ -87,7 +105,11 @@ const DialogCreateStoreAdmin: React.FC<DialogCreateStoreAdminProps> = ({
               </div>
             </DialogHeader>
             <DialogFooter className="mt-4">
-              <Button disabled={isLoading} type="submit" className="px-4 py-2">
+              <Button
+                disabled={!isDirty || !isValid || isLoading}
+                type="submit"
+                className="px-4 py-2"
+              >
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {isLoading ? "Loading" : "Submit"}
               </Button>

@@ -7,8 +7,6 @@ export const updateCategoryService = async (
 ) => {
   try {
     const { name } = body;
-
-    // Validate if the category ID exists
     const category = await prisma.category.findUnique({
       where: { id },
     });
@@ -17,13 +15,12 @@ export const updateCategoryService = async (
       throw new Error('Category not found');
     }
 
-    // Check if the new name is already in use by another active category
     if (name !== category.name) {
       const existingCategory = await prisma.category.findFirst({
         where: {
           name,
           isDelete: false,
-          id: { not: id }, // Exclude the current category ID
+          id: { not: id },
         },
       });
 
@@ -32,11 +29,11 @@ export const updateCategoryService = async (
       }
     }
 
-    // Update the category
-    await prisma.category.update({
+    const updateCategory = await prisma.category.update({
       where: { id },
       data: { name },
     });
+    return { message: 'Update Category Success', data: updateCategory };
   } catch (error) {
     throw error;
   }

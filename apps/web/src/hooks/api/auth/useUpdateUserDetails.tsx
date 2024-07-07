@@ -1,14 +1,11 @@
 "use client";
 
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { User } from "@/types/user.type";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FileWithPath } from "react-dropzone";
 import { toast } from "sonner";
 import useAxios from "../useAxios";
-import localStorage from "redux-persist/es/storage";
 
 interface UpdateUserForm {
   name: string;
@@ -22,13 +19,10 @@ const useUpdateUserDetails = (userId: number) => {
   const { axiosInstance } = useAxios();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const dispatch = useAppDispatch();
-  const currentUser = useAppSelector((state) => state.user);
 
   const updateUserDetails = async (payload: Partial<UpdateUserForm>) => {
-    setIsLoading(true);
-
     try {
+      setIsLoading(true);
       const { name, birthDate, email, gender, avatarUrl } = payload;
 
       const userUpdateForm = new FormData();
@@ -49,12 +43,11 @@ const useUpdateUserDetails = (userId: number) => {
       );
       
       toast.success(`${response.data.message}`);
-      console.log(response.data.data)
 
       router.push(`/user/${userId}`);
     } catch (error) {
       if (error instanceof AxiosError) {
-        console.error("Axios Error:", error.response?.data || error.message);
+        toast.error("Error:", error.response?.data || error.message);
       } else {
         console.error("Unknown Error:", error);
       }

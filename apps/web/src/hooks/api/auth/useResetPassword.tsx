@@ -39,7 +39,7 @@ const useResetPassword = () => {
       router.replace(`/login`);
     } catch (error) {
       if (error instanceof AxiosError) {
-        toast.error(error?.response?.data);
+        toast.error(error.response?.data.errors[0].msg);
       }
     } finally {
       setIsLoading(false);

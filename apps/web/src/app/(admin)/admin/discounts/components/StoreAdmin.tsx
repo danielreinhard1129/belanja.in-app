@@ -1,17 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import DialogCreateDiscount from "./DialogCreateDiscount";
-import useGetDiscountsByStoreAdmin from "@/hooks/api/discounts/useGetDiscountsByStoreAdmin";
-import { Ban, Check } from "lucide-react";
+import Pagination from "@/components/Pagination";
 import {
   Select,
   SelectContent,
@@ -19,11 +7,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Pagination from "@/components/Pagination";
-import PopoverDiscountMenu from "./PopoverMenu";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import useDeleteDiscount from "@/hooks/api/discounts/useDeleteDiscount";
+import useGetDiscountsByStoreAdmin from "@/hooks/api/discounts/useGetDiscountsByStoreAdmin";
+import useGetStoreByStoreAdmin from "@/hooks/api/store/useGetStoreByStoreAdmin";
+import { useAppSelector } from "@/redux/hooks";
+import { formatToRupiah } from "@/utils/formatCurrency";
+import { Ban, Check } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import ImageNotFoundStore from "../../../../../../public/no-store.svg";
+import DialogCreateDiscount from "./DialogCreateDiscount";
+import PopoverDiscountMenu from "./PopoverMenu";
 
 const DiscountsStoreAdmin = () => {
+  const { id } = useAppSelector((state) => state.user);
+  const { store } = useGetStoreByStoreAdmin(id);
   const [page, setPage] = useState<number>(1);
   const [sortOrder, setSortOrder] = useState<string>("asc");
   const [selectedType, setSelectedType] = useState<string>("all");
@@ -61,9 +67,30 @@ const DiscountsStoreAdmin = () => {
   const total = meta?.total || 0;
   const take = meta?.take || 10;
 
+  if (!store) {
+    return (
+      <div className="mx-auto flex flex-col items-center justify-center gap-7">
+        <div className="text-center text-xl font-bold">
+          You don&#39;t have any store
+        </div>
+        <div>
+          <Image
+            src={ImageNotFoundStore}
+            alt="ImageNotFoundStore"
+            width={600}
+            height={600}
+            style={{ width: "auto", height: "auto" }}
+            priority
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <main className="container mx-auto">
-      <div className="container my-20 max-w-6xl border-2 pb-10 shadow-xl">
+    <main className="mx-auto max-w-6xl">
+      <h2 className="mb-4 text-2xl font-bold">Discounts</h2>
+      <div className="container border-2 bg-white pb-6 shadow-xl">
         <div className="my-4 flex justify-between">
           <Select onValueChange={handleTypeChange} defaultValue="all">
             <SelectTrigger className="w-[180px]">
@@ -103,10 +130,14 @@ const DiscountsStoreAdmin = () => {
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{discount.title}</TableCell>
                     <TableCell>{discount.discountType}</TableCell>
-                    <TableCell>{discount.discountvalue}</TableCell>
+                    <TableCell>{discount.discountvalue} %</TableCell>
                     <TableCell>{discount.discountLimit}</TableCell>
-                    <TableCell>{discount.product.name}</TableCell>
-                    <TableCell>{discount.minPurchase}</TableCell>
+                    <TableCell>
+                      {discount.product?.name ?? "Not Found"}
+                    </TableCell>
+                    <TableCell>
+                      {formatToRupiah(discount.minPurchase)}
+                    </TableCell>
                     <TableCell>
                       {discount.isActive ? (
                         <Check style={{ color: "green" }} />

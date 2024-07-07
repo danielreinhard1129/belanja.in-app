@@ -1,15 +1,16 @@
 import { createStoreService } from '@/services/store/create-store.service';
 import { deleteStoreService } from '@/services/store/delete-store.service';
+import { getCitiesService } from '@/services/store/get-cities.service';
 import { getStoreService } from '@/services/store/get-store.service';
-import { getStoreBySuperAdminService } from '@/services/store/get-storeByStoreAdmin.service';
+import { getStoreByStoreAdminService } from '@/services/store/get-storeByStoreAdmin.service';
 import { getStoresService } from '@/services/store/get-stores.service';
 import { getStoresByParamsService } from '@/services/store/get-storesByParams.service';
-// import { updateStoreService } from '@/services/store/update-store.service';
+import { updateStoreService } from '@/services/store/update-store.service';
 import { NextFunction, Request, Response } from 'express';
 export class StoreController {
   async createStore(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await createStoreService(req.body);
+      const result = await createStoreService(req.body, res.locals.user);
 
       return res.status(200).send(result);
     } catch (error) {
@@ -27,14 +28,18 @@ export class StoreController {
     }
   }
 
-  // async updateStore(req: Request, res: Response, next: NextFunction) {
-  //   try {
-  //     const result = await updateStoreService(Number(req.params.id), req.body);
-  //     return res.status(201).send(result);
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
+  async updateStore(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await updateStoreService(
+        Number(req.params.id),
+        req.body,
+        res.locals.user,
+      );
+      return res.status(201).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
 
   async getStoresByParams(req: Request, res: Response, next: NextFunction) {
     try {
@@ -63,9 +68,19 @@ export class StoreController {
     }
   }
 
+  async getCities(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await getCitiesService();
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async getStoreByStoreAdmin(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await getStoreBySuperAdminService(Number(req.params.id));
+      const result = await getStoreByStoreAdminService(Number(req.params.id));
 
       return res.status(200).send(result);
     } catch (error) {

@@ -1,4 +1,5 @@
 import { Province } from "./province.type";
+import { Subdistrict } from "./subdistrict.type";
 
 export interface City {
   id: number;
@@ -6,4 +7,5 @@ export interface City {
   citName: string;
   postal_code: string;
   province: Province;
+  subdistricts: Subdistrict[];
 }

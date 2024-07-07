@@ -1,24 +1,30 @@
 "use client";
-import useGetStockByRuleNew from "@/hooks/api/store-product/useGetStockByRuleNew";
+import useGetStockByRule from "@/hooks/api/store-product/useGetStockByRule";
 import { useAppSelector } from "@/redux/hooks";
+import { debounce } from "lodash";
 import Image from "next/image";
 import { useState } from "react";
+import ImageNotFoundStore from "../../../../../public/no-store.svg";
 import ImageChooseStore from "../../../../../public/superAdminCS.svg";
-import StoreAdmin from "./components/StoreAdmin";
-import StoreInventoryTable from "./components/StoreInventoryTable";
-import Stores from "./components/Stores";
+import StoreAdmin from "./components/storeAdmin/StoreAdmin";
+import StoreInventoryTable from "./components/superAdmin/StoreInventoryTable";
+import Stores from "./components/superAdmin/Stores";
 
 const Inventory = () => {
   const { role } = useAppSelector((state) => state.user);
   const [stockPage, setStockPage] = useState<number>(1);
   const [search, setSearch] = useState<string>("");
   const [activeStoreId, setActiveStoreId] = useState<string>("");
-  const { stocks, isLoading, refetch, metaStock } = useGetStockByRuleNew({
+  const { stocks, isLoading, refetch, metaStock } = useGetStockByRule({
     page: stockPage,
     take: 5,
     search,
     storeId: activeStoreId,
   });
+
+  const handleSearch = debounce((value: string) => {
+    setSearch(value);
+  }, 300);
 
   const handleStoreClick = (storeId: number) => {
     setActiveStoreId(storeId.toString());
@@ -26,10 +32,6 @@ const Inventory = () => {
 
   const handleChangePaginateStock = ({ selected }: { selected: number }) => {
     setStockPage(selected + 1);
-  };
-
-  const handleDelete = async (id: number) => {
-    refetch();
   };
 
   const takeStock = metaStock?.take || 1;
@@ -41,15 +43,29 @@ const Inventory = () => {
     : stocks?.storeProducts?.data;
 
   if (!stocks) {
-    return <div>Data Not Found</div>;
+    return (
+      <div className="mx-auto flex flex-col items-center justify-center gap-7">
+        <div className="text-center text-xl font-bold">
+          You don&#39;t have any store
+        </div>
+        <div>
+          <Image
+            src={ImageNotFoundStore}
+            alt="ImageNotFoundStore"
+            width={600}
+            height={600}
+            style={{ width: "auto", height: "auto" }}
+            priority
+          />
+        </div>
+      </div>
+    );
   }
 
-  // console.log(stocks);
-
   return (
-    <>
+    <main className="container py-16">
       {role === "SUPERADMIN" && (
-        <div className="container mx-auto my-10 max-w-6xl">
+        <div>
           <Stores
             onStoreClick={handleStoreClick}
             activeStoreId={activeStoreId}
@@ -59,13 +75,12 @@ const Inventory = () => {
             <>
               <StoreInventoryTable
                 storeId={Number(activeStoreId)}
-                search={search}
-                setSearch={setSearch}
                 filteredStocks={filteredStocks}
                 takeStock={takeStock}
                 handleChangePaginateStock={handleChangePaginateStock}
                 stocks={stocks}
                 refetch={refetch}
+                handleSearch={handleSearch}
               />
             </>
           ) : (
@@ -79,6 +94,8 @@ const Inventory = () => {
                   alt="ImageChooseStore"
                   width={600}
                   height={600}
+                  style={{ width: "auto", height: "auto" }}
+                  priority
                 />
               </div>
             </div>
@@ -89,14 +106,13 @@ const Inventory = () => {
       {role === "STOREADMIN" && (
         <StoreAdmin
           stocks={stocks}
-          search={search}
-          setSearch={setSearch}
+          handleSearch={handleSearch}
           stockPage={stockPage}
           handleChangePaginateStock={handleChangePaginateStock}
           refetch={refetch}
         />
       )}
-    </>
+    </main>
   );
 };
 

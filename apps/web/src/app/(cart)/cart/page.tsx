@@ -10,8 +10,12 @@ import { set } from "lodash";
 import useIncrementCart from "@/hooks/api/cart/useIncrementCart";
 import useDecrementCart from "@/hooks/api/cart/useDecrementCart";
 import useRemoveItem from "@/hooks/api/cart/useRemoveItem";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import AuthGuardTrx from "@/hoc/AuthGuardTrx";
 
 const Cart = () => {
+  const router = useRouter()
   const { id: userId } = useAppSelector((state) => state.user);
   const {
     carts,
@@ -25,7 +29,6 @@ const Cart = () => {
   const { removeItem } = useRemoveItem();
   const baseURL = process.env.NEXT_PUBLIC_BASE_API_URL;
 
-  console.log("ini carts", carts);
 
   const handleRemoveItem = async (index: number, id: number) => {
     setIsLoadingIndex(index);
@@ -47,9 +50,20 @@ const Cart = () => {
     setIsLoadingIndex(null);
     refetchCart();
   };
+  
+  if (!carts || !carts.length) {
+    return (
+      <div className="container mx-auto flex h-screen flex-col items-center justify-center gap-y-2 text-2xl font-semibold">
+        <p>Oops, Sorry. It seems you have no item selected.</p>
+        <Link href="/">
+          <p className="text-lg text-orange-300 underline">Start shopping?</p>
+        </Link>
+      </div>
+    );
+  }
 
   return (
-    <div className="p-4">
+    <div className="p-4 z-0 relative h-screen mb-auto">
       {carts.map((cart, index) => {
         return (
           cart.isActive && (
@@ -119,8 +133,9 @@ const Cart = () => {
           )
         );
       })}
+      
     </div>
   );
 };
 
-export default Cart;
+export default AuthGuardTrx(Cart);

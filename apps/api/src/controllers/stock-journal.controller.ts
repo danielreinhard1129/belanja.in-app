@@ -1,3 +1,4 @@
+import { getStockJournalByIdService } from '@/services/stock-journal/get-stockJournalById.service';
 import { getStockJournalByStoreAdminService } from '@/services/stock-journal/get-stockJournalByStoreAdmin.service';
 import { getStockJournalsByStoreSuperAdminService } from '@/services/stock-journal/get-stockJournalsByStoreSuperAdmin.service';
 import { getStockJournalsByStoreWithParamsService } from '@/services/stock-journal/get-stockJournalsByStoreWithParams.service';
@@ -19,6 +20,8 @@ export class StockJournalController {
         search: (req.query.search as string) || '',
         status: (req.query.status as string) || 'all',
         storeId: (req.query.storeId as string) || undefined,
+        filterMonth: req.query.filterMonth as string,
+        filterYear: req.query.filterYear as string,
       };
       const result = await getStockJournalsByStoreWithParamsService(
         res.locals.user,
@@ -68,6 +71,8 @@ export class StockJournalController {
         sortOrder: (req.query.sortOrder as string) || 'desc',
         status: (req.query.status as string) || 'all',
         search: (req.query.search as string) || '',
+        filterMonth: req.query.filterMonth as string,
+        filterYear: req.query.filterYear as string,
       };
       const result = await getStockJournalByStoreAdminService(
         res.locals.user,
@@ -105,6 +110,16 @@ export class StockJournalController {
       const result = await updateStockJournalsSuperAdminNotificationsService(
         res.locals.user,
       );
+
+      return res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getStockJournalById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await getStockJournalByIdService(Number(req.params.id));
 
       return res.status(200).send(result);
     } catch (error) {

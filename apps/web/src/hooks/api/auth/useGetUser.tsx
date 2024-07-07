@@ -3,26 +3,19 @@
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import useAxios from "../useAxios";
-import axiosInstance from "@/libs/axios";
-
-interface UserArgs {
-  name: string;
-  email: string;
-  id: number;
-}
+import { User } from "@/types/user.type";
 
 const useGetUser = (id: number) => {
-  const [user, setUser] = useState<UserArgs | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  // const { axiosInstance } = useAxios();
+  const { axiosInstance } = useAxios();
 
   const getUser = async () => {
     try {
       setIsLoading(true);
-      const { data } = await axiosInstance.get<UserArgs>(`/auth/${id}`);
+      const { data } = await axiosInstance.get<User>(`/auth/${id}`);
 
       setUser(data);
-      console.log(user);
     } catch (error) {
       if (error instanceof AxiosError) {
         console.log(error);

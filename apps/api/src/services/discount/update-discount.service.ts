@@ -3,6 +3,7 @@ import { Discount } from '@prisma/client';
 
 interface UserToken {
   id: number;
+  role: string;
 }
 
 export const updateDiscountService = async (
@@ -20,9 +21,9 @@ export const updateDiscountService = async (
       productId,
       minPurchase,
       storeId,
+      isActive,
     } = body;
 
-    // Check if the requesting user exists and is a SUPERADMIN
     const checkUser = await prisma.user.findUnique({
       where: {
         id: Number(user.id),
@@ -37,6 +38,77 @@ export const updateDiscountService = async (
       throw new Error('Unauthorized access');
     }
 
+    let finalStoreId = storeId;
+    let storeName: string | null = null;
+
+    if (checkUser.role === 'SUPERADMIN') {
+      const store = await prisma.store.findUnique({
+        where: {
+          id: Number(finalStoreId),
+        },
+      });
+
+      if (!store) {
+        throw new Error("Can't find the selected store");
+      }
+
+      storeName = store.name;
+    } else {
+      const storeAdmin = await prisma.storeAdmin.findUnique({
+        where: {
+          userId: Number(user.id),
+        },
+      });
+
+      if (!storeAdmin) {
+        throw new Error("Can't find store admin associated with your account");
+      }
+
+      const store = await prisma.store.findUnique({
+        where: {
+          storeAdminId: storeAdmin.id,
+        },
+      });
+
+      if (!store) {
+        throw new Error("Can't find store associated with your account");
+      }
+
+      finalStoreId = finalStoreId || store.id;
+      storeName = store.name;
+    }
+
+    if (productId) {
+      const checkProductInStore = await prisma.storeProduct.findFirst({
+        where: {
+          storeId: Number(finalStoreId),
+          productId: Number(productId),
+        },
+      });
+
+      if (!checkProductInStore) {
+        // Ambil informasi produk
+        const product = await prisma.product.findUnique({
+          where: {
+            id: Number(productId),
+          },
+        });
+
+        if (!product) {
+          throw new Error('Product not found');
+        }
+
+        if (checkUser.role === 'SUPERADMIN') {
+          throw new Error(
+            `Product ${product.name} is not found in store ${storeName}`,
+          );
+        } else {
+          throw new Error(
+            `Product ${product.name} is not found in your store ${storeName}`,
+          );
+        }
+      }
+    }
     const updateDiscount = await prisma.discount.update({
       where: { id },
       data: {
@@ -46,14 +118,16 @@ export const updateDiscountService = async (
         discountvalue: Number(discountvalue),
         discountLimit: Number(discountLimit),
         minPurchase: Number(minPurchase),
-        isActive: true,
-        storeId: Number(storeId),
-        // productId: Number(productId),
-        productId: 1,
+        isActive: isActive,
+        storeId: Number(finalStoreId),
+        productId: productId ? Number(productId) : undefined,
       },
     });
 
-    return updateDiscount;
+    return {
+      message: 'Discount has been updated',
+      data: updateDiscount,
+    };
   } catch (error) {
     throw error;
   }

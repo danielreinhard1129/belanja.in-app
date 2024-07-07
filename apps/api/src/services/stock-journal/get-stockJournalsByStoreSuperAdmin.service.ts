@@ -35,21 +35,23 @@ export const getStockJournalsByStoreSuperAdminService = async (
     throw new Error("Can't find your account");
   }
 
-  if (user.role === 'USER' || user.role === 'STOREADMIN') {
+  if (user.role !== 'SUPERADMIN') {
     throw new Error('You do not have access');
   }
 
-  let where: any = {}; // Deklarasikan where sebagai objek kosong
+  let where: any = {};
 
-  // Tambahkan filter berdasarkan status jika status didefinisikan dan tidak bernilai 'all'
   if (status && status !== 'all') {
     where.status = status;
   }
 
-  // Jika storeId didefinisikan, tambahkan filter berdasarkan storeId
   if (storeId && storeId !== '') {
     where.storeId = Number(storeId);
   }
+
+  where.type = {
+    in: ['INCREASE', 'DECREASE'],
+  };
 
   try {
     const stockJournal = await prisma.stockJournal.findMany({

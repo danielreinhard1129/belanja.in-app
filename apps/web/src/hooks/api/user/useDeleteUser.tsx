@@ -1,10 +1,11 @@
-import { toast } from "sonner";
-import { axiosInstance } from "@/libs/axios";
 import { AxiosError } from "axios";
 import { useState } from "react";
+import { toast } from "sonner";
+import useAxios from "../useAxios";
 
 const useDeleteUser = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { axiosInstance } = useAxios();
 
   const deleteUser = async (userId: number) => {
     try {

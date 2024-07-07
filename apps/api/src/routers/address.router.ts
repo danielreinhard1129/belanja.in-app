@@ -1,4 +1,6 @@
 import { AddressController } from '@/controllers/address.controller';
+import { addAddressValidator } from '@/middlewares/addAddressValidator';
+import { updateAddressValidator } from '@/middlewares/updateAddressValidator';
 import { Router } from 'express';
 
 export class AddressRouter {
@@ -12,19 +14,28 @@ export class AddressRouter {
   }
 
   private initializeRoutes(): void {
-    this.router.get('/user-address', this.addressController.getAddressController);
+    this.router.get(
+      '/provinces',
+      this.addressController.getProvincesController,
+    );
+    this.router.get('/cities', this.addressController.getCitiesController);
+    this.router.get(
+      '/subdistricts',
+      this.addressController.getSubdistrictsController,
+    );
+    this.router.get('/:id', this.addressController.getAddressByIdController);
+    this.router.get('/user/:id', this.addressController.getAddressesController);
     this.router.post(
-      '/add-address',
+      '/',
+      addAddressValidator,
       this.addressController.addAddressController,
     );
     this.router.patch(
-      '/update-address/:id',
+      '/:id',
+      updateAddressValidator,
       this.addressController.updateAddressController,
     );
-    this.router.delete(
-      '/delete-address/:id',
-      this.addressController.deleteAddressController,
-    );
+    this.router.delete('/:id', this.addressController.deleteAddressController);
   }
 
   getRouter(): Router {

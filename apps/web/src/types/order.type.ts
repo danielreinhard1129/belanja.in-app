@@ -1,6 +1,8 @@
+import { Address } from "./address.type";
+import { Delivery } from "./delivery.type";
 import { Product } from "./product.type";
 import { Store } from "./store.type";
-import { Address, User } from "./user.type";
+import { User } from "./user.type";
 
 export interface IProductArg {
   productId: number;
@@ -11,9 +13,20 @@ export interface IOrderArgs {
   userId: number;
   storeId: number;
   products: IProductArg[];
-  userDiscountIds?: number[];
+  discountIds?: number[];
   userVoucherIds?: number[];
+  addressId: number;
+  deliveryFee: string;
+  paymentMethod: PaymentMethodArgs;
+  deliveryService?: string;
+  deliveryCourier?: string;
 }
+
+export enum PaymentMethodArgs {
+  DIGITAL_PAYMENT = "DIGITAL_PAYMENT",
+  MANUAL_TRANSFER = "MANUAL_TRANSFER",
+}
+
 export interface ICart {
   id: number;
   storeId: number;
@@ -40,6 +53,7 @@ export enum OrderStatus {
 
 export interface IOrder {
   id: number;
+  orderNumber: string;
   totalAmount: number;
   totalWeight?: number;
   createdAt: Date;
@@ -54,8 +68,8 @@ export interface IOrder {
   userDiscounts?: UserDiscount;
   userVouchers?: UserVoucher;
   OrderItems: IOrderItem[];
-  payment: IPayment[];
-  delivery: IDelivery[];
+  Payment: IPayment;
+  Delivery: Delivery[];
 }
 
 export interface IOrderItem {
@@ -85,6 +99,16 @@ export interface IPayment {
   snapRedirectUrl?: string;
   orderId: number;
   orders: IOrder;
+  paymentStatus: PaymentStatus;
+  invoiceNumber: string;
+}
+
+export enum PaymentStatus {
+  COMPLETED = "COMPLETED",
+  CANCELLED = "CANCELLED",
+  DENIED = "DENIED",
+  EXPIRED = "EXPIRED",
+  PENDING = "PENDING",
 }
 
 enum PaymentMethod {

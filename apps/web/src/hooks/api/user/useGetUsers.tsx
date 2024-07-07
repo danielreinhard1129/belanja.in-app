@@ -1,7 +1,6 @@
 import { axiosInstance } from "@/lib/axios";
 import { IPaginationMeta, IPaginationQueries } from "@/types/pagination.type";
 import { User } from "@/types/user.type";
-import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
 interface IGetUsersQuery extends IPaginationQueries {
@@ -23,9 +22,7 @@ const useGetUsers = (queries: IGetUsersQuery) => {
       setData(data.data);
       setMeta(data.meta);
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error);
-      }
+      setData([]);
     } finally {
       setIsLoading(false);
     }

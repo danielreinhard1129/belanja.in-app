@@ -6,14 +6,11 @@ export const schemaDiscount = z.object({
   discountType: z
     .string()
     .min(4, "Discount type must be at least 4 characters long"),
-  discountvalue: z
-    .number()
-    .positive("Discount Value must be a positive number"),
-  discountLimit: z
-    .number()
-    .positive("Discount Limit must be a positive number"),
+  discountvalue: z.number().optional(),
+  discountLimit: z.number().optional(),
   minPurchase: z.number().optional(),
-  productId: z.string().min(1, "Product is required"),
+  productId: z.string().optional(),
+  isActive: z.boolean().optional(),
 });
 
 export type SchemaDiscount = z.infer<typeof schemaDiscount>;
