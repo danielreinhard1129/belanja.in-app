@@ -18,7 +18,7 @@ interface CategoryPickerProps {
 
 export function CategoryPicker({
   onChange,
-  defaultValue = "Select category",
+  defaultValue = "",
 }: CategoryPickerProps) {
   const { categories, refetch } = useGetCategories();
   const [selectedCategory, setSelectedCategory] =
