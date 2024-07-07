@@ -33,15 +33,11 @@ export const getProductsByLocationService = async (
       product: {
         isDelete: false,
       },
+      isActive: true,
     };
 
     if (category && category !== 'all') {
       where.product = {
-        // some: {
-        //   category: {
-        //     name: category
-        //   }
-        // }
         categories: {
           some: {
             category: {

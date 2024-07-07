@@ -33,6 +33,7 @@ const Navbar = () => {
   const { logout } = useGoogleAuth();
   const userLogout = () => {
     localStorage.removeItem("Authorization");
+    localStorage.removeItem("location");
     dispatch(logoutAction());
     router.push("/");
   };
