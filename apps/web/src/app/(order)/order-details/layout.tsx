@@ -1,3 +1,5 @@
+"use client"
+
 import { FC, ReactNode } from "react";
 import NonLandingHeader from "@/components/NonLandingHeader";
 import AuthGuardTrx from "@/hoc/AuthGuardTrx";
