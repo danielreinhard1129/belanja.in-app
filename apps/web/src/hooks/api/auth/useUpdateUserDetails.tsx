@@ -36,9 +36,7 @@ const useUpdateUserDetails = (userId: number) => {
         Array.from(avatarUrl).forEach((file: FileWithPath) => {
           userUpdateForm.append("avatarUrl", file);
         });
-
-      console.log(payload);
-
+      
       const response = await axiosInstance.patch(
         `/auth/update-user-details/${userId}`,
         userUpdateForm,
