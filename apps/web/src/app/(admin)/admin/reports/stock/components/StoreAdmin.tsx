@@ -38,7 +38,7 @@ import { format } from "date-fns";
 import { debounce } from "lodash";
 import { Eye } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ImageNotFoundStore from "../../../../../../../public/no-store.svg";
 import ItemFilterMonth from "../../components/ItemFilterMonth";
 
@@ -60,6 +60,10 @@ const StoreAdmin = () => {
       filterMonth,
       filterYear,
     });
+
+  useEffect(() => {
+    setPage(1);
+  }, [status, filterMonth]);
   const handleSearch = debounce((value: string) => {
     setSearch(value);
   }, 300);

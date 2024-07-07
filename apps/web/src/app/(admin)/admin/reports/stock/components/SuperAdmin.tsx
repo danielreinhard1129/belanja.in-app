@@ -61,7 +61,7 @@ const SuperAdmin = () => {
     });
   useEffect(() => {
     setPage(1);
-  }, [selectedStoreId]);
+  }, [selectedStoreId, status, filterMonth]);
   const handleSearch = debounce((value: string) => {
     setSearch(value);
   }, 300);

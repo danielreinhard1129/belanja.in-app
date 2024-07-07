@@ -12,10 +12,10 @@ import {
   PackageSearch,
   Receipt,
 } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const Accordions = () => {
+  const router = useRouter();
   const pathname = usePathname();
   const isActiveLink = (link: string) => {
     return pathname === link ? "bg-[#FF6100] text-white" : "";
@@ -38,45 +38,41 @@ const Accordions = () => {
         <AccordionContent className="flex flex-col gap-2 pl-6">
           <Button
             variant="secondary"
-            className={`w-full justify-start border-none px-4 py-3 ${isActiveLink(
+            className={`flex w-full justify-start gap-4 border-none px-4 py-3 ${isActiveLink(
               "/admin/reports/sales",
             )}`}
+            onClick={() => router.push("/admin/reports/sales")}
           >
-            <Link href="/admin/reports/sales" className="flex gap-4">
-              <Receipt size={20} />
-              <span>Sales</span>
-            </Link>
+            <Receipt size={20} />
+            <span>Sales</span>
           </Button>
           <Button
             variant="secondary"
-            className={`w-full justify-start border-none px-4 py-3 ${isActiveLink(
+            className={`flex w-full justify-start gap-4 border-none px-4 py-3 ${isActiveLink(
               "/admin/reports/category",
             )}`}
+            onClick={() => router.push("/admin/reports/category")}
           >
-            <Link href="/admin/reports/category" className="flex gap-4">
-              <Blocks size={20} />
-              <span>Category</span>
-            </Link>
+            <Blocks size={20} />
+            <span>Category</span>
           </Button>
           <Button
             variant="secondary"
-            className={`w-full justify-start border-none px-4 py-3 ${isActiveLink(
+            className={`flex w-full justify-start gap-4 border-none px-4 py-3 ${isActiveLink(
               "/admin/reports/product",
             )}`}
+            onClick={() => router.push("/admin/reports/product")}
           >
-            <Link href="/admin/reports/product" className="flex gap-4">
-              <PackageSearch size={20} /> <span>Product</span>
-            </Link>
+            <PackageSearch size={20} /> <span>Product</span>
           </Button>
           <Button
             variant="secondary"
-            className={`w-full justify-start border-none px-4 py-3 ${isActiveLink(
+            className={`flex w-full justify-start gap-4 border-none px-4 py-3 ${isActiveLink(
               "/admin/reports/stock",
             )}`}
+            onClick={() => router.push("/admin/reports/stock")}
           >
-            <Link href="/admin/reports/stock" className="flex gap-4">
-              <BookMarked size={20} /> <span>Stock</span>
-            </Link>
+            <BookMarked size={20} /> <span>Stock</span>
           </Button>
         </AccordionContent>
       </AccordionItem>
