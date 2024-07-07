@@ -30,6 +30,11 @@ export class DiscountRouter {
       this.discountController.getDiscountsByStoreAdmin,
     );
     this.router.get(
+      '/user',
+      verifyToken,
+      this.discountController.getDiscountsByUserController,
+    );
+    this.router.get(
       '/super-admin',
       verifyToken,
       this.discountController.getDiscountsBySuperAdmin,

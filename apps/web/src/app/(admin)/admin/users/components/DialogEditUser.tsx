@@ -57,7 +57,6 @@ const DialogEditUser: React.FC<DialogEditUserProps> = ({
   }, [user, reset]);
 
   const onSubmit: SubmitHandler<EditUser> = async (data) => {
-    // console.log(data);
     await updateUser(data, userId);
     refetchUser();
     refetch();

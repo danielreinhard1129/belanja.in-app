@@ -20,12 +20,9 @@ export const removeItemService = async (body: RemoveItemCartArgs) => {
       throw new Error('Order not found');
     }
 
-    const removeItem = await prisma.cart.update({
+    const removeItem = await prisma.cart.delete({
       where: {id:cartId, userId},
-      data:{
-        qty:0,
-        isActive: false
-      }
+      
     })
 
     return {message: "decrement success"}

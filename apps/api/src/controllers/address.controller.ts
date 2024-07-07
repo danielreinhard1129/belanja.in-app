@@ -39,8 +39,6 @@ export class AddressController {
       const addressId = req.params.id;
       const body = req.body;
 
-      console.log('body', body);
-
       const result = await updateUserAddressService(Number(addressId), body);
 
       res.status(200).send(result);
