@@ -74,7 +74,7 @@ export const createStoreAdminService = async (
     }
   }
 
-  const hashedPassword = await hashPassword('Admin123');
+  const hashedPassword = await hashPassword('Admin123!');
 
   const result = await prisma.$transaction(async (prisma) => {
     const newUser = await prisma.user.create({
