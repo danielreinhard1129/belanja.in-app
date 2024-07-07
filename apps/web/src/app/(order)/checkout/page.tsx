@@ -18,8 +18,8 @@ import SkeletonShippingMethod from "./components/SkeletonShippingMethod";
 import { calculateTotalWeight } from "@/helper/calculateTotalWeight";
 import useCreateNewOrder from "@/hooks/api/transaction/useCreateNewOrder";
 import Link from "next/link";
-import useGetDiscount from "@/hooks/api/discounts/useGetDiscount";
 import PaymentMethodSheet from "./components/PaymentMethodSheet";
+import useGetDiscountsByUser from "@/hooks/api/discounts/useGetDiscountsByUser";
 
 const Checkout = () => {
   const [openAddressDrawer, setOpenAddressDrawer] = useState<boolean>(false);
@@ -34,15 +34,25 @@ const Checkout = () => {
   const [paymentMethodState, setPaymentMethodState] =
     useState<PaymentMethodArgs>(PaymentMethodArgs.DIGITAL_PAYMENT);
 
-  const { id } = useAppSelector((state) => state.user);
-  const { carts } = useGetCartsById(id);
-  const { addresses, setAddresses } = useGetUserAddress(id);
+  const { id: userId } = useAppSelector((state) => state.user);
+  const { carts } = useGetCartsById(userId);
+  const { addresses, setAddresses } = useGetUserAddress(userId);
   const totalWeight = calculateTotalWeight(carts);
   const selectedAddress = addresses.length
     ? addresses.find((address) => address.isSelected)
     : null;
-  const [weight, setWeight] = useState<number>(0);
-  const [addressId, setAddressId] = useState<number>(0);
+
+  const productIds = carts.map((product) => product.productId);
+
+  const {
+    discounts,
+    isLoading: isLoadingDiscounts,
+    refetch: refetchDiscounts,
+    setDiscounts
+  } = useGetDiscountsByUser({
+    storeId: carts[0]?.storeId,
+    productIds,
+  });
 
   const { createNewOrder } = useCreateNewOrder();
 
@@ -73,9 +83,10 @@ const Checkout = () => {
     }));
     createNewOrder({
       products: products,
-      userId: id,
+      userId,
       storeId: carts[0].storeId,
       deliveryFee: String(deliveryFee),
+      discountIds: discounts.filter(v=>v.isSelected === true).map(m=>m.id),
       addressId: selectedAddress?.id!,
       paymentMethod: paymentMethodState,
       deliveryCourier: selectedShipping?.name,
@@ -96,6 +107,8 @@ const Checkout = () => {
       </div>
     );
   }
+
+  
 
   return (
     <main className="mx-auto md:container">
@@ -211,11 +224,13 @@ const Checkout = () => {
           <ChevronRight className="max-h-4 max-w-4 font-light" />
         </div>
       </div>
-      {/* <DiscountSheet
-        addresses={addresses}
+      <DiscountSheet
+        discounts={discounts}
         openState={openDiscountDrawer}
         setOpenState={setOpenDiscountDrawer}
-      /> */}
+        closeDrawer={setDiscounts}
+        refetch={refetchDiscounts}
+      />
       <Separator className="h-1" />
       <section className="mb-0 grid grid-cols-2 bg-white p-4 pb-8">
         <div

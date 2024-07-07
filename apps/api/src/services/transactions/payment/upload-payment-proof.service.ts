@@ -27,15 +27,17 @@ export const uploadPaymentProofService = async (
     if (file) {
       paymentProof = `/images/${file.filename}`;
     }
+    const uploadProof = await prisma.$transaction(async (tx) => {
+      const data = await tx.payment.update({
+        where: { id: payment.id },
+        data: { paymentProof },
+      });
 
-    const uploadProof = await prisma.payment.update({
-      where: { id: payment.id },
-      data: { paymentProof },
-    });
-
-    const updateOrderStatus = await prisma.order.update({
-      where: { id: orderId },
-      data: { status: 'WAITING_ADMIN_CONFIRMATION'},
+      const updateOrderStatus = await tx.order.update({
+        where: { id: orderId },
+        data: { status: 'WAITING_ADMIN_CONFIRMATION' },
+      });
+      return data;
     });
 
     return { data: uploadProof, message: 'Payment proof upload success!' };

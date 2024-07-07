@@ -16,6 +16,7 @@ export interface Discount {
   productId: number;
   product: Product;
   userDiscount: UserDiscount[];
+  isSelected: boolean
 }
 
 export interface UserDiscount {
