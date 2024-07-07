@@ -51,26 +51,6 @@ export const getProductsByLocationService = async (
       },
     };
 
-    // if (category && category !== 'all') {
-    //   where.product = {
-    //     categories: {
-    //       some: {
-    //         category: {
-    //           name: category,
-    //         },
-    //       },
-    //     },
-    //   };
-    // }
-
-    // if (search) {
-    //   where.product = {
-    //     name: {
-    //       contains: search,
-    //     },
-    //   };
-    // }
-
     let storeProduct;
     let count;
 
