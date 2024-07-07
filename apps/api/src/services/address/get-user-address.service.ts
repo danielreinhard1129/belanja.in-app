@@ -17,7 +17,7 @@ export const getUserAddressService = async (userId: number) => {
     });
 
     const addresses = data.map((data, index) => {
-      return { ...data, isSelected: !index };
+      return { ...data, isSelected: false };
     });
 
     return addresses;

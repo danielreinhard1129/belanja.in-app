@@ -1,15 +1,20 @@
 "use client";
-import { toast } from "@/components/ui/use-toast";
 import { IOrderArgs } from "@/types/order.type";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import useAxios from "../useAxios";
+import { toast } from "sonner";
 
 const useCreateNewOrder = () => {
-  const  {axiosInstance} = useAxios()
-  const router = useRouter()
+  const { axiosInstance } = useAxios();
+  const router = useRouter();
   const createNewOrder = async (payload: IOrderArgs) => {
     try {
+      const location = localStorage.getItem("location");
+      if (!location) {
+        toast.error("Location access not given, not allowed to checkout")
+        return
+      }
       const { data } = await axiosInstance.post(
         "/orders/user/new-order",
         payload,
@@ -19,9 +24,9 @@ const useCreateNewOrder = () => {
       router.push(`/order-details/${data.order.id}`)
     } catch (error) {
       if (error instanceof AxiosError) {
-        toast({
-          description: error?.response?.data,
-        });
+        // toast.error({
+        //   description: error?.response?.data,
+        // });
       }
     }
   };
