@@ -13,7 +13,6 @@ export const updateUserDetailsService = async (
   file?: Express.Multer.File,
 ) => {
   try {
-    console.log(body);
     const user = await prisma.user.findFirst({
       where: { id: userId },
     });

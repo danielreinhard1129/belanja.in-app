@@ -19,10 +19,9 @@ const useCreateNewOrder = () => {
         "/orders/user/new-order",
         payload,
       );
-      console.log("dari useCreateOrder", payload);
-
-      await new Promise<void>((res) => setTimeout(res, 500));
-      router.push(`/order-details/${data.order.id}`);
+      
+      await new Promise<void>((res)=>setTimeout(res, 500))
+      router.push(`/order-details/${data.order.id}`)
     } catch (error) {
       if (error instanceof AxiosError) {
         // toast.error({

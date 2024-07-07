@@ -1,5 +1,3 @@
-"use client";
-
 import CardProduct from "@/components/CardProduct";
 import { useEffect, useState } from "react";
 import useGetProductsByLocation from "@/hooks/api/product/useGetProductsByLocation";
@@ -86,11 +84,15 @@ const TodaysPick = () => {
       const latlong = { lat: latitude, long: longitude };
       localStorage.setItem("location", JSON.stringify(latlong));
     }
-  }, [latitude, longitude, page]);
+  }, [latitude, longitude, page, search, category]);
 
-  useEffect(() => {
-    refetch();
-  }, [search, category]);
+  if (productsLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!data || data.length === 0) {
+    return <div>No products found</div>;
+  }
 
   return (
     <div className="container flex flex-col gap-4 p-0 px-4">
@@ -115,23 +117,19 @@ const TodaysPick = () => {
           defaultValue={category}
         />
       </div>
-      {!productsLoading && data.length !== 0 && data ? (
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-6">
-          {data.map((storeProduct, index) => (
-            <CardProduct
-              key={index}
-              images={`${appConfig.baseUrl}/assets${storeProduct.product.images[0].images}`}
-              discount={0}
-              name={storeProduct.product.name}
-              price={storeProduct.product.price}
-              productId={storeProduct.product.id}
-              store={storeProduct.store.City.citName}
-            />
-          ))}
-        </div>
-      ) : (
-        <div>No product found</div>
-      )}
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-6">
+        {data.map((storeProduct, index) => (
+          <CardProduct
+            key={index}
+            images={`${appConfig.baseUrl}/assets${storeProduct.product.images[0].images}`}
+            discount={0}
+            name={storeProduct.product.name}
+            price={storeProduct.product.price}
+            productId={storeProduct.product.id}
+            store={storeProduct.store.City.citName}
+          />
+        ))}
+      </div>
       <div className="mx-auto w-fit">
         <Pagination
           total={total}

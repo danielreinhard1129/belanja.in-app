@@ -40,7 +40,6 @@ const DiscountSheet: FC<DiscountSheetProps> = ({
         </SheetHeader>
         {!discounts.length? (<div>No Available Promo</div>):discounts.map((discount, index) => {
           return (
-           
             <DiscountCard key={index} data={discount} closeDrawer={()=> handleSelectDiscount(index)} />
           );
         })}

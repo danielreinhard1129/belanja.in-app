@@ -45,7 +45,6 @@ const RecentOrders = () => {
   }, 300);
 
   return isLoadingOrders ? (
-    // <p className="">Loading...</p>
     <div className="flex flex-col gap-y-2 p-4">
       <SkeletonOrderCard />
     </div>

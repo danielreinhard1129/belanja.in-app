@@ -31,7 +31,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { appConfig } from "@/utils/config";
 import avatarDefault from "../../../public/default-avatar.png";
@@ -85,13 +85,25 @@ const UpdateUserDetailsForm = ({ params }: { params: { id: string } }) => {
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      name: name || "",
-      email: email || "",
-      gender: gender || "",
-      birthDate: birthDate ? new Date(birthDate) : undefined,
+      name: "",
+      email: "",
+      gender: "",
+      birthDate: undefined,
       avatarUrl: undefined,
     },
   });
+
+  useEffect(() => {
+    if (user) {
+      form.reset({
+        name: user.name || "",
+        email: user.email || "",
+        gender: user.gender || "",
+        birthDate: user.birthDate ? new Date(user.birthDate) : undefined,
+        avatarUrl: undefined,
+      });
+    }
+  }, [user, form]);
 
   const onSubmit = (data: FormData) => {
     updateUserDetails(data);
@@ -231,7 +243,7 @@ const UpdateUserDetailsForm = ({ params }: { params: { id: string } }) => {
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
-                    defaultValue={field.value || gender}
+                    value={field.value || gender}
                     className="flex flex-col space-y-1"
                   >
                     <FormItem className="flex items-center space-x-3 space-y-0">
@@ -279,7 +291,11 @@ const UpdateUserDetailsForm = ({ params }: { params: { id: string } }) => {
                         {field.value ? (
                           format(field.value, "PPP")
                         ) : (
-                          <span>Pick a date</span>
+                          <span>
+                            {birthDate
+                              ? format(birthDate, "PPP")
+                              : "Pick a date"}
+                          </span>
                         )}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
