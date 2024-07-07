@@ -15,16 +15,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-// export function DatePickerWithRange({
-//   className,
-// }: React.HTMLAttributes<HTMLDivElement>) {
-//   const [date, setDate] = React.useState<DateRange | undefined>({
-//     from: new Date(),
-//     to: addDays(new Date(), 30),
-//   })
-
-//   console.log("ini date", date?.from?.toISOString(), date?.to?.toISOString());
-
 interface DatePickerWithRangeProps {
   date: DateRange | undefined;
   setDate: Dispatch<SetStateAction<DateRange | undefined>>;

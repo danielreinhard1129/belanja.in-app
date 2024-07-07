@@ -36,8 +36,6 @@ export const updateUserAddressService = async (
       });
     }
 
-    console.log("payload", body)
-
     const updatedAddress = await prisma.address.update({
       where: { id: addressId },
       data: {
@@ -62,8 +60,6 @@ export const updateUserAddressService = async (
           typeof body.isPrimary === 'string' ? body.isPrimary === 'true' : body.isPrimary,
       },
     });
-
-    console.log('Updated Address:', updatedAddress);
 
     return {
       message: 'Update User Address Successful!',

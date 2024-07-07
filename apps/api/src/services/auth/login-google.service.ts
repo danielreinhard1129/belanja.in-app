@@ -25,7 +25,7 @@ export const loginWithGoogleService = async (code: string) => {
       };
     }
 
-    let user = await prisma.user.findFirst({
+    const user = await prisma.user.findFirst({
       where: { email: userInfo.email },
     });
 

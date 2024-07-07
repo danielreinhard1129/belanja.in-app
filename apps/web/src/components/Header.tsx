@@ -8,7 +8,6 @@ import logo from "../../public/belanjainlogotransparent.svg";
 import { Separator } from "./ui/separator";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { logoutAction } from "@/redux/slices/userSlice";
-import useGoogleAuth from "@/hooks/api/auth/useGoogleAuth";
 import { useRouter } from "next/navigation";
 import { appConfig } from "@/utils/config";
 import defaultAvatar from "../../public/default-avatar.png";
@@ -47,7 +46,6 @@ export const Header = () => {
   const scrollThreshold = 40;
 
   useEffect(() => {
-
     const handleScroll = () => {
       const currentScrollTop =
         window.pageYOffset || document.documentElement.scrollTop;
@@ -67,6 +65,14 @@ export const Header = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [lastScrollTop]);
+
+  useEffect(() => {
+    if (user) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, [user]);
 
   return (
     <nav
