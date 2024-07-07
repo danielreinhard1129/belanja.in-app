@@ -20,6 +20,7 @@ import { TabsUser } from "./components/TabsUser";
 import { Card, CardContent } from "@/components/ui/card";
 import CardAddresses from "./components/CardAddresses";
 import { toast } from "sonner";
+import ProfileSkeleton from "./components/ProfileSkeleton";
 
 const UserDetail = () => {
   const { id } = useAppSelector((state) => state.user);
@@ -148,7 +149,7 @@ const UserDetail = () => {
           <CardAddresses id={user.id} />
         </div>
       ) : (
-        <div>Loading...</div>
+        <ProfileSkeleton />
       )}
     </>
   );
