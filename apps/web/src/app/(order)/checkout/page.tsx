@@ -20,6 +20,7 @@ import useCreateNewOrder from "@/hooks/api/transaction/useCreateNewOrder";
 import Link from "next/link";
 import PaymentMethodSheet from "./components/PaymentMethodSheet";
 import useGetDiscountsByUser from "@/hooks/api/discounts/useGetDiscountsByUser";
+import AuthGuardTrx from "@/hoc/AuthGuardTrx";
 
 const Checkout = () => {
   const [openAddressDrawer, setOpenAddressDrawer] = useState<boolean>(false);
@@ -48,7 +49,7 @@ const Checkout = () => {
     discounts,
     isLoading: isLoadingDiscounts,
     refetch: refetchDiscounts,
-    setDiscounts
+    setDiscounts,
   } = useGetDiscountsByUser({
     storeId: carts[0]?.storeId,
     productIds,
@@ -86,7 +87,9 @@ const Checkout = () => {
       userId,
       storeId: carts[0].storeId,
       deliveryFee: String(deliveryFee),
-      discountIds: discounts.filter(v=>v.isSelected === true).map(m=>m.id),
+      discountIds: discounts
+        .filter((v) => v.isSelected === true)
+        .map((m) => m.id),
       addressId: selectedAddress?.id!,
       paymentMethod: paymentMethodState,
       deliveryCourier: selectedShipping?.name,
@@ -95,7 +98,15 @@ const Checkout = () => {
   };
 
   const baseURL = process.env.NEXT_PUBLIC_BASE_API_URL;
-  console.log(paymentMethodState);
+
+  const totalPrice = carts
+    .map((cart) => cart.products.price * cart.qty)
+    .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+  let total = 0;
+
+  if (deliveryFee) {
+    total = totalPrice + deliveryFee;
+  }
 
   if (!carts || !carts.length) {
     return (
@@ -107,8 +118,6 @@ const Checkout = () => {
       </div>
     );
   }
-
-  
 
   return (
     <main className="mx-auto md:container">
@@ -237,22 +246,45 @@ const Checkout = () => {
           onClick={() => setOpenOrderSummaryDrawer(true)}
           className="flex flex-col align-top"
         >
-          <p className="text-sm font-light">Total Bayar</p>
-          <div className="flex w-32 max-w-36 items-center justify-between overflow-hidden">
-            <p className="text-lg font-bold">Rp100.000</p>
+          <p className="text-sm font-light">Total Price</p>
+          <div className="flex w-fit items-center justify-between gap-3 overflow-hidden">
+            {!deliveryFee ? (
+              <p className="text-lg font-bold">
+                {new Intl.NumberFormat("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                  maximumSignificantDigits: Math.trunc(
+                    Math.abs(Number(totalPrice)),
+                  ).toFixed().length,
+                }).format(Number(totalPrice))}
+              </p>
+            ) : (
+              <p className="text-lg font-bold">
+                {new Intl.NumberFormat("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                  maximumSignificantDigits: Math.trunc(
+                    Math.abs(Number(total)),
+                  ).toFixed().length,
+                }).format(Number(total))}
+              </p>
+            )}
             <ChevronDown className="max-h-4 max-w-4 font-light" />
           </div>
         </div>
         <OrderSummarySheet
           openState={openOrderSummaryDrawer}
           setOpenState={setOpenOrderSummaryDrawer}
+          deliveryFee={deliveryFee}
+          discount={discounts.find((e) => e.isSelected)}
+          price={totalPrice}
         />
         <div className="flex items-center justify-center">
           <Button
             onClick={() => handleCreateOrder(carts)}
             className="flex h-[95%] w-[90%] items-center justify-center px-4 py-2 text-lg"
           >
-            Bayar
+            Checkout
           </Button>
         </div>
       </section>
@@ -260,4 +292,4 @@ const Checkout = () => {
   );
 };
 
-export default Checkout;
+export default AuthGuardTrx(Checkout);

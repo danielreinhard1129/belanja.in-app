@@ -1,5 +1,6 @@
 import { FC, ReactNode } from "react";
 import NonLandingHeader from "@/components/NonLandingHeader";
+import AuthGuardTrx from "@/hoc/AuthGuardTrx";
 
 const RecentOrders: FC<{ children: ReactNode }> = ({ children }) => {
   return (
@@ -10,4 +11,4 @@ const RecentOrders: FC<{ children: ReactNode }> = ({ children }) => {
   );
 };
 
-export default RecentOrders;
+export default AuthGuardTrx(RecentOrders);
