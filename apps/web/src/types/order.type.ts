@@ -129,14 +129,10 @@ export interface IDelivery {
   orders: IOrder;
 }
 
-// Assuming the other related interfaces are defined as below:
-
 interface UserDiscount {
   id: number;
-  // other fields...
 }
 
 interface UserVoucher {
   id: number;
-  // other fields...
 }

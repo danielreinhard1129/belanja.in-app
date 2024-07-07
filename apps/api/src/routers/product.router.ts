@@ -39,7 +39,7 @@ export class ProductRouter {
       this.productController.updateProduct,
     );
     this.router.get('/', this.productController.getProducts);
-    this.router.get('/:id', this.productController.getProduct);
+    this.router.get('/id', this.productController.getProduct);
     this.router.delete(
       '/records',
       verifyToken,

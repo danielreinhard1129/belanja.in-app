@@ -16,9 +16,9 @@ export interface Delivery {
     storeId: number;
     orderId: number;
   
-    stores: Store;      // Assuming Store interface definition
-    addresses: Address; // Assuming Address interface definition
-    orders: IOrder;      // Assuming Order interface definition
+    stores: Store;
+    addresses: Address;
+    orders: IOrder;
   }
   
   export enum DeliveryStatus {

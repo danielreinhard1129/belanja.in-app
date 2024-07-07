@@ -3,16 +3,10 @@ import {
   MIDTRANS_SERVER_KEY,
   NEXT_BASE_URL,
 } from '@/config';
-import { calculateProductDiscount } from '@/lib/calculateProductDiscount';
 import prisma from '@/prisma';
 import { IOrderArgs, PaymentMethodArgs } from '@/types/order.type';
 import {
-  Discount,
-  OrderStatus,
-  Prisma,
-  Product,
-  UserVoucher,
-  userDiscount,
+  OrderStatus
 } from '@prisma/client';
 import { MidtransClient } from 'midtrans-node-client';
 import { scheduleJob } from 'node-schedule';
@@ -81,8 +75,8 @@ export const createOrderService = async (body: IOrderArgs) => {
       data: {
         userId,
         storeId,
-        totalAmount: 0, // This will be updated after calculating total
-        totalWeight: 0, // this will be updated after calculating total
+        totalAmount: 0,
+        totalWeight: 0,
         status: 'WAITING_FOR_PAYMENT',
         orderNumber,
       },
@@ -159,7 +153,6 @@ export const createOrderService = async (body: IOrderArgs) => {
         const originalPrice = product.price * item.qty;
         let discValue = 0;
 
-        //coba ryan
         //create initial orderItem
         const newOrderItem = await tx.orderItems.create({
           data: {
@@ -174,7 +167,6 @@ export const createOrderService = async (body: IOrderArgs) => {
         });
         orderTotalWeight += newOrderItem.totalWeight!;
 
-        //coba ryan
         // Apply product-based discounts
         if (userDiscountIds && userDiscountIds.length) {
           const userDiscounts = await tx.userDiscount.findMany({
@@ -190,14 +182,11 @@ export const createOrderService = async (body: IOrderArgs) => {
             ) {
               discValue +=
                 ((product.price * discount.discountvalue) / 100) * item.qty;
-              //coba ryan
 
               await tx.orderItems.update({
                 where: { id: newOrderItem.id },
                 data: { userDiscountId: userDiscount.id },
               });
-
-              //coba ryan
             }
             if (
               discount.discountType === 'BOGO' &&
@@ -214,34 +203,7 @@ export const createOrderService = async (body: IOrderArgs) => {
           }
         }
 
-        // Apply product-specific vouchers
-        // if (userVoucherIds && userVoucherIds.length) {
-        //   const userVouchers = await tx.userVoucher.findMany({
-        //     where: { id: { in: userVoucherIds }, isUsed: false },
-        //     include: { vouchers: true },
-        //   });
-
-        //   for (const userVoucher of userVouchers) {
-        //     const voucher = userVoucher.vouchers;
-        //     if (
-        //       voucher.voucherType === 'PRODUCT' &&
-        //       voucher.productId === item.productId
-        //     ) {
-        //       discValue +=
-        //         ((product.price * voucher.discountValue) / 100) * item.qty;
-        //       //coba
-        //       await tx.orderItems.update({
-        //         where: { id: newOrderItem.id },
-        //         data: { userVoucherId: userVoucher.id },
-        //       });
-        //     }
-        //   }
-        // }
-
         totalAmount += originalPrice - discValue;
-        // discountValue += discValue;
-
-        //coba ryan
 
         await tx.orderItems.update({
           where: { id: newOrderItem.id },
@@ -254,32 +216,6 @@ export const createOrderService = async (body: IOrderArgs) => {
           },
         });
       }
-
-      // Apply min purchase discounts
-      // if (userDiscountIds && userDiscountIds.length) {
-      //   const userDiscounts = await tx.userDiscount.findMany({
-      //     where: { id: { in: userDiscountIds }, isUsed: false },
-      //     include: { discounts: true },
-      //   });
-
-      //   for (const userDiscount of userDiscounts) {
-      //     const discount = userDiscount.discounts;
-      //     if (
-      //       discount.discountType === 'MIN_PURCHASE' &&
-      //       totalAmount >= discount.minPurchase!
-      //     ) {
-      //       const discountAmount = (totalAmount * discount.discountvalue) / 100;
-      //       const applicableDiscount = Math.min(discountAmount, discount.discountLimit!); // Apply limit
-
-      //       discountValue += applicableDiscount;
-      //       // discountValue += (totalAmount * discount.discountvalue) / 100;
-      //       await tx.order.update({
-      //         where: { id: newOrder.id },
-      //         data: { userDiscountId: userDiscount.id },
-      //       });
-      //     }
-      //   }
-      // }
 
       // Apply min purchase discounts
       if (userDiscountIds && userDiscountIds.length) {
@@ -452,7 +388,7 @@ export const createOrderService = async (body: IOrderArgs) => {
           where: { id: storeProduct.id },
           data: {
             qty: {
-              decrement: orderItem.qty, // Decrease qty by orderItem.qty
+              decrement: orderItem.qty,
             },
           },
         });

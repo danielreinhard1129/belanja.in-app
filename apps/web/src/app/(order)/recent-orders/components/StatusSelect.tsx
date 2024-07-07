@@ -29,7 +29,6 @@ const StatusSelect:FC<StatusSelectProps>= ({setValueStatus}) => {
           </SelectTrigger>
           <SelectContent
             ref={(ref) =>
-              // temporary workaround from https://github.com/shadcn-ui/ui/issues/1220
               ref?.addEventListener("touchend", (e) => e.preventDefault())
             }
           >

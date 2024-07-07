@@ -1,20 +1,28 @@
 "use client";
 
-import { Product } from "@/types/product.type";
 import { useEffect, useState } from "react";
 import useAxios from "../useAxios";
+import { StoreProduct } from "@/types/storeProduct.type";
 
-const useGetProduct = (id: number) => {
+interface IProductQuery {
+  lat?: number;
+  long?: number;
+  productId: number;
+}
+
+const useGetProduct = (queries: IProductQuery) => {
   const { axiosInstance } = useAxios();
-  const [product, setProduct] = useState<Product | null>(null);
+  const [storeProduct, setStoreProduct] = useState<StoreProduct | null>(null);
   const [isLoading, setIsLoading] = useState<Boolean>(true);
 
   const getProduct = async () => {
     try {
-      const { data } = await axiosInstance.get<Product>(`/products/${id}`);
-      setProduct(data);
+      const { data } = await axiosInstance.get<StoreProduct>(`/products/id`, {
+        params: queries,
+      });
+      setStoreProduct(data);
     } catch (error) {
-      setProduct(null);
+      setStoreProduct(null);
     } finally {
       setIsLoading(false);
     }
@@ -22,9 +30,9 @@ const useGetProduct = (id: number) => {
 
   useEffect(() => {
     getProduct();
-  }, []);
+  }, [queries.lat, queries.long, queries.productId]);
 
-  return { product, isLoading };
+  return { storeProduct, isLoading };
 };
 
 export default useGetProduct;

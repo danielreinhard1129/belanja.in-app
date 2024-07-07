@@ -18,7 +18,6 @@ import DatePickerWithRange from "./DateRangePicker";
 import { DateRange } from "react-day-picker";
 
 interface FilterComponentProps {
-  //   orderStatus: OrderStatus;
   setValueStatus: Dispatch<SetStateAction<OrderStatus | null>>;
   setCategory: React.Dispatch<React.SetStateAction<string>>;
   category: string;

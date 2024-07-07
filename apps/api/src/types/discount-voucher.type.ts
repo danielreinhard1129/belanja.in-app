@@ -58,32 +58,24 @@ export interface IUserVoucher {
   voucherId: number;
   userId: number;
   vouchers: IVoucher;
-//   users: IUser;
-//   order: IOrder[];
-//   orderItems: IOrderItem[];
 }
 
 export interface IStore {
   id: number;
-  // other fields related to Store
 }
 
 export interface IProduct {
   id: number;
-  // other fields related to Product
 }
 
 export interface IUser {
   id: number;
-  // other fields related to User
 }
 
 export interface IOrder {
   id: number;
-  // other fields related to Order
 }
 
 export interface IOrderItem {
   id: number;
-  // other fields related to OrderItem
 }
