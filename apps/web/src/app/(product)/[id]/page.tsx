@@ -61,6 +61,12 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
     return notFound();
   }
 
+  // Extract the stock quantity from the first matching store product
+  const storeProduct = product?.storeProduct?.find(
+    (sp) => sp.productId === product.id
+  );
+  const stock = storeProduct?.qty || 0;
+
   return (
     <div className="container flex h-screen flex-col px-0 pt-20 md:flex-row md:pt-28">
       <div className="relative h-fit w-full px-4 md:w-1/2">
@@ -179,6 +185,7 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
             carts={carts}
             handleAddToCart={handleAddToCart}
             productId={product?.id}
+            stock={stock}
           />
         </div>
       </div>
@@ -189,6 +196,7 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
           carts={carts}
           handleAddToCart={handleAddToCart}
           productId={product?.id}
+          stock={stock}
         />
       </div>
     </div>
@@ -196,4 +204,3 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
 };
 
 export default ProductPage;
-
