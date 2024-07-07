@@ -29,7 +29,7 @@ export const verifyService = async (userId: number, password: string) => {
       },
     });
 
-    const emailTemplatePath = path.join(__dirname, '../../templates/welcome.hbs');
+    const emailTemplatePath = path.join(__dirname, '../../../templates/welcome.hbs');
     
     const emailTemplateSource = fs.readFileSync(emailTemplatePath, 'utf8');
 
