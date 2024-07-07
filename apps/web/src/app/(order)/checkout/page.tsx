@@ -21,6 +21,7 @@ import Link from "next/link";
 import PaymentMethodSheet from "./components/PaymentMethodSheet";
 import useGetDiscountsByUser from "@/hooks/api/discounts/useGetDiscountsByUser";
 import AuthGuardTrx from "@/hoc/AuthGuardTrx";
+import { divIcon } from "leaflet";
 
 const Checkout = () => {
   const [openAddressDrawer, setOpenAddressDrawer] = useState<boolean>(false);
@@ -149,26 +150,36 @@ const Checkout = () => {
             className="flex cursor-pointer items-center justify-between gap-y-1 px-4 pb-2 pt-1"
             onClick={() => setOpenAddressDrawer(true)}
           >
-            {addresses.map((address, index) => {
-              return address.isSelected ? (
-                <div key={index} className="w-64">
-                  <div className="flex items-center gap-2">
-                    {address.isPrimary ? (
-                      <Badge
-                        variant="outline"
-                        className="flex w-[56px] justify-center rounded-sm bg-zinc-300 px-0.5 py-0.5 align-middle text-xs text-zinc-600"
-                      >
-                        <p>Primary</p>
-                      </Badge>
-                    ) : null}
-                    <p className="text-sm font-semibold">{address.user.name}</p>
+            {!addresses.length ? (
+              <div className="w-64">No address found</div>
+            ) : (
+              addresses.map((address, index) => {
+                return address.isSelected ? (
+                  <div key={index} className="w-64">
+                    <div className="flex items-center gap-2">
+                      {address.isPrimary ? (
+                        <Badge
+                          variant="outline"
+                          className="flex w-[56px] justify-center rounded-sm bg-zinc-300 px-0.5 py-0.5 align-middle text-xs text-zinc-600"
+                        >
+                          <p>Primary</p>
+                        </Badge>
+                      ) : null}
+                      <p className="text-sm font-semibold">
+                        {address.user.name}
+                      </p>
+                    </div>
+                    <div className="line-clamp-1 overflow-hidden">
+                      <p className="text-sm font-light">
+                        {address.addressLine}
+                      </p>
+                    </div>
                   </div>
-                  <div className="line-clamp-1 overflow-hidden">
-                    <p className="text-sm font-light">{address.addressLine}</p>
-                  </div>
-                </div>
-              ) : null;
-            })}
+                ) : (
+                  <div className="w-64">No address selected</div>
+                );
+              })
+            )}
             <div className="flex justify-end">
               <ChevronRight className="max-h-4 max-w-4 font-light" />
             </div>
@@ -179,6 +190,7 @@ const Checkout = () => {
             addresses={addresses}
             closeDrawer={setAddresses}
             refetch={refetchDeliveryFee}
+            userId={userId}
           />
           <Separator className="h-0.5" />
           {isLoadingShipmentFetch == true || shippingMethods.length == 0 ? (
@@ -283,6 +295,7 @@ const Checkout = () => {
           <Button
             onClick={() => handleCreateOrder(carts)}
             className="flex h-[95%] w-[90%] items-center justify-center px-4 py-2 text-lg"
+            disabled={!selectedAddress}
           >
             Checkout
           </Button>

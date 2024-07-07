@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import useGetCategories from "@/hooks/api/category/useGetCategories";
-import useGetProduct from "@/hooks/api/product/useGetProduct";
+import useGetProductById from "@/hooks/api/product/useGetProductById";
 import useUpdateProduct from "@/hooks/api/product/useUpdateProduct";
 import { BASE_API_URL } from "@/utils/config";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -45,7 +45,7 @@ const DialogEditProduct: React.FC<DialogEditProductProps> = ({
   refetch,
 }) => {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const { product } = useGetProduct(productId);
+  const { product } = useGetProductById(productId);
   const { updateProduct, isLoading } = useUpdateProduct(productId);
   const methods = useForm<TEditProductSchema>({
     mode: "all",

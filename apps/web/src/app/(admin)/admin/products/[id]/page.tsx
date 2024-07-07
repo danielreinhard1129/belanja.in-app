@@ -9,14 +9,14 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { Separator } from "@/components/ui/separator";
-import useGetProduct from "@/hooks/api/product/useGetProduct";
+import useGetProductById from "@/hooks/api/product/useGetProductById";
 import { appConfig } from "@/utils/config";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const ProductDetail = ({ params }: { params: { id: string } }) => {
-  const { product, isLoading } = useGetProduct(Number(params.id));
+  const { product, isLoading } = useGetProductById(Number(params.id));
   const [count, setCount] = useState(0);
   const [current, setCurrent] = useState(0);
   const [api, setApi] = useState<CarouselApi>();
