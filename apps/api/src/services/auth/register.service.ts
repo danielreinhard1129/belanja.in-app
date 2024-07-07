@@ -57,7 +57,7 @@ export const registerService = async (body: Omit<User, 'id'>) => {
 
     const emailTemplatePath = path.join(
       __dirname,
-      '../../templates/verify.hbs',
+      '../../../templates/verify.hbs',
     );
 
     const emailTemplateSource = fs.readFileSync(emailTemplatePath, 'utf8');
