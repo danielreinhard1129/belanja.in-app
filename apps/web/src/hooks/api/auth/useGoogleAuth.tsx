@@ -28,14 +28,15 @@ const useGoogleAuth = () => {
         toast.success(data.message);
       } catch (error) {
         if (error instanceof AxiosError) {
-          toast.error(error.response?.data);
+          toast.error(error.response?.data.message || "Login failed");
+        } else {
+          toast.error("Login failed due to an unexpected error");
         }
       } finally {
         setIsLoading(false);
       }
     },
     flow: "auth-code",
-    redirect_uri: "http://localhost:3000/",
   });
 
   const logout = () => {

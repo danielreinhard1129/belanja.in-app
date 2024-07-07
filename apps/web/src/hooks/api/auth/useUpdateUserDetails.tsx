@@ -37,11 +37,13 @@ const useUpdateUserDetails = (userId: number) => {
           userUpdateForm.append("avatarUrl", file);
         });
 
+      console.log(payload);
+
       const response = await axiosInstance.patch(
         `/auth/update-user-details/${userId}`,
         userUpdateForm,
       );
-      
+
       toast.success(`${response.data.message}`);
 
       router.push(`/user/${userId}`);
