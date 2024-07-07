@@ -21,12 +21,14 @@ interface AddToCartButtonProps {
   carts: ICart[];
   handleAddToCart: () => void;
   productId: number | undefined;
+  stock: number;
 }
 
 const AddToCartButton: FC<AddToCartButtonProps> = ({
   carts,
   handleAddToCart,
   productId,
+  stock,
 }) => {
   const isProductExist = carts.some((cart) => cart.productId === productId);
   const { id } = useAppSelector((state) => state.user);
@@ -36,7 +38,7 @@ const AddToCartButton: FC<AddToCartButtonProps> = ({
         <Button
           className="w-full bg-[#FF6100] px-2 py-3 text-white"
           variant={"outline"}
-          disabled={isProductExist || id === 0}
+          disabled={isProductExist || id === 0 || stock === 0}
         >
           {!isProductExist ? (
             <div className="flex gap-4">
