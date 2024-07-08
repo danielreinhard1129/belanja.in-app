@@ -10,7 +10,7 @@ interface IGetStocksQuery extends IPaginationQueries {
 
 const useGetStockByRule = (queries: IGetStocksQuery) => {
   const [stocks, setStocks] = useState<Stock | null>(null);
-  const [metaStock, setMetaStock] = useState<IPaginationMeta | null>(null);
+  const [meta, setMeta] = useState<IPaginationMeta | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const getStockByRule = async () => {
@@ -19,7 +19,7 @@ const useGetStockByRule = (queries: IGetStocksQuery) => {
         params: queries,
       });
       setStocks(data);
-      setMetaStock(data.storeProducts.meta);
+      setMeta(data.storeProducts.meta);
     } catch (error) {
       setStocks(null);
     } finally {
@@ -34,7 +34,7 @@ const useGetStockByRule = (queries: IGetStocksQuery) => {
   return {
     stocks,
     isLoading,
-    metaStock,
+    meta,
     refetch: getStockByRule,
   };
 };
