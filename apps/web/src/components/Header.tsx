@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/sheet";
 import useGetUser from "@/hooks/api/auth/useGetUser";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { logoutAction } from "@/redux/slices/userSlice";
+import { logoutAction, setCartCounterAction } from "@/redux/slices/userSlice";
 import { appConfig } from "@/utils/config";
 import { googleLogout } from "@react-oauth/google";
 import {
@@ -31,12 +31,12 @@ import useGetCartsById from "@/hooks/api/cart/useGetCartById";
 
 export const Header = () => {
   const router = useRouter();
-  const { id, name, provider, email } = useAppSelector((state) => state.user);
+  const { id, name, provider, email, cartCounter:cartsCount } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
   const [hideHeader, setHideHeader] = useState(false);
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const { user, isLoading } = useGetUser(id);
-  const { cartsCount, refetch: refetchCard } = useGetCartsById(id);
+  const { cartsCount: countArgs, refetch: refetchCart } = useGetCartsById(id);
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [latitude, setLatitude] = useState<number | null>(null);
@@ -118,10 +118,17 @@ export const Header = () => {
   }, [user]);
 
   useEffect(() => {
-    setTimeout(() => {
-      refetchCard();
-    }, 500);
+    if(countArgs){
+      dispatch(setCartCounterAction({cartCounter:countArgs}))
+    }
   });
+
+  useEffect(()=>{
+    if(countArgs){
+      refetchCart()
+      dispatch(setCartCounterAction({cartCounter:countArgs}))
+    }
+  }, [cartsCount])
 
   return (
     <nav
