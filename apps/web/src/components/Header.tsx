@@ -1,6 +1,12 @@
 "use client";
 
-import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import useGetUser from "@/hooks/api/auth/useGetUser";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { logoutAction } from "@/redux/slices/userSlice";
@@ -21,6 +27,7 @@ import defaultAvatar from "../../public/default-avatar.png";
 import Logo from "./Logo";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
+import useGetCartsById from "@/hooks/api/cart/useGetCartById";
 
 export const Header = () => {
   const router = useRouter();
@@ -29,6 +36,8 @@ export const Header = () => {
   const [hideHeader, setHideHeader] = useState(false);
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const { user, isLoading } = useGetUser(id);
+  const { cartsCount, refetch: refetchCard } = useGetCartsById(id);
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
@@ -108,6 +117,12 @@ export const Header = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+    setTimeout(() => {
+      refetchCard();
+    }, 500);
+  });
+
   return (
     <nav
       className={`fixed left-0 right-0 top-0 z-20 w-full overflow-x-hidden bg-inherit p-0 transition-transform duration-500 ${hideHeader ? "-translate-y-full" : "translate-y-0"} border-b`}
@@ -117,13 +132,22 @@ export const Header = () => {
         <div className="flex items-center gap-2 md:gap-6">
           {isLoggedIn && user && !isLoading ? (
             <div className="flex items-center gap-10">
-              <Button
-                className="hidden rounded-lg border-none p-2 hover:bg-[#FF6100]/70 md:block"
-                variant="outline"
-                onClick={() => router.push("/cart")}
-              >
-                <ShoppingCart size={20} />
-              </Button>
+              <div className="relative">
+                <Button
+                  className="hidden rounded-lg border-none p-2 hover:bg-[#FF6100]/70 md:block"
+                  variant="outline"
+                  onClick={() => router.push("/cart")}
+                >
+                  <ShoppingCart size={20} />
+                </Button>
+                {!cartsCount ? (
+                  <div className="hidden"></div>
+                ) : (
+                  <div className="absolute -top-1 left-6 hidden h-5 w-5 items-center justify-center rounded-full bg-[#FF6100] text-xs text-white md:flex">
+                    {cartsCount}
+                  </div>
+                )}
+              </div>
               <div
                 className="hidden cursor-pointer items-center gap-2 hover:underline md:flex"
                 onClick={() => router.push(`/user/${id}`)}
@@ -209,7 +233,16 @@ export const Header = () => {
                         variant="outline"
                         onClick={() => router.push("/cart")}
                       >
-                        <ShoppingCart size={20} />
+                        <div className="relative">
+                          <ShoppingCart size={20} />
+                          {!cartsCount ? (
+                            <div className="hidden"></div>
+                          ) : (
+                            <div className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-[#FF6100] text-[10px] text-white">
+                              {cartsCount}
+                            </div>
+                          )}
+                        </div>
                         Cart
                       </Button>
                       <Separator />
