@@ -17,16 +17,18 @@ import PopoverStockRequest from "./PopoverStockRequest";
 
 interface StoreAdminProps {
   stocks: Stock;
-  stockPage: number;
-  handleChangePaginateStock: ({ selected }: { selected: number }) => void;
+  take: number;
+  total: number;
+  handleChangePaginate: ({ selected }: { selected: number }) => void;
   refetch: () => void;
   handleSearch: (value: string) => void;
 }
 
 const StoreAdmin: React.FC<StoreAdminProps> = ({
   stocks,
-  stockPage,
-  handleChangePaginateStock,
+  take,
+  total,
+  handleChangePaginate,
   refetch,
   handleSearch,
 }) => {
@@ -96,9 +98,9 @@ const StoreAdmin: React.FC<StoreAdminProps> = ({
         </div>
         <div className="mx-auto w-fit">
           <Pagination
-            total={filteredStocks?.length || 0}
-            take={5}
-            onChangePage={handleChangePaginateStock}
+            total={total}
+            take={take}
+            onChangePage={handleChangePaginate}
           />
         </div>
       </div>
