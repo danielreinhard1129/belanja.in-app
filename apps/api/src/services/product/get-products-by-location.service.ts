@@ -56,7 +56,14 @@ export const getProductsByLocationService = async (
 
     storeProduct = await prisma.storeProduct.findMany({
       where: {
-        ...(storeIds.length > 0 ? { storeId: { in: storeIds } } : {}),
+        ...(storeIds.length > 0
+          ? { storeId: { in: storeIds } }
+          : {
+              store: {
+                isPrimary: true,
+                isDelete: false,
+              },
+            }),
         product: {
           isDelete: false,
         },
