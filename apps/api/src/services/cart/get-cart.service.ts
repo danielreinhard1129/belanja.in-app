@@ -15,10 +15,15 @@ export const getCartService = async (userId: number) => {
       },
     });
 
+    const count = await prisma.cart.count({
+      where: { userId, isActive: true },
+     
+    })
+
     if (!cart) {
       throw new Error('Cart details is missing!');
     }
-    return cart;
+    return {data: cart, count};
   } catch (error) {
     throw error;
   }

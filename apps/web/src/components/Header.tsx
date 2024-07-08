@@ -21,6 +21,7 @@ import defaultAvatar from "../../public/default-avatar.png";
 import Logo from "./Logo";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
+import useGetCartsById from "@/hooks/api/cart/useGetCartById";
 
 export const Header = () => {
   const router = useRouter();
@@ -29,6 +30,8 @@ export const Header = () => {
   const [hideHeader, setHideHeader] = useState(false);
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const { user, isLoading } = useGetUser(id);
+  const {cartsCount} = useGetCartsById(id)
+  
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
