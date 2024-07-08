@@ -10,6 +10,7 @@ interface UserState {
   role: string;
   gender?: string;
   token?: string;
+  cartCounter?: number;
 }
 
 const initialState: UserState = {
@@ -22,6 +23,7 @@ const initialState: UserState = {
   provider: "",
   gender: "",
   token: "",
+  cartCounter: 0,
 };
 
 export const userSlice = createSlice({
@@ -39,6 +41,7 @@ export const userSlice = createSlice({
         gender,
         provider,
         token,
+        cartCounter,
       } = action.payload;
       state.id = id;
       state.email = email;
@@ -49,6 +52,7 @@ export const userSlice = createSlice({
       state.gender = gender;
       state.provider = provider;
       state.token = token;
+      state.cartCounter = cartCounter;
     },
     logoutAction: (state) => {
       state.id = 0;
@@ -60,10 +64,17 @@ export const userSlice = createSlice({
       state.gender = "";
       state.provider = "";
       state.token = "";
+      state.cartCounter = 0;
+    },
+    setCartCounterAction: (
+      state,
+      action: PayloadAction<Pick<UserState, "cartCounter">>,
+    ) => {
+      state.cartCounter = action.payload.cartCounter;
     },
   },
 });
 
-export const { loginAction, logoutAction } = userSlice.actions;
+export const { loginAction, logoutAction,setCartCounterAction } = userSlice.actions;
 
 export default userSlice.reducer;

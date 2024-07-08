@@ -150,11 +150,19 @@ const Checkout = () => {
             className="flex cursor-pointer items-center justify-between gap-y-1 px-4 pb-2 pt-1"
             onClick={() => setOpenAddressDrawer(true)}
           >
-            {!addresses.length ? (
+             {!addresses.length ? (
               <div className="w-64">No address found</div>
             ) : (
-              addresses.map((address, index) => {
-                return address.isSelected ? (
+              (() => {
+                const selectedAddresses = addresses.filter(
+                  (address) => address.isSelected
+                );
+
+                if (!selectedAddresses.length) {
+                  return <div className="w-64">No address selected</div>;
+                }
+
+                return selectedAddresses.map((address, index) => (
                   <div key={index} className="w-64">
                     <div className="flex items-center gap-2">
                       {address.isPrimary ? (
@@ -175,10 +183,8 @@ const Checkout = () => {
                       </p>
                     </div>
                   </div>
-                ) : (
-                  <div className="w-64">No address selected</div>
-                );
-              })
+                ));
+              })()
             )}
             <div className="flex justify-end">
               <ChevronRight className="max-h-4 max-w-4 font-light" />
