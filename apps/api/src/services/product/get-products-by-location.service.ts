@@ -45,10 +45,6 @@ export const getProductsByLocationService = async (
         },
       },
       isActive: true,
-      store: {
-        isDelete: false,
-        ...(lat || long ? {} : { isPrimary: true }),
-      },
     };
 
     let storeProduct;
@@ -57,16 +53,15 @@ export const getProductsByLocationService = async (
     storeProduct = await prisma.storeProduct.findMany({
       where: {
         ...(storeIds.length > 0
-          ? { storeId: { in: storeIds } }
+          ? {
+              storeId: { in: storeIds },
+            }
           : {
               store: {
                 isPrimary: true,
                 isDelete: false,
               },
             }),
-        product: {
-          isDelete: false,
-        },
         ...where,
       },
       include: {
@@ -92,10 +87,16 @@ export const getProductsByLocationService = async (
 
     count = await prisma.storeProduct.count({
       where: {
-        ...(storeIds.length > 0 ? { storeId: { in: storeIds } } : {}),
-        product: {
-          isDelete: false,
-        },
+        ...(storeIds.length > 0
+          ? {
+              storeId: { in: storeIds },
+            }
+          : {
+              store: {
+                isPrimary: true,
+                isDelete: false,
+              },
+            }),
         ...where,
       },
     });
