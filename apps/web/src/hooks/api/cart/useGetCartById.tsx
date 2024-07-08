@@ -7,11 +7,13 @@ import { useEffect, useState } from "react";
 
 const useGetCartsById = (userId: number) => {
   const [carts, setCarts] = useState<ICart[]>([]);
-  const [isLoading, setIsLoading] = useState<Boolean>(true);
+  const [cartsCount, setCartsCount] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const getCarts = async () => {
     try {
       const { data } = await axiosInstance.get(`/carts/${userId}`);
-      setCarts(data);
+      setCarts(data.data);
+      setCartsCount(data.count);
     } catch (error) {
       if (error instanceof AxiosError) {
         console.error("Error fetching cart:", error.message);
@@ -21,9 +23,15 @@ const useGetCartsById = (userId: number) => {
     }
   };
   useEffect(() => {
-    getCarts();
-  }, []);
-  return { carts, isLoading, refetch: getCarts , setCarts};
+    if (!userId) {
+      setCartsCount(0);
+      setIsLoading(false);
+      return;
+    } else {
+      getCarts();
+    }
+  }, [userId]);
+  return { carts, isLoading, refetch: getCarts, setCarts, cartsCount };
 };
 
 export default useGetCartsById;
