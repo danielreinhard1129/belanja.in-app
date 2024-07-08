@@ -32,7 +32,7 @@ const useGetProduct = (queries: IProductQuery) => {
     getProduct();
   }, [queries.lat, queries.long, queries.productId]);
 
-  return { storeProduct, isLoading };
+  return { storeProduct, isLoading, refetch: getProduct };
 };
 
 export default useGetProduct;

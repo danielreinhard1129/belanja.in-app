@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
-import thanks from "../../../../../public/success.svg";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+import thanks from "../../../../../public/success.svg";
 
 const Thanks = () => {
   const router = useRouter();

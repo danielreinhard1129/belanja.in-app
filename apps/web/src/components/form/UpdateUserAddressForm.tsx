@@ -1,9 +1,5 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,11 +10,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import useUpdateAddress from "@/hooks/api/address/useUpdateAddress";
-import useGetAddress from "@/hooks/api/address/useGetAddress";
-import useGetProvinces from "@/hooks/api/address/useGetProvinces";
-import useGetCities from "@/hooks/api/address/useGetCities";
-import useGetSubdistricts from "@/hooks/api/address/useGetSubdistricts";
 import {
   Select,
   SelectContent,
@@ -26,11 +17,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { FormSchema } from "./AddUserAddressSchema";
-import Map from "../Map";
+import useGetAddress from "@/hooks/api/address/useGetAddress";
+import useGetCities from "@/hooks/api/address/useGetCities";
+import useGetProvinces from "@/hooks/api/address/useGetProvinces";
+import useGetSubdistricts from "@/hooks/api/address/useGetSubdistricts";
+import useUpdateAddress from "@/hooks/api/address/useUpdateAddress";
 import { getChangedValues } from "@/utils/getChangeValue";
-import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import Map from "../Map";
+import { FormSchema } from "./AddUserAddressSchema";
 
 interface UpdateUserAddressFormProps {
   addressId: number;
@@ -42,7 +42,11 @@ const UpdateUserAddressForm: React.FC<UpdateUserAddressFormProps> = ({
   userId,
 }) => {
   const { updateAddress } = useUpdateAddress(addressId, userId);
-  const { address, isLoading: addressLoading } = useGetAddress(addressId);
+  const {
+    address,
+    isLoading: addressLoading,
+    refetch: refetchGetAddress,
+  } = useGetAddress(addressId);
   const router = useRouter();
 
   const [selectedProvinceId, setSelectedProvinceId] = useState<string>("");
@@ -101,14 +105,12 @@ const UpdateUserAddressForm: React.FC<UpdateUserAddressFormProps> = ({
   }, [address, form]);
 
   useEffect(() => {
-    setSelectedCityId("");
     if (selectedProvinceId) {
       refetchCities();
     }
   }, [selectedProvinceId]);
 
   useEffect(() => {
-    setSelectedSubdistrictId("");
     if (selectedCityId) {
       refetchSubdistricts();
     }
@@ -118,18 +120,19 @@ const UpdateUserAddressForm: React.FC<UpdateUserAddressFormProps> = ({
     setLocationData(loc);
   };
 
-  const onSubmit = (values: any) => {
+  const onSubmit = async (values: any) => {
     if (locationData) {
       const { lat, long } = locationData;
       const dataToSubmit = { ...values, lat, long };
-      updateAddress(getChangedValues(dataToSubmit, address));
+      await updateAddress(getChangedValues(dataToSubmit, address));
+      await refetchGetAddress();
     }
   };
 
   if (
-    addressLoading &&
-    provincesLoading &&
-    citiesLoading &&
+    addressLoading ||
+    provincesLoading ||
+    citiesLoading ||
     subdistrictsLoading
   ) {
     return <div>Loading...</div>;

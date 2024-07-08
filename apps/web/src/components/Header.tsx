@@ -1,5 +1,11 @@
 "use client";
 
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet";
+import useGetUser from "@/hooks/api/auth/useGetUser";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { logoutAction } from "@/redux/slices/userSlice";
+import { appConfig } from "@/utils/config";
+import { googleLogout } from "@react-oauth/google";
 import {
   AlignJustify,
   ChevronRight,
@@ -7,30 +13,51 @@ import {
   ShoppingCart,
   X,
 } from "lucide-react";
-import { Avatar, AvatarImage } from "./ui/avatar";
-import { Button } from "./ui/button";
 import Image from "next/image";
-import logo from "../../public/belanjainlogotransparent.svg";
-import { Separator } from "./ui/separator";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { logoutAction } from "@/redux/slices/userSlice";
 import { useRouter } from "next/navigation";
-import { appConfig } from "@/utils/config";
-import defaultAvatar from "../../public/default-avatar.png";
-import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet"; // prettier-ignore
 import { useEffect, useState } from "react";
+import logo from "../../public/belanjainlogotransparent.svg";
+import defaultAvatar from "../../public/default-avatar.png";
 import Logo from "./Logo";
-import useGetUser from "@/hooks/api/auth/useGetUser";
-import { googleLogout } from "@react-oauth/google";
+import { Button } from "./ui/button";
+import { Separator } from "./ui/separator";
 
 export const Header = () => {
   const router = useRouter();
-  const { id, name, provider, email } = useAppSelector((state) => state.user); // prettier-ignore
+  const { id, name, provider, email } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
   const [hideHeader, setHideHeader] = useState(false);
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const { user, isLoading } = useGetUser(id);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [longitude, setLongitude] = useState<number | null>(null);
+
+  const storedLocation = localStorage.getItem("location");
+
+  useEffect(() => {
+    window.navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLatitude(position.coords.latitude);
+        setLongitude(position.coords.longitude);
+      },
+      (error) => {
+        console.error("Error getting user location: ", error);
+        if (storedLocation) {
+          localStorage.removeItem("location");
+        }
+      },
+    );
+  }, []);
+
+  useEffect(() => {
+    if (latitude !== null && longitude !== null) {
+      localStorage.setItem(
+        "location",
+        JSON.stringify({ lat: latitude, long: longitude }),
+      );
+    }
+  }, [latitude, longitude]);
 
   const userLogout = () => {
     dispatch(logoutAction());
@@ -38,7 +65,7 @@ export const Header = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("location");
     setIsLoggedIn(false);
-    router.replace("/");
+    router.push("/");
   };
 
   const logout = () => {

@@ -1,17 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { BadgePercent, ChevronRight } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import {
   Drawer,
   DrawerContent,
   DrawerHeader,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import { BadgePercent, ChevronRight } from "lucide-react";
 
 const DiscountCard = ({
   title,
