@@ -26,11 +26,12 @@ const useGetCartsById = (userId: number) => {
     if (!userId) {
       setCartsCount(0);
       setIsLoading(false);
+      setCarts([]);
       return;
     } else {
       getCarts();
     }
-  }, [userId]);
+  }, [userId, cartsCount]);
   return { carts, isLoading, refetch: getCarts, setCarts, cartsCount };
 };
 
