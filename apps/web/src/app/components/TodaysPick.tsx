@@ -1,11 +1,11 @@
 import CardProduct from "@/components/CardProduct";
-import { useEffect, useState } from "react";
-import useGetProductsByLocation from "@/hooks/api/product/useGetProductsByLocation";
-import { appConfig } from "@/utils/config";
 import Pagination from "@/components/Pagination";
 import { Input } from "@/components/ui/input";
+import useGetProductsByLocation from "@/hooks/api/product/useGetProductsByLocation";
+import { appConfig } from "@/utils/config";
 import { debounce } from "lodash";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { CategoryPicker } from "./CategoryPicker";
 
 const TodaysPick = () => {
@@ -23,17 +23,7 @@ const TodaysPick = () => {
     searchParams.get("category") || "",
   );
 
-  useEffect(() => {
-    window.navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setLatitude(position.coords.latitude);
-        setLongitude(position.coords.longitude);
-      },
-      (error) => {
-        console.error("Error getting user location: ", error);
-      },
-    );
-  }, []);
+  const storedLocation = localStorage.getItem("location");
 
   const {
     data,
@@ -48,6 +38,20 @@ const TodaysPick = () => {
     search,
     category,
   });
+
+  useEffect(() => {
+    if (storedLocation) {
+      const { lat, long } = JSON.parse(storedLocation);
+      setLatitude(lat);
+      setLongitude(long);
+    }
+  }, [storedLocation]);
+
+  useEffect(() => {
+    if (latitude !== null && longitude !== null) {
+      refetch();
+    }
+  }, [latitude, longitude]);
 
   const total = meta?.total || 0;
   const take = meta?.take || 0;

@@ -1,11 +1,11 @@
 "use client";
 
-import useGetUserAddress from "@/hooks/api/address/useGetUserAddress";
-import { useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import DialogShowAddress from "./DialogShowAddress";
 import { Button } from "@/components/ui/button";
-import { Circle, MapPinned } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import useGetUserAddress from "@/hooks/api/address/useGetUserAddress";
+import { MapPinned } from "lucide-react";
+import { useRouter } from "next/navigation";
+import DialogShowAddress from "./DialogShowAddress";
 
 const CardAddresses = ({ id }: { id: number }) => {
   const { addresses, refetch } = useGetUserAddress(id);

@@ -1,7 +1,6 @@
 "use client";
 
-import * as React from "react";
-import useGetCategories from "@/hooks/api/category/useGetCategories";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -9,7 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
+import useGetCategories from "@/hooks/api/category/useGetCategories";
+import * as React from "react";
 
 interface CategoryPickerProps {
   onChange: (category: string) => void;

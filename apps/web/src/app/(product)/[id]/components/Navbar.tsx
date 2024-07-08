@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ShoppingBag } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React from "react";
 
 const Navbar = () => {
   const router = useRouter();
