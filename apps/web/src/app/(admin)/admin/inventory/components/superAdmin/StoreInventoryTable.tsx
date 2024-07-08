@@ -16,8 +16,9 @@ import PopoverStockRequest from "./PopoverStockRequest";
 interface StoreInventoryTableProps {
   storeId: number;
   filteredStocks: any;
-  takeStock: number;
-  handleChangePaginateStock: ({ selected }: { selected: number }) => void;
+  take: number;
+  total: number;
+  handleChangePaginate: ({ selected }: { selected: number }) => void;
   stocks: any;
   refetch: () => void;
   handleSearch: (value: string) => void;
@@ -26,8 +27,9 @@ interface StoreInventoryTableProps {
 const StoreInventoryTable: React.FC<StoreInventoryTableProps> = ({
   storeId,
   filteredStocks,
-  takeStock,
-  handleChangePaginateStock,
+  take,
+  total,
+  handleChangePaginate,
   stocks,
   refetch,
   handleSearch,
@@ -104,9 +106,9 @@ const StoreInventoryTable: React.FC<StoreInventoryTableProps> = ({
         </div>
         <div className="mx-auto w-fit">
           <Pagination
-            total={filteredStocks?.length || 0}
-            take={takeStock}
-            onChangePage={handleChangePaginateStock}
+            total={total}
+            take={take}
+            onChangePage={handleChangePaginate}
           />
         </div>
       </div>
