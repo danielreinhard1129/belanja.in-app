@@ -12,7 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import useAddToCart from "@/hooks/api/cart/useAddToCart";
 import useGetCartsById from "@/hooks/api/cart/useGetCartById";
 import useGetProduct from "@/hooks/api/product/useGetProduct";
-import { useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { appConfig } from "@/utils/config";
 import { MapPin } from "lucide-react";
 import Image from "next/image";
@@ -22,14 +22,16 @@ import defaultStore from "../../../../public/default.png";
 import AddToCartButton from "./components/AddToCartButton";
 import DiscountCard from "./components/DiscountCard";
 import ProductSkeleton from "./components/ProductSkeleton";
+import { setCartCounterAction } from "@/redux/slices/userSlice";
 
 const ProductPage = ({ params }: { params: { id: string } }) => {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const { id: userId } = useAppSelector((state) => state.user);
-  const { carts, refetch: refetchCart } = useGetCartsById(userId);
+  const { carts, refetch: refetchCart, cartsCount } = useGetCartsById(userId);
   const { addToCart } = useAddToCart();
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const storedLocation = localStorage.getItem("location");
 
@@ -75,7 +77,8 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
   const handleAddToCart = async () => {
     if (userId !== 0) {
       await addToCart(storeProduct?.productId, storeProduct?.storeId);
-      refetchCart();
+      await refetchCart();
+      dispatch(setCartCounterAction({ cartCounter: cartsCount + 1 }));
     } else {
       router.push("/login");
     }

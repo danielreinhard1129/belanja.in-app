@@ -31,7 +31,7 @@ const useGetCartsById = (userId: number) => {
     } else {
       getCarts();
     }
-  }, [userId, cartsCount]);
+  }, [userId]);
   return { carts, isLoading, refetch: getCarts, setCarts, cartsCount };
 };
 
