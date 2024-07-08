@@ -7,6 +7,8 @@ import { debounce } from "lodash";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CategoryPicker } from "./CategoryPicker";
+import noproductfound from "../../../public/noproductfound.svg";
+import Image from "next/image";
 
 const TodaysPick = () => {
   const [page, setPage] = useState<number>(1);
@@ -122,7 +124,17 @@ const TodaysPick = () => {
             />
           </div>
           {!data || data.length === 0 ? (
-            <div>No Product FOund</div>
+            <div className="flex flex-col w-full items-center gap-6 py-10">
+              <div className="relative h-32 w-40">
+                <Image
+                  src={noproductfound}
+                  alt="no product found"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <p className="text-sm font-medium text-gray-400">Product not found</p>
+            </div>
           ) : (
             <>
               <div className="grid grid-cols-2 gap-4 md:grid-cols-6">
