@@ -7,7 +7,9 @@ const defaultDir = '../../../public/images';
 
 export const updateUserDetailsService = async (
   userId: number,
-  body: Partial<Pick<User, 'email' | 'name' | 'gender' | 'birthDate' | 'avatarUrl'>>,
+  body: Partial<
+    Pick<User, 'email' | 'name' | 'gender' | 'birthDate' | 'avatarUrl'>
+  >,
   file?: Express.Multer.File,
 ) => {
   try {
@@ -29,6 +31,10 @@ export const updateUserDetailsService = async (
     }
 
     let avatarUrl = user.avatarUrl;
+
+    if (file) {
+      avatarUrl = `/images/${file.filename}`;
+    }
 
     const userDetails = await prisma.user.update({
       where: { id: userId },

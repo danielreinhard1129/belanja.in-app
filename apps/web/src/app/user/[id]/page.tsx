@@ -1,14 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import useSendChangePassword from "@/hooks/api/auth/useSendChangePassword";
-import { useAppSelector } from "@/redux/hooks";
-import { appConfig } from "@/utils/config";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import avatarDefault from "../../../../public/default-avatar.png";
-import { ChevronLeft, Pencil } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Tooltip,
   TooltipContent,
@@ -16,11 +9,18 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import useGetUser from "@/hooks/api/auth/useGetUser";
-import { TabsUser } from "./components/TabsUser";
-import { Card, CardContent } from "@/components/ui/card";
-import CardAddresses from "./components/CardAddresses";
+import useSendChangePassword from "@/hooks/api/auth/useSendChangePassword";
+import { useAppSelector } from "@/redux/hooks";
+import { appConfig } from "@/utils/config";
+import { ChevronLeft, Pencil } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
+import avatarDefault from "../../../../public/default-avatar.png";
+import CardAddresses from "./components/CardAddresses";
 import ProfileSkeleton from "./components/ProfileSkeleton";
+import { TabsUser } from "./components/TabsUser";
 
 const UserDetail = () => {
   const { id } = useAppSelector((state) => state.user);

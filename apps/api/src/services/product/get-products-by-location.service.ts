@@ -1,11 +1,11 @@
 import { getDistance } from '@/libs/getDistance';
 import prisma from '@/prisma';
 import { PaginationQueryParams } from '@/types/pagination.type';
-import { Prisma } from '@prisma/client';
+import { Prisma, Store } from '@prisma/client';
 
 interface GetProductsByLocationArgs extends PaginationQueryParams {
-  lat: number;
-  long: number;
+  lat?: number;
+  long?: number;
   radius?: number;
   category?: string;
   search?: string;
@@ -18,117 +18,80 @@ export const getProductsByLocationService = async (
   try {
     const stores = await prisma.store.findMany();
 
-    const nearbyStores = stores.filter((store) => {
-      if (lat && long) {
+    let nearbyStores: Store[] = [];
+    if (lat && long) {
+      nearbyStores = stores.filter((store) => {
         const distance = getDistance(lat, long, store.lat, store.long);
         return distance <= radius * 2;
-      } else {
-        return true;
-      }
-    });
+      });
+    }
 
     const storeIds = nearbyStores.map((store) => store.id);
+
+    const categoryArgs = category && category === 'all' ? undefined : category;
 
     const where: Prisma.StoreProductWhereInput = {
       product: {
         isDelete: false,
-      },
-    };
-
-    if (category && category !== 'all') {
-      where.product = {
-        // some: {
-        //   category: {
-        //     name: category
-        //   }
-        // }
         categories: {
-          some: {
+          every: {
             category: {
-              name: category,
+              name: categoryArgs,
             },
           },
         },
-      };
-    }
-
-    if (search) {
-      where.product = {
         name: {
           contains: search,
         },
-      };
-    }
+      },
+      isActive: true,
+      store: {
+        isDelete: false,
+        ...(lat || long ? {} : { isPrimary: true }),
+      },
+    };
 
     let storeProduct;
     let count;
 
-    if (!lat && !long) {
-      storeProduct = await prisma.storeProduct.findMany({
-        where: {
-          store: {
-            isPrimary: true,
-          },
-          ...where,
+    storeProduct = await prisma.storeProduct.findMany({
+      where: {
+        ...(storeIds.length > 0 ? { storeId: { in: storeIds } } : {}),
+        product: {
+          isDelete: false,
         },
-        include: {
-          product: {
-            include: {
-              images: true,
-              categories: {
-                include: {
-                  category: true,
-                },
+        ...where,
+      },
+      include: {
+        product: {
+          include: {
+            images: true,
+            categories: {
+              include: {
+                category: true,
               },
             },
           },
-          store: {
-            include: {
-              City: true,
-            },
+        },
+        store: {
+          include: {
+            City: true,
           },
         },
-        skip: (page - 1) * take,
-        take: take,
-      });
-      count = await prisma.storeProduct.count({
-        where: {
-          store: {
-            isPrimary: true,
-          },
-          ...where,
+      },
+      skip: (page - 1) * take,
+      take: take,
+    });
+
+    count = await prisma.storeProduct.count({
+      where: {
+        ...(storeIds.length > 0 ? { storeId: { in: storeIds } } : {}),
+        product: {
+          isDelete: false,
         },
-      });
-    } else {
-      storeProduct = await prisma.storeProduct.findMany({
-        where: {
-          storeId: {
-            in: storeIds,
-          },
-          product: {
-            isDelete: false,
-          },
-          ...where,
-        },
-        include: {
-          product: {
-            include: {
-              images: true,
-            },
-          },
-          store: {
-            include: {
-              City: true,
-            },
-          },
-        },
-        skip: (page - 1) * take,
-        take: take,
-      });
-      count = await prisma.storeProduct.count({
-        where,
-      });
-    }
+        ...where,
+      },
+    });
 
     return { data: storeProduct, meta: { page, take, total: count } };
   } catch (error) {

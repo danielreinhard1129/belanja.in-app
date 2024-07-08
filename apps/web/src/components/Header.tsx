@@ -1,43 +1,77 @@
 "use client";
 
-import { AlignJustify, ChevronRight, LogOut, ShoppingCart, X } from "lucide-react";
-import { Avatar, AvatarImage } from "./ui/avatar";
-import { Button } from "./ui/button";
-import Image from "next/image";
-import logo from "../../public/belanjainlogotransparent.svg";
-import { Separator } from "./ui/separator";
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet";
+import useGetUser from "@/hooks/api/auth/useGetUser";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { logoutAction } from "@/redux/slices/userSlice";
-import { useRouter } from "next/navigation";
 import { appConfig } from "@/utils/config";
-import defaultAvatar from "../../public/default-avatar.png";
-import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet"; // prettier-ignore
-import { useEffect, useState } from "react";
-import Logo from "./Logo";
-import useGetUser from "@/hooks/api/auth/useGetUser";
 import { googleLogout } from "@react-oauth/google";
+import {
+  AlignJustify,
+  ChevronRight,
+  LogOut,
+  ShoppingCart,
+  X,
+} from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import logo from "../../public/belanjainlogotransparent.svg";
+import defaultAvatar from "../../public/default-avatar.png";
+import Logo from "./Logo";
+import { Button } from "./ui/button";
+import { Separator } from "./ui/separator";
 
 export const Header = () => {
   const router = useRouter();
-  const { id, name, provider, email } = useAppSelector((state) => state.user); // prettier-ignore
+  const { id, name, provider, email } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
   const [hideHeader, setHideHeader] = useState(false);
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const { user, isLoading } = useGetUser(id);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [longitude, setLongitude] = useState<number | null>(null);
+
+  const storedLocation = localStorage.getItem("location");
+
+  useEffect(() => {
+    window.navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLatitude(position.coords.latitude);
+        setLongitude(position.coords.longitude);
+      },
+      (error) => {
+        console.error("Error getting user location: ", error);
+        if (storedLocation) {
+          localStorage.removeItem("location");
+        }
+      },
+    );
+  }, []);
+
+  useEffect(() => {
+    if (latitude !== null && longitude !== null) {
+      localStorage.setItem(
+        "location",
+        JSON.stringify({ lat: latitude, long: longitude }),
+      );
+    }
+  }, [latitude, longitude]);
 
   const userLogout = () => {
     dispatch(logoutAction());
     localStorage.removeItem("Authorization");
     localStorage.removeItem("token");
+    localStorage.removeItem("location");
     setIsLoggedIn(false);
-    setIsLoggedIn(false);
-    router.replace("/");
+    router.push("/");
   };
 
   const logout = () => {
     googleLogout();
     localStorage.removeItem("Authorization");
+    localStorage.removeItem("location");
     dispatch(logoutAction());
     setIsLoggedIn(false);
     router.push("/");
@@ -83,7 +117,11 @@ export const Header = () => {
         <div className="flex items-center gap-2 md:gap-6">
           {isLoggedIn && user && !isLoading ? (
             <div className="flex items-center gap-10">
-              <Button className="p-2 rounded-lg hover:bg-[#FF6100]/70 border-none hidden md:block" variant="outline" onClick={() => router.push("/cart")}>
+              <Button
+                className="hidden rounded-lg border-none p-2 hover:bg-[#FF6100]/70 md:block"
+                variant="outline"
+                onClick={() => router.push("/cart")}
+              >
                 <ShoppingCart size={20} />
               </Button>
               <div
@@ -166,13 +204,17 @@ export const Header = () => {
                         <ChevronRight size={20} />
                       </div>
                       <Separator />
-                      <Button className="gap-4 w-fit px-3 py-2 text-start border-none" variant="outline" onClick={() => router.push("/cart")}>
+                      <Button
+                        className="w-fit gap-4 border-none px-3 py-2 text-start"
+                        variant="outline"
+                        onClick={() => router.push("/cart")}
+                      >
                         <ShoppingCart size={20} />
                         Cart
                       </Button>
                       <Separator />
                       <div
-                        className="cursor-pointer flex gap-4 px-3 py-2 text-sm font-medium text-red-500 hover:underline"
+                        className="flex cursor-pointer gap-4 px-3 py-2 text-sm font-medium text-red-500 hover:underline"
                         onClick={() =>
                           provider === "GOOGLE" ? logout() : userLogout()
                         }

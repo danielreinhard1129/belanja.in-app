@@ -41,15 +41,13 @@ const useUpdateUserDetails = (userId: number) => {
         `/auth/update-user-details/${userId}`,
         userUpdateForm,
       );
-      
+
       toast.success(`${response.data.message}`);
 
       router.push(`/user/${userId}`);
     } catch (error) {
       if (error instanceof AxiosError) {
-        toast.error("Error:", error.response?.data || error.message);
-      } else {
-        console.error("Unknown Error:", error);
+        toast.error(`Error: ${error.response?.data}`);
       }
     } finally {
       setIsLoading(false);

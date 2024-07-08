@@ -1,13 +1,11 @@
-"use client";
-
 import CardProduct from "@/components/CardProduct";
-import { useEffect, useState } from "react";
-import useGetProductsByLocation from "@/hooks/api/product/useGetProductsByLocation";
-import { appConfig } from "@/utils/config";
 import Pagination from "@/components/Pagination";
 import { Input } from "@/components/ui/input";
+import useGetProductsByLocation from "@/hooks/api/product/useGetProductsByLocation";
+import { appConfig } from "@/utils/config";
 import { debounce } from "lodash";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { CategoryPicker } from "./CategoryPicker";
 
 const TodaysPick = () => {
@@ -21,19 +19,11 @@ const TodaysPick = () => {
   const [search, setSearch] = useState<string>(
     searchParams.get("search") || "",
   );
-  const [category, setCategory] = useState<string>("");
+  const [category, setCategory] = useState<string>(
+    searchParams.get("category") || "",
+  );
 
-  useEffect(() => {
-    window.navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setLatitude(position.coords.latitude);
-        setLongitude(position.coords.longitude);
-      },
-      (error) => {
-        console.error("Error getting user location: ", error);
-      },
-    );
-  }, []);
+  const storedLocation = localStorage.getItem("location");
 
   const {
     data,
@@ -48,6 +38,20 @@ const TodaysPick = () => {
     search,
     category,
   });
+
+  useEffect(() => {
+    if (storedLocation) {
+      const { lat, long } = JSON.parse(storedLocation);
+      setLatitude(lat);
+      setLongitude(long);
+    }
+  }, [storedLocation]);
+
+  useEffect(() => {
+    if (latitude !== null && longitude !== null) {
+      refetch();
+    }
+  }, [latitude, longitude]);
 
   const total = meta?.total || 0;
   const take = meta?.take || 0;
@@ -83,60 +87,70 @@ const TodaysPick = () => {
   useEffect(() => {
     if (latitude !== null && longitude !== null) {
       refetch();
+      const latlong = { lat: latitude, long: longitude };
+      localStorage.setItem("location", JSON.stringify(latlong));
     }
-  }, [latitude, longitude, page]);
+  }, [latitude, longitude, page, search, category]);
 
-  useEffect(() => {
-    refetch();
-  }, [search, category]);
+  if (productsLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <div className="container flex flex-col gap-4 p-0 px-4">
-      <div className="flex items-center gap-2">
-        <svg className="h-[24px] w-[12px]">
-          <rect className="h-full w-full" fill="#FF6100" />
-        </svg>
-        <p className="text-base font-medium">Discover Product</p>
-      </div>
-      <div className="flex items-center gap-2">
-        <Input
-          type="text"
-          placeholder="Search product"
-          name="search"
-          onChange={(e) => {
-            handleSearch(e.target.value);
-          }}
-          defaultValue={search}
-        />
-        <CategoryPicker
-          onChange={handleCategoryChange}
-          defaultValue={category}
-        />
-      </div>
-      {!productsLoading && data.length !== 0 && data ? (
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-6">
-          {data.map((storeProduct, index) => (
-            <CardProduct
-              key={index}
-              images={`${appConfig.baseUrl}/assets${storeProduct.product.images[0].images}`}
-              discount={0}
-              name={storeProduct.product.name}
-              price={storeProduct.product.price}
-              productId={storeProduct.product.id}
-              store={storeProduct.store.City.citName}
+    <div className="container p-0 px-4">
+      {!productsLoading ? (
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-2">
+            <svg className="h-[24px] w-[12px]">
+              <rect className="h-full w-full" fill="#FF6100" />
+            </svg>
+            <p className="text-base font-medium">Discover Product</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Input
+              type="text"
+              placeholder="Search product"
+              name="search"
+              onChange={(e) => {
+                handleSearch(e.target.value);
+              }}
+              defaultValue={search}
             />
-          ))}
+            <CategoryPicker
+              onChange={handleCategoryChange}
+              defaultValue={category}
+            />
+          </div>
+          {!data || data.length === 0 ? (
+            <div>No Product FOund</div>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-6">
+                {data.map((storeProduct, index) => (
+                  <CardProduct
+                    key={index}
+                    images={`${appConfig.baseUrl}/assets${storeProduct.product.images[0].images}`}
+                    discount={0}
+                    name={storeProduct.product.name}
+                    price={storeProduct.product.price}
+                    productId={storeProduct.product.id}
+                    store={storeProduct.store.City.citName}
+                  />
+                ))}
+              </div>
+              <div className="mx-auto w-fit">
+                <Pagination
+                  total={total}
+                  take={take}
+                  onChangePage={handleChangePaginate}
+                />
+              </div>
+            </>
+          )}
         </div>
       ) : (
-        <div>No product found</div>
+        <div>Loading...</div>
       )}
-      <div className="mx-auto w-fit">
-        <Pagination
-          total={total}
-          take={take}
-          onChangePage={handleChangePaginate}
-        />
-      </div>
     </div>
   );
 };

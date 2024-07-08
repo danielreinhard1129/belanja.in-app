@@ -33,6 +33,7 @@ const Navbar = () => {
   const { logout } = useGoogleAuth();
   const userLogout = () => {
     localStorage.removeItem("Authorization");
+    localStorage.removeItem("location");
     dispatch(logoutAction());
     router.push("/");
   };
@@ -63,7 +64,7 @@ const Navbar = () => {
                           ? "w-full justify-start px-4 py-3"
                           : "w-full justify-start bg-white px-4 py-3 text-black/50"
                       }`}
-                      onClick={() => router.replace(item.url)}
+                      onClick={() => router.push(item.url)}
                     >
                       {item.icon}
                       {item.name}
@@ -78,7 +79,7 @@ const Navbar = () => {
                           ? "w-full justify-start px-4 py-3"
                           : "w-full justify-start bg-white px-4 py-3 text-black/50"
                       }`}
-                      onClick={() => router.replace(item.url)}
+                      onClick={() => router.push(item.url)}
                     >
                       {item.icon}
                       {item.name}
@@ -96,7 +97,7 @@ const Navbar = () => {
                       ? "w-full justify-start px-4 py-3"
                       : "w-full justify-start bg-white px-4 py-3 text-black/50"
                   }`}
-                  onClick={() => router.replace(item.url)}
+                  onClick={() => router.push(item.url)}
                 >
                   {item.icon}
                   {item.name}
@@ -184,7 +185,7 @@ const Navbar = () => {
                   <Button
                     variant="secondary"
                     className={`${baseClass} ${item.url === pathname ? "w-full justify-start px-4 py-3" : "w-full justify-start bg-white px-4 py-3 text-black/50"}`}
-                    onClick={() => router.replace(item.url)}
+                    onClick={() => router.push(item.url)}
                   >
                     {item.icon}
                     {item.name}

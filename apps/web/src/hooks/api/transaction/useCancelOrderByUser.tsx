@@ -1,18 +1,15 @@
 import { AxiosError } from "axios";
-import React, { useEffect } from "react";
-import useAxios from "../useAxios";
 import { toast } from "sonner";
+import useAxios from "../useAxios";
 
 const useCancelOrderByUser = () => {
   const { axiosInstance } = useAxios();
 
-  const cancelOrderByUser = async (orderId: number|undefined) => {
+  const cancelOrderByUser = async (orderId: number | undefined) => {
     try {
-      // const token =localStorage.getItem("Authorization")
       const { data } = await axiosInstance.patch<{ message: string }>(
         "/orders/user/cancel-order",
-        {orderId},
-        
+        { orderId },
       );
       toast.success(data.message);
     } catch (error) {
@@ -21,7 +18,7 @@ const useCancelOrderByUser = () => {
       }
     }
   };
-  return {cancelOrderByUser};
+  return { cancelOrderByUser };
 };
 
 export default useCancelOrderByUser;

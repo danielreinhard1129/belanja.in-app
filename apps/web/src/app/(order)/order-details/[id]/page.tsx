@@ -163,11 +163,23 @@ const OrderDetails = ({ params }: { params: { id: string } }) => {
           </div>
           <div className="flex items-center justify-between">
             <p>Purchase Total</p>
-            <p>{order.totalAmount}</p>
+            <p>{new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                maximumSignificantDigits: Math.trunc(
+                  Math.abs(order.totalAmount),
+                ).toFixed().length,
+              }).format(order.totalAmount)}</p>
           </div>
           <div className="flex items-center justify-between">
             <p>Delivery fee</p>
-            <p>{order.Delivery[0].deliveryFee}</p>
+            <p>{new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                maximumSignificantDigits: Math.trunc(
+                  Math.abs(order.Delivery[0].deliveryFee),
+                ).toFixed().length,
+              }).format(order.Delivery[0].deliveryFee)}</p>
           </div>
 
           {order.Payment.paymentMethod === "MANUAL_TRANSFER" ? (

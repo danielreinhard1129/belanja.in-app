@@ -38,6 +38,13 @@ export const getOrdersByUserId = async (query: GetOrdersQuery) => {
       userId: id,
       orderNumber: { contains: search },
       updatedAt: { gte: dateRangeArgs.from, lte: dateRangeArgs.to },
+      OrderItems: {
+        every: {
+          products: {
+            categories: { every: { category: { name: categoryArgs } } },
+          },
+        },
+      },
       
     };
 

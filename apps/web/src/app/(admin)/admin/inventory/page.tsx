@@ -12,11 +12,11 @@ import Stores from "./components/superAdmin/Stores";
 
 const Inventory = () => {
   const { role } = useAppSelector((state) => state.user);
-  const [stockPage, setStockPage] = useState<number>(1);
+  const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState<string>("");
   const [activeStoreId, setActiveStoreId] = useState<string>("");
-  const { stocks, isLoading, refetch, metaStock } = useGetStockByRule({
-    page: stockPage,
+  const { stocks, isLoading, refetch, meta } = useGetStockByRule({
+    page,
     take: 5,
     search,
     storeId: activeStoreId,
@@ -30,11 +30,11 @@ const Inventory = () => {
     setActiveStoreId(storeId.toString());
   };
 
-  const handleChangePaginateStock = ({ selected }: { selected: number }) => {
-    setStockPage(selected + 1);
+  const handleChangePaginate = ({ selected }: { selected: number }) => {
+    setPage(selected + 1);
   };
-
-  const takeStock = metaStock?.take || 1;
+  const total = meta?.total || 0;
+  const take = meta?.take || 1;
 
   const filteredStocks = Number(activeStoreId)
     ? stocks?.storeProducts?.data.filter(
@@ -76,8 +76,9 @@ const Inventory = () => {
               <StoreInventoryTable
                 storeId={Number(activeStoreId)}
                 filteredStocks={filteredStocks}
-                takeStock={takeStock}
-                handleChangePaginateStock={handleChangePaginateStock}
+                take={take}
+                total={total}
+                handleChangePaginate={handleChangePaginate}
                 stocks={stocks}
                 refetch={refetch}
                 handleSearch={handleSearch}
@@ -107,8 +108,9 @@ const Inventory = () => {
         <StoreAdmin
           stocks={stocks}
           handleSearch={handleSearch}
-          stockPage={stockPage}
-          handleChangePaginateStock={handleChangePaginateStock}
+          take={take}
+          total={total}
+          handleChangePaginate={handleChangePaginate}
           refetch={refetch}
         />
       )}

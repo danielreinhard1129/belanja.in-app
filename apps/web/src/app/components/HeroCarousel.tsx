@@ -9,12 +9,12 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import Autoplay from "embla-carousel-autoplay";
-import hero1 from "../../../public/Green Yellow Modern Grocery Online Order Banner (1).png";
 import hero2 from "../../../public/Green Bold Grocery Market Store Facebook Post (1).png";
 import hero3 from "../../../public/Green Modern Fruits Sale Instagram Post (1400 x 640 px) (1).png";
+import hero1 from "../../../public/Green Yellow Modern Grocery Online Order Banner (1).png";
 
 const HeroCarousel = () => {
   const [api, setApi] = useState<CarouselApi>();

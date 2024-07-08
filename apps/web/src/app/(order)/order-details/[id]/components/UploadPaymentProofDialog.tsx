@@ -1,5 +1,5 @@
 "use client";
-import React, { Dispatch, FC, SetStateAction, useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,15 +8,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import Countdown from "react-countdown";
-import { IOrder, OrderStatus } from "@/types/order.type";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import useUploadPaymentProof from "@/hooks/api/payment/useUploadPaymentProof";
-import Image from "next/image";
 import {
   Form,
   FormControl,
@@ -24,7 +15,16 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { Separator } from "@/components/ui/separator";
+import useUploadPaymentProof from "@/hooks/api/payment/useUploadPaymentProof";
+import { IOrder } from "@/types/order.type";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Paperclip } from "lucide-react";
+import Image from "next/image";
+import { Dispatch, FC, SetStateAction, useState } from "react";
+import Countdown from "react-countdown";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 interface UploadPaymentProofDialogProps {
   order: IOrder;
@@ -75,7 +75,7 @@ const UploadPaymentProofDialog: FC<UploadPaymentProofDialogProps> = ({
   const onSubmit = async (data: FormData) => {
     const { paymentProof } = data;
     await uploadPaymentProof({ payload: { orderId: order.id, paymentProof } });
-    setOpenState(false)
+    setOpenState(false);
     refetchOrder();
   };
 
@@ -100,7 +100,7 @@ const UploadPaymentProofDialog: FC<UploadPaymentProofDialogProps> = ({
           <p className="text-lg font-semibold">a.n. Valerie Vincent Setiawan</p>
           <p className="font-semibold underline">BEFORE</p>
           <Countdown
-            className="font-mono"
+            className="font-mono text-4xl"
             date={new Date(order.createdAt).getTime() + 60 * 60 * 1000}
           />
         </div>
@@ -115,11 +115,27 @@ const UploadPaymentProofDialog: FC<UploadPaymentProofDialogProps> = ({
           </div>
           <div className="flex items-center justify-between">
             <p>Purchase Total</p>
-            <p>{order.totalAmount}</p>
+            <p>
+              {new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                maximumSignificantDigits: Math.trunc(
+                  Math.abs(order.totalAmount),
+                ).toFixed().length,
+              }).format(order.totalAmount)}
+            </p>
           </div>
           <div className="flex items-center justify-between">
             <p>Delivery fee</p>
-            <p>{order.Delivery[0].deliveryFee}</p>
+            <p>
+              {new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                maximumSignificantDigits: Math.trunc(
+                  Math.abs(order.Delivery[0].deliveryFee),
+                ).toFixed().length,
+              }).format(order.Delivery[0].deliveryFee)}
+            </p>
           </div>
 
           {order.Payment.paymentMethod === "MANUAL_TRANSFER" ? (
@@ -137,18 +153,27 @@ const UploadPaymentProofDialog: FC<UploadPaymentProofDialogProps> = ({
           <Separator />
           <div className="flex items-center justify-between text-lg font-semibold">
             <p>Total</p>
-            <p>{order.Delivery[0].deliveryFee + order.totalAmount}</p>
+            <p>
+              {new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                maximumSignificantDigits: Math.trunc(
+                  Math.abs(order.Delivery[0].deliveryFee + order.totalAmount),
+                ).toFixed().length,
+              }).format(order.Delivery[0].deliveryFee + order.totalAmount)}
+            </p>
           </div>
         </div>
-        <Form {...form} >
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col items-center">
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col items-center"
+          >
             {selectedImage ? (
-              <div className="relative w-96 h-64">
+              <div className="relative h-64 w-96">
                 <Image
                   src={URL.createObjectURL(selectedImage)}
                   alt="Selected"
-                  // width={200}
-                  // height={200}
                   fill
                   className="object-cover"
                 />
@@ -178,7 +203,7 @@ const UploadPaymentProofDialog: FC<UploadPaymentProofDialogProps> = ({
                       />
                       <label
                         htmlFor="fileInput"
-                        className="text-neutral-90 inline-flex cursor-pointer px-2 py-1 items-center rounded-md"
+                        className="text-neutral-90 inline-flex cursor-pointer items-center rounded-md px-2 py-1"
                       >
                         <Paperclip />
                         <span className="whitespace-nowrap">

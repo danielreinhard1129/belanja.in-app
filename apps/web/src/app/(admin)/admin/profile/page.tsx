@@ -28,11 +28,6 @@ const Profile = () => {
     onSuccess,
   } = useSendChangePassword();
 
-  useEffect(() => {
-    if (onSuccess) {
-      alert(`Email for change password has been sent to ${user?.email}`);
-    }
-  }, [onSuccess, user]);
   if (!user || !store)
     return (
       <main className="container mx-auto my-auto max-w-xl rounded-xl border-2 bg-white p-8 shadow-xl">

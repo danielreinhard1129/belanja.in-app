@@ -54,7 +54,6 @@ const DatePickerWithRange: React.FC<DatePickerWithRangeProps> = ({
           className="w-auto p-0"
           align="start"
           ref={(ref) =>
-            // temporary workaround from https://github.com/shadcn-ui/ui/issues/1220
             ref?.addEventListener("touchend", (e) => e.preventDefault())
           }
         >
