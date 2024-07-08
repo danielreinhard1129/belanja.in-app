@@ -1,9 +1,7 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Form,
   FormControl,
@@ -14,29 +12,30 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  CalendarIcon,
-  ChevronLeft,
-  ImagePlus,
-  Loader2,
-  Paperclip,
-} from "lucide-react";
-import { useAppSelector } from "@/redux/hooks";
-import useUpdateUserDetails from "@/hooks/api/auth/useUpdateUserDetails";
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import { appConfig } from "@/utils/config";
-import avatarDefault from "../../../public/default-avatar.png";
 import useGetUser from "@/hooks/api/auth/useGetUser";
+import useUpdateUserDetails from "@/hooks/api/auth/useUpdateUserDetails";
+import { cn } from "@/lib/utils";
+import { useAppSelector } from "@/redux/hooks";
+import { appConfig } from "@/utils/config";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
+import {
+  CalendarIcon,
+  ChevronLeft,
+  Loader2,
+  Paperclip
+} from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import avatarDefault from "../../../public/default-avatar.png";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 5;
 const ACCEPTED_IMAGE_MIME_TYPES = [

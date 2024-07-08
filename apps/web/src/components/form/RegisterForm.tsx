@@ -1,8 +1,5 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -13,16 +10,19 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import AuthGuardSign from "@/hoc/AuthGuardSign";
+import useGoogleAuth from "@/hooks/api/auth/useGoogleAuth";
 import useRegister from "@/hooks/api/auth/useRegister";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import googleLogo from "../../../public/6929234_google_logo_icon.svg";
 import BackToHome from "../BackToHome";
 import { Separator } from "../ui/separator";
-import useGoogleAuth from "@/hooks/api/auth/useGoogleAuth";
-import { useRouter } from "next/navigation";
-import googleLogo from "../../../public/6929234_google_logo_icon.svg";
-import { Loader2 } from "lucide-react";
-import AuthGuardSign from "@/hoc/AuthGuardSign";
-import { useState } from "react";
 import { Skeleton } from "../ui/skeleton";
 
 const FormSchema = z.object({

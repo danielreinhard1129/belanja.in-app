@@ -1,16 +1,15 @@
 import { getDistance } from '@/libs/getDistance';
 import prisma from '@/prisma';
-import { PaginationQueryParams } from '@/types/pagination.type';
 import { Prisma } from '@prisma/client';
 
-interface GetProductsByIdArgs extends PaginationQueryParams {
+interface GetProductsByIdQueryParams {
   lat?: number;
   long?: number;
   radius?: number;
   productId: number;
 }
 
-export const getProductService = async (query: GetProductsByIdArgs) => {
+export const getProductService = async (query: GetProductsByIdQueryParams) => {
   const { lat, long, radius = 10, productId } = query;
 
   if (!productId) {
@@ -25,7 +24,7 @@ export const getProductService = async (query: GetProductsByIdArgs) => {
       const nearbyStores = stores
         .filter((store) =>
           lat && long
-            ? getDistance(lat, long, store.lat, store.long) <= radius
+            ? getDistance(lat, long, store.lat, store.long) <= radius * 2
             : true,
         )
         .sort((a, b) =>
@@ -71,8 +70,8 @@ export const getProductService = async (query: GetProductsByIdArgs) => {
       },
     });
 
-    if(!storeProduct) {
-      throw new Error("Product not found")
+    if (!storeProduct) {
+      throw new Error('Product not found');
     }
 
     return storeProduct;

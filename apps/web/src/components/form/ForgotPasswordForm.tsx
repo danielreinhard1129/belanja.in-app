@@ -1,9 +1,5 @@
 "use client";
 
-import useForgotPassword from "@/hooks/api/auth/useForgotPassword";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,12 +10,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { FC, useState } from "react";
-import { ChevronLeft, Loader2 } from "lucide-react";
-import BackToHome from "../BackToHome";
-import { useRouter } from "next/navigation";
 import AuthGuardSign from "@/hoc/AuthGuardSign";
+import useForgotPassword from "@/hooks/api/auth/useForgotPassword";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ChevronLeft, Loader2 } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { FC, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import BackToHome from "../BackToHome";
 import { Skeleton } from "../ui/skeleton";
 
 const FormSchema = z.object({

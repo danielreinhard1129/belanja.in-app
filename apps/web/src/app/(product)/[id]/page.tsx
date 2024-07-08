@@ -1,27 +1,27 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import useGetProduct from "@/hooks/api/product/useGetProduct";
-import { appConfig } from "@/utils/config";
-import Image from "next/image";
-import { notFound, useRouter } from "next/navigation";
-import ProductSkeleton from "./components/ProductSkeleton";
 import { Badge } from "@/components/ui/badge";
-import useGetCartsById from "@/hooks/api/cart/useGetCartById";
-import { useAppSelector } from "@/redux/hooks";
-import AddToCartButton from "./components/AddToCartButton";
-import useAddToCart from "@/hooks/api/cart/useAddToCart";
 import { Card, CardContent } from "@/components/ui/card";
-import defaultStore from "../../../../public/default.png";
-import { Separator } from "@/components/ui/separator";
-import { MapPin } from "lucide-react";
 import {
   Carousel,
   CarouselApi,
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import { Separator } from "@/components/ui/separator";
+import useAddToCart from "@/hooks/api/cart/useAddToCart";
+import useGetCartsById from "@/hooks/api/cart/useGetCartById";
+import useGetProduct from "@/hooks/api/product/useGetProduct";
+import { useAppSelector } from "@/redux/hooks";
+import { appConfig } from "@/utils/config";
+import { MapPin } from "lucide-react";
+import Image from "next/image";
+import { notFound, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import defaultStore from "../../../../public/default.png";
+import AddToCartButton from "./components/AddToCartButton";
 import DiscountCard from "./components/DiscountCard";
+import ProductSkeleton from "./components/ProductSkeleton";
 
 const ProductPage = ({ params }: { params: { id: string } }) => {
   const [latitude, setLatitude] = useState<number | null>(null);
@@ -31,20 +31,31 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
   const { addToCart } = useAddToCart();
   const router = useRouter();
 
+  const storedLocation = localStorage.getItem("location");
+
+  const {
+    storeProduct,
+    isLoading,
+    refetch: refetchProduct,
+  } = useGetProduct({
+    lat: Number(latitude),
+    long: Number(longitude),
+    productId: Number(params.id),
+  });
+
   useEffect(() => {
-    const storedLocation = localStorage.getItem("location");
     if (storedLocation) {
       const { lat, long } = JSON.parse(storedLocation);
       setLatitude(lat);
       setLongitude(long);
     }
-  }, [latitude, longitude]);
+  }, [storedLocation]);
 
-  const { storeProduct, isLoading } = useGetProduct({
-    lat: Number(latitude),
-    long: Number(longitude),
-    productId: Number(params.id),
-  });
+  useEffect(() => {
+    if (latitude !== null && longitude !== null) {
+      refetchProduct();
+    }
+  }, [latitude, longitude]);
 
   const [count, setCount] = useState(0);
   const [current, setCurrent] = useState(0);
@@ -74,7 +85,7 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
     return <ProductSkeleton />;
   }
 
-  if (!storeProduct && !isLoading) {
+  if (!storeProduct && !isLoading && !storedLocation) {
     return notFound();
   }
 
