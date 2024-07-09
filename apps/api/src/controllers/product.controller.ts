@@ -63,7 +63,7 @@ export class ProductController {
       const query = {
         lat: parseFloat(lat as string),
         long: parseFloat(long as string),
-        radius: parseFloat(radius as string) || 10,
+        radius: parseFloat(radius as string) || 50,
         productId: parseInt(productId as string),
       };
 
@@ -134,7 +134,7 @@ export class ProductController {
       const query = {
         lat: parseFloat(lat as string),
         long: parseFloat(long as string),
-        radius: parseFloat(radius as string) || 10,
+        radius: parseFloat(radius as string) || 50,
         take: parseInt(req.query.take as string) || 8,
         page: parseInt(req.query.page as string) || 1,
         sortBy: (req.query.sortBy as string) || 'name',

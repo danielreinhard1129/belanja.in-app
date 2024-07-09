@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ShoppingBag } from "lucide-react";
+import { ChevronLeft, ShoppingCart } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const Navbar = () => {
@@ -21,7 +21,7 @@ const Navbar = () => {
         className="rounded-full p-3 hover:bg-gray-200"
         onClick={() => router.push("/cart")}
       >
-        <ShoppingBag size={20} />
+        <ShoppingCart size={20} />
       </Button>
     </div>
   );

@@ -14,7 +14,7 @@ interface GetProductsByLocationArgs extends PaginationQueryParams {
 export const getProductsByLocationService = async (
   query: GetProductsByLocationArgs,
 ) => {
-  const { lat, long, radius = 10, take, page, category, search } = query;
+  const { lat, long, radius = 50, take, page, category, search } = query;
   try {
     const stores = await prisma.store.findMany();
 
@@ -22,7 +22,7 @@ export const getProductsByLocationService = async (
     if (lat && long) {
       nearbyStores = stores.filter((store) => {
         const distance = getDistance(lat, long, store.lat, store.long);
-        return distance <= radius * 2;
+        return distance <= radius;
       });
     }
 

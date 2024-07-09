@@ -10,7 +10,7 @@ interface GetProductsByIdQueryParams {
 }
 
 export const getProductService = async (query: GetProductsByIdQueryParams) => {
-  const { lat, long, radius = 10, productId } = query;
+  const { lat, long, radius = 50, productId } = query;
 
   if (!productId) {
     throw new Error('Product not found');
@@ -24,7 +24,7 @@ export const getProductService = async (query: GetProductsByIdQueryParams) => {
       const nearbyStores = stores
         .filter((store) =>
           lat && long
-            ? getDistance(lat, long, store.lat, store.long) <= radius * 2
+            ? getDistance(lat, long, store.lat, store.long) <= radius
             : true,
         )
         .sort((a, b) =>
@@ -33,7 +33,6 @@ export const getProductService = async (query: GetProductsByIdQueryParams) => {
               getDistance(lat, long, b.lat, b.long)
             : 0,
         );
-
       if (nearbyStores.length > 0) {
         closestStoreId = nearbyStores[0].id;
       }
