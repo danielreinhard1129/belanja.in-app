@@ -10,16 +10,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import useChangePassword from "@/hooks/api/auth/useChangePassword";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
-import { notFound, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import BackToHome from "../BackToHome";
 import { Skeleton } from "../ui/skeleton";
+import useChangePassword from "@/hooks/api/auth/useChangePassword";
+import { useAppSelector } from "@/redux/hooks";
 
 const FormSchema = z
   .object({
@@ -39,14 +39,10 @@ const FormSchema = z
 
 type FormData = z.infer<typeof FormSchema>;
 
-const ChangePwUserForm = () => {
-  const searchParams = useSearchParams();
-  const token = searchParams.get("token");
+const ChangePasswordForm = () => {
+  const { id } = useAppSelector((state) => state.user);
+  const { isLoading, changePassword } = useChangePassword(id);
   const [imageLoading, setImageLoading] = useState(true);
-
-  if (!token) {
-    notFound();
-  }
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -56,10 +52,8 @@ const ChangePwUserForm = () => {
     },
   });
 
-  const { changePassword, isLoading } = useChangePassword();
-
   const onSubmit = (data: FormData) => {
-    changePassword(data.password, token);
+    changePassword({ password: data.password });
   };
 
   const handleImageLoad = () => {
@@ -80,11 +74,11 @@ const ChangePwUserForm = () => {
       </div>
       <div className="z-50 flex h-fit w-full flex-col space-y-2 self-end rounded-t-3xl border-t-2 border-gray-100 bg-white px-4 py-4 pb-20 shadow-t-xl md:h-full md:justify-center md:self-center md:rounded-none md:border-none md:px-10 md:pb-0 md:shadow-none">
         <BackToHome />
-        <h1 className="px-4 text-2xl font-semibold">Submit New Password!</h1>
+        <h1 className="px-4 text-2xl font-semibold">Change Password</h1>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex w-full flex-col px-4 gap-4"
+            className="flex w-full flex-col gap-4 px-4"
           >
             <FormField
               control={form.control}
@@ -126,7 +120,7 @@ const ChangePwUserForm = () => {
               disabled={isLoading}
             >
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {isLoading ? "Verifying" : "Submit Password"}
+              {isLoading ? "Change Password..." : "Change Password"}
             </Button>
           </form>
         </Form>
@@ -135,4 +129,4 @@ const ChangePwUserForm = () => {
   );
 };
 
-export default ChangePwUserForm;
+export default ChangePasswordForm;
