@@ -3,6 +3,9 @@ import { transporter } from '@/libs/nodemailer';
 import prisma from '@/prisma';
 import { appConfig } from '@/utils/config';
 import { sign } from 'jsonwebtoken';
+import fs from 'fs';
+import path from 'path';
+import Handlebars from 'handlebars';
 
 export const sendChangePasswordService = async (id: number) => {
   try {
@@ -18,13 +21,24 @@ export const sendChangePasswordService = async (id: number) => {
       expiresIn: '30m',
     });
 
-    const link = NEXT_BASE_URL + `/user/${user.id}/change-password?token=${token}`;
+    const link =
+      NEXT_BASE_URL + `/user/${user.id}/change-password?token=${token}`;
+
+    const emailTemplatePath = path.join(
+      __dirname,
+      '../../../templates/reset-password.hbs',
+    );
+
+    const emailTemplateSource = fs.readFileSync(emailTemplatePath, 'utf8');
+
+    const template = Handlebars.compile(emailTemplateSource);
+    const htmlToSend = template({ name: user?.name, link: link });
 
     await transporter.sendMail({
       from: 'Admin',
       to: user.email,
-      subject: 'link reset password',
-      html: `<a href="${link}" target="_blank">Reset Password Here</a>`,
+      subject: 'Reset Password',
+      html: htmlToSend,
     });
 
     return {

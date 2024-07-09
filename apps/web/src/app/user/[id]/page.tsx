@@ -27,8 +27,6 @@ const UserDetail = () => {
   const { user, isLoading: loadingUser } = useGetUser(id);
   const router = useRouter();
 
-  const { isLoading: isSendingChangePassword, sendChangePassword } =
-    useSendChangePassword();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleEditProfile = async () => {
@@ -132,10 +130,9 @@ const UserDetail = () => {
               <div className="flex w-full gap-2">
                 <Button
                   className="w-full px-4 py-2"
-                  onClick={() => sendChangePassword({ id })}
-                  disabled={isSendingChangePassword}
+                  onClick={() => router.push(`/user/${id}/change-password`)}
                 >
-                  {isSendingChangePassword ? "Loading..." : "Change Password"}
+                  Change Password
                 </Button>
                 <Button
                   className="w-full px-4 py-2"

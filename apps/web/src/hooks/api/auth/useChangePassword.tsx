@@ -11,34 +11,25 @@ interface IChangePasswordResponse {
   message: string;
 }
 
-interface DecodedToken {
-  id: number;
-  iat: number;
-  exp: number;
+interface ChangePasswordForm {
+  password: string;
 }
 
-const useChangePassword = () => {
+const useChangePassword = (userId: number) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const { axiosInstance } = useAxios();
 
-  const changePassword = async (password: string, token: string) => {
+  const changePassword = async (payload: ChangePasswordForm) => {
     try {
       setIsLoading(true);
       const { data } = await axiosInstance.patch<IChangePasswordResponse>(
         "/auth/change-password",
-        { password },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
+        payload,
       );
 
       toast.success(data.message);
-      const decode = jwtDecode<DecodedToken>(token);
-
-      router.replace(`/user/${decode.id}`);
+      router.push(`/user/${userId}`);
     } catch (error) {
       if (error instanceof AxiosError) {
         toast.error(error?.response?.data);
