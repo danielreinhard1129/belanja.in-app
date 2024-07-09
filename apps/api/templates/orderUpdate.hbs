@@ -311,28 +311,10 @@
               <tr>
                 <td class="wrapper">
                   <p>Dear {{name}},</p>
-                  <p>We wanted to inform you that the status of your order <strong>#{{orderNumber}}</strong> has been updated. Please find the details below:</p>
+                  <p>We wanted to inform you that the status of your order has been updated. Please find the details below:</p>
                   <p>
                   <strong>Current Status:</strong> {{orderStatus}}
                   </p>
-                  {{#if orderStatus == "ORDER_CANCELLED"}}
-                    <p>We regret to inform you that your order has been cancelled. If you have any questions or need further assistance, please contact our support team.</p>
-                  {{else if orderStatus == "WAITING_FOR_PAYMENT"}}
-                    <p>Your order is currently awaiting payment. Please complete the payment to proceed with the order.</p>
-                   
-                  {{else if orderStatus == "WAITING_ADMIN_CONFIRMATION"}}
-                    <p>Your payment is being reviewed by admin. Please wait.</p>
-                  {{else if orderStatus == "ORDER_PROCESSED"}}
-                    <p>Your payment has been confirmed, and your order is now being processed.</p>
-                  {{else if orderStatus == "ORDER_SHIPPED"}}
-                    <p>Great news! Your order has been shipped. You should be able to receive the order in 3-7 days.</p>
-                  {{else if orderStatus == "ORDER_CANCELLED"}}
-                    <p>We're sorry, your order has been cancelled. Your payment might be not valid or there might trouble in the system</p>
-                    <p>If you think there is a problem, please contact support.</p>
-                    
-                  {{else if orderStatus == "ORDER_RECEIVED"}}
-                    <p>Your order has been successfully delivered. We hope you enjoy your purchase!</p>
-                  {{/if}}
                   <p>If you have any questions or need assistance, please feel free to contact our customer support team.</p>
                   <p>Thank you for shopping with us!</p>
                   <p>Best regards,</p>

@@ -390,7 +390,7 @@ export const createOrderService = async (body: IOrderArgs) => {
 
     const emailTemplatePath = path.join(
       __dirname,
-      '../../../templates/orderUpdate.hbs',
+      '../../../../templates/orderUpdate.hbs',
     );
 
     const emailTemplateSource = fs.readFileSync(emailTemplatePath, 'utf8');

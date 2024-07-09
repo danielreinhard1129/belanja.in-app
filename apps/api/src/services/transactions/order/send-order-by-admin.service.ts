@@ -43,7 +43,7 @@ export const sendOrderByAdminService = async (body: SendUserOrderArgs) => {
 
       const emailTemplatePath = path.join(
         __dirname,
-        '../../../templates/orderUpdate.hbs',
+        '../../../../templates/orderUpdate.hbs',
       );
 
       const emailTemplateSource = fs.readFileSync(emailTemplatePath, 'utf8');

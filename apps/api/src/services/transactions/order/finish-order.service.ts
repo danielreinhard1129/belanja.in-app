@@ -32,7 +32,7 @@ export const finishOrderService = async (body: FinishOrderArgs) => {
 
     const emailTemplatePath = path.join(
       __dirname,
-      '../../../templates/orderUpdate.hbs',
+      '../../../../templates/orderUpdate.hbs',
     );
 
     const emailTemplateSource = fs.readFileSync(emailTemplatePath, 'utf8');
