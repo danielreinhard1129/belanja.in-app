@@ -31,6 +31,7 @@ model Address {
   cityId        Int
   subdistrictId Int
   userId        Int
+  isDelete      Boolean @default(false)
 
   provinces    Province    @relation(fields: [provinceId], references: [id])
   cities       City        @relation(fields: [cityId], references: [id])

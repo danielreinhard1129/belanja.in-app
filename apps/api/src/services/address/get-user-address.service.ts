@@ -8,7 +8,7 @@ export const getUserAddressService = async (userId: number) => {
     }
 
     const data = await prisma.address.findMany({
-      where: { userId },
+      where: { userId, isDelete: false },
       include: {
         user: true,
         cities: { include: { province: true } },

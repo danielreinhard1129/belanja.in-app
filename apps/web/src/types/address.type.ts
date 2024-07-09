@@ -35,6 +35,7 @@ export interface Address {
   cities: City;
   subdistricts: Subdistrict;
   isSelected: boolean;
+  isDelete: boolean;
 }
 
 export type AddressData = Address[];
