@@ -5,9 +5,7 @@ import {
 } from '@/config';
 import prisma from '@/prisma';
 import { IOrderArgs, PaymentMethodArgs } from '@/types/order.type';
-import {
-  OrderStatus
-} from '@prisma/client';
+import { OrderStatus } from '@prisma/client';
 import { MidtransClient } from 'midtrans-node-client';
 import { scheduleJob } from 'node-schedule';
 
@@ -71,34 +69,18 @@ export const createOrderService = async (body: IOrderArgs) => {
     const nextOrderNumber = getNextNumber(lastOrderNumber?.orderNumber);
     const orderNumber = `ORD-${padNumber(user.id, 4)}-${padNumber(storeId, 3)}-${nextOrderNumber}`;
 
-    const newOrder = await prisma.order.create({
-      data: {
-        userId,
-        storeId,
-        totalAmount: 0,
-        totalWeight: 0,
-        status: 'WAITING_FOR_PAYMENT',
-        orderNumber,
-      },
-      include: {
-        OrderItems: true,
-      },
-    });
-
-    let userDiscountIds: number[] = [];
+    const userDiscountIds: number[] = [];
 
     if (discountIds && discountIds.length > 0) {
-      // Create userDiscounts for each discountId
       await prisma.userDiscount.createMany({
         data: discountIds.map((discountId) => ({
           userId,
           discountId,
           isUsed: false,
         })),
-        skipDuplicates: true, // Skip duplicates if any
+        skipDuplicates: true,
       });
 
-      // Fetch the created userDiscounts to get their IDs
       const createdUserDiscounts = await prisma.userDiscount.findMany({
         where: {
           userId,
@@ -107,10 +89,24 @@ export const createOrderService = async (body: IOrderArgs) => {
         },
       });
 
-      userDiscountIds = createdUserDiscounts.map((ud) => ud.id);
+      userDiscountIds.push(...createdUserDiscounts.map((ud) => ud.id));
     }
 
     const order = await prisma.$transaction(async (tx) => {
+      const newOrder = await tx.order.create({
+        data: {
+          userId,
+          storeId,
+          totalAmount: 0,
+          totalWeight: 0,
+          status: 'WAITING_FOR_PAYMENT',
+          orderNumber,
+        },
+        include: {
+          OrderItems: true,
+        },
+      });
+
       const lastInvoiceNumber = await tx.payment.findFirst({
         where: {
           invoiceNumber: {
@@ -134,16 +130,13 @@ export const createOrderService = async (body: IOrderArgs) => {
           deliveryNumber: 'desc',
         },
       });
-      const nextDeliveryNumber = getNextNumber(
-        lastDeliveryNumber?.deliveryNumber,
-      );
+      const nextDeliveryNumber = getNextNumber(lastDeliveryNumber?.deliveryNumber);
       const deliveryNumber = `DLV-${padNumber(user.id, 4)}-${padNumber(newOrder.id, 3)}-${nextDeliveryNumber}`;
 
       let totalAmount = 0;
       let discountValue = 0;
       let orderTotalWeight = 0;
 
-      // Apply product discounts and calculate the total amount
       for (const item of products) {
         const product = await tx.product.findUnique({
           where: { id: item.productId },
@@ -153,7 +146,6 @@ export const createOrderService = async (body: IOrderArgs) => {
         const originalPrice = product.price * item.qty;
         let discValue = 0;
 
-        //create initial orderItem
         const newOrderItem = await tx.orderItems.create({
           data: {
             orderId: newOrder.id,
@@ -167,8 +159,7 @@ export const createOrderService = async (body: IOrderArgs) => {
         });
         orderTotalWeight += newOrderItem.totalWeight!;
 
-        // Apply product-based discounts
-        if (userDiscountIds && userDiscountIds.length) {
+        if (userDiscountIds.length) {
           const userDiscounts = await tx.userDiscount.findMany({
             where: { id: { in: userDiscountIds }, isUsed: false },
             include: { discounts: true },
@@ -176,24 +167,16 @@ export const createOrderService = async (body: IOrderArgs) => {
 
           for (const userDiscount of userDiscounts) {
             const discount = userDiscount.discounts;
-            if (
-              discount.discountType === 'PRODUCT' &&
-              discount.productId === item.productId
-            ) {
-              discValue +=
-                ((product.price * discount.discountvalue) / 100) * item.qty;
+            if (discount.discountType === 'PRODUCT' && discount.productId === item.productId) {
+              discValue += ((product.price * discount.discountvalue) / 100) * item.qty;
 
               await tx.orderItems.update({
                 where: { id: newOrderItem.id },
                 data: { userDiscountId: userDiscount.id },
               });
             }
-            if (
-              discount.discountType === 'BOGO' &&
-              discount.productId === item.productId &&
-              item.qty >= 2
-            ) {
-              discValue += product.price; // Apply BOGO: 100% discount on one item
+            if (discount.discountType === 'BOGO' && discount.productId === item.productId && item.qty >= 2) {
+              discValue += product.price;
 
               await tx.orderItems.update({
                 where: { id: newOrderItem.id },
@@ -217,8 +200,7 @@ export const createOrderService = async (body: IOrderArgs) => {
         });
       }
 
-      // Apply min purchase discounts
-      if (userDiscountIds && userDiscountIds.length) {
+      if (userDiscountIds.length) {
         const userDiscounts = await tx.userDiscount.findMany({
           where: { id: { in: userDiscountIds }, isUsed: false },
           include: { discounts: true },
@@ -226,15 +208,9 @@ export const createOrderService = async (body: IOrderArgs) => {
 
         for (const userDiscount of userDiscounts) {
           const discount = userDiscount.discounts;
-          if (
-            discount.discountType === 'MIN_PURCHASE' &&
-            totalAmount >= discount.minPurchase!
-          ) {
+          if (discount.discountType === 'MIN_PURCHASE' && totalAmount >= discount.minPurchase!) {
             const discountAmount = (totalAmount * discount.discountvalue) / 100;
-            const applicableDiscount = Math.min(
-              discountAmount,
-              discount.discountLimit!,
-            ); // Apply limit
+            const applicableDiscount = Math.min(discountAmount, discount.discountLimit!);
 
             discountValue += applicableDiscount;
 
@@ -246,7 +222,6 @@ export const createOrderService = async (body: IOrderArgs) => {
         }
       }
 
-      // Apply purchase vouchers
       if (userVoucherIds && userVoucherIds.length) {
         const userVouchers = await tx.userVoucher.findMany({
           where: { id: { in: userVoucherIds }, isUsed: false },
@@ -255,10 +230,7 @@ export const createOrderService = async (body: IOrderArgs) => {
 
         for (const userVoucher of userVouchers) {
           const voucher = userVoucher.vouchers;
-          if (
-            voucher.voucherType === 'PURCHASE' &&
-            totalAmount >= voucher.discountValue
-          ) {
+          if (voucher.voucherType === 'PURCHASE' && totalAmount >= voucher.discountValue) {
             discountValue += (totalAmount * voucher.discountValue) / 100;
             await tx.order.update({
               where: { id: newOrder.id },
@@ -274,7 +246,7 @@ export const createOrderService = async (body: IOrderArgs) => {
         where: { id: { in: userDiscountIds } },
         data: { isUsed: true },
       });
-      // Update order totalAmount
+
       await tx.order.update({
         where: { id: newOrder.id },
         data: { totalAmount, totalWeight: orderTotalWeight },
@@ -284,19 +256,17 @@ export const createOrderService = async (body: IOrderArgs) => {
         where: { id: newOrder.id },
         include: { OrderItems: true },
       });
-      totalAmount = 0;
-      discountValue = 0;
-      orderTotalWeight = 0;
 
       if (!order) {
         throw new Error('Order not found');
       }
+
       const newDelivery = await tx.delivery.create({
         data: {
           deliveryNumber,
           addressId,
           deliveryFee: Number(deliveryFee),
-          orderId: order?.id,
+          orderId: order.id,
           storeId,
           status: 'PENDING',
           deliveryService,
@@ -310,13 +280,8 @@ export const createOrderService = async (body: IOrderArgs) => {
           clientKey: MIDTRANS_CLIENT_KEY,
           serverKey: MIDTRANS_SERVER_KEY,
         });
-        const payload: {
-          transaction_details: {
-            order_id: string;
-            gross_amount: number;
-          };
-          callback: { finish: string; error: string; pending: string };
-        } = {
+
+        const payload = {
           transaction_details: {
             order_id: order.orderNumber,
             gross_amount: order.totalAmount + newDelivery.deliveryFee,
@@ -327,9 +292,10 @@ export const createOrderService = async (body: IOrderArgs) => {
             pending: `${NEXT_BASE_URL}/order/order-details/${order.id}`,
           },
         };
+
         const transaction = await snap.createTransaction(payload);
 
-        const newInvoice = await tx.payment.create({
+        await tx.payment.create({
           data: {
             amount: order.totalAmount + newDelivery.deliveryFee,
             invoiceNumber,
@@ -340,7 +306,7 @@ export const createOrderService = async (body: IOrderArgs) => {
           },
         });
       } else {
-        const newInvoice = await tx.payment.create({
+        await tx.payment.create({
           data: {
             amount: order.totalAmount + newDelivery.deliveryFee,
             invoiceNumber,
@@ -350,7 +316,7 @@ export const createOrderService = async (body: IOrderArgs) => {
         });
       }
 
-      const newJournal = await Promise.all(
+      await Promise.all(
         order.OrderItems.map(async (val) => {
           await tx.stockJournal.create({
             data: {
@@ -367,7 +333,6 @@ export const createOrderService = async (body: IOrderArgs) => {
       );
 
       for (const orderItem of order.OrderItems) {
-        // Find the storeProduct for the current productId and storeId
         const storeProduct = await tx.storeProduct.findUnique({
           where: {
             storeId_productId: {
@@ -383,8 +348,7 @@ export const createOrderService = async (body: IOrderArgs) => {
           );
         }
 
-        // Update the storeProduct quantity
-        const updatedStoreProduct = await tx.storeProduct.update({
+        await tx.storeProduct.update({
           where: { id: storeProduct.id },
           data: {
             qty: {
@@ -397,35 +361,34 @@ export const createOrderService = async (body: IOrderArgs) => {
       await tx.cart.deleteMany({
         where: { userId },
       });
+
       return order;
     });
 
     const schedule = new Date(Date.now() + 3600 * 1000);
     scheduleJob('run every', schedule, async () => {
       const findOrder = await prisma.order.findFirst({
-        where: { id: newOrder.id },
+        where: { id: order.id },
         include: { OrderItems: true, Payment: true, Delivery: true },
       });
-      const autoCancel = await prisma.$transaction(async (tx) => {
+
+      await prisma.$transaction(async (tx) => {
         if (!findOrder) {
           throw new Error('Order not found');
         }
 
         if (findOrder.status === OrderStatus.WAITING_FOR_PAYMENT) {
-          const cancelOrder = await tx.order.update({
+          await tx.order.update({
             where: { id: findOrder.id },
             data: { status: 'ORDER_CANCELLED' },
           });
 
-          //cancel payment
           await tx.payment.update({
             where: { id: findOrder.Payment?.id },
-            data: {
-              paymentStatus: 'CANCELLED',
-            },
+            data: { paymentStatus: 'CANCELLED' },
           });
-          //refund journal
-          const refundJournal = await Promise.all(
+
+          await Promise.all(
             findOrder.OrderItems.map(async (val) => {
               await tx.stockJournal.create({
                 data: {
@@ -440,9 +403,8 @@ export const createOrderService = async (body: IOrderArgs) => {
               });
             }),
           );
-          //return stock
+
           for (const orderItem of findOrder.OrderItems) {
-            // Find the storeProduct for the current productId and storeId
             const storeProduct = await tx.storeProduct.findUnique({
               where: {
                 storeId_productId: {
@@ -458,17 +420,13 @@ export const createOrderService = async (body: IOrderArgs) => {
               );
             }
 
-            // Update the storeProduct quantity
-            const updatedStoreProduct = await tx.storeProduct.update({
+            await tx.storeProduct.update({
               where: { id: storeProduct.id },
               data: {
-                qty: {
-                  increment: orderItem.qty, // Decrease qty by orderItem.qty
-                },
+                qty: { increment: orderItem.qty },
               },
             });
           }
-          //cancel order
 
           const findDelivery = await tx.delivery.findFirst({
             where: { id: findOrder.Delivery[0].id },
