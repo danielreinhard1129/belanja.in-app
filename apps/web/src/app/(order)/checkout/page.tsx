@@ -38,7 +38,7 @@ const Checkout = () => {
     useState<PaymentMethodArgs>(PaymentMethodArgs.DIGITAL_PAYMENT);
 
   const { id: userId } = useAppSelector((state) => state.user);
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   const { carts } = useGetCartsById(userId);
   const { addresses, setAddresses } = useGetUserAddress(userId);
   const totalWeight = calculateTotalWeight(carts);
@@ -98,7 +98,7 @@ const Checkout = () => {
       deliveryCourier: selectedShipping?.name,
       deliveryService: selectedMethod?.description,
     });
-    dispatch(setCartCounterAction({cartCounter:0}))
+    dispatch(setCartCounterAction({ cartCounter: 0 }));
   };
 
   const baseURL = process.env.NEXT_PUBLIC_BASE_API_URL;
@@ -124,7 +124,7 @@ const Checkout = () => {
   }
 
   return (
-    <main className="mx-auto md:container">
+    <main className="mx-auto mt-16 md:container">
       <Separator className="h-1 md:hidden" />
       <section className="flex flex-col gap-2 bg-white p-4">
         <h6 className="text-md font-bold">Items selected</h6>
@@ -153,12 +153,12 @@ const Checkout = () => {
             className="flex cursor-pointer items-center justify-between gap-y-1 px-4 pb-2 pt-1"
             onClick={() => setOpenAddressDrawer(true)}
           >
-             {!addresses.length ? (
+            {!addresses.length ? (
               <div className="w-64">No address found</div>
             ) : (
               (() => {
                 const selectedAddresses = addresses.filter(
-                  (address) => address.isSelected
+                  (address) => address.isSelected,
                 );
 
                 if (!selectedAddresses.length) {
@@ -245,24 +245,26 @@ const Checkout = () => {
         </div>
       </section>
       <Separator className="h-1" />
-      <div
-        onClick={() => setOpenDiscountDrawer(true)}
-        className="flex h-12 max-w-full items-center justify-between border-b border-t border-orange-300 bg-orange-100 px-5"
-      >
-        <p className="font-semibold">Use a promo?</p>
-        <div className="mr-3 flex justify-end">
-          <ChevronRight className="max-h-4 max-w-4 font-light" />
+      <section className="mb-20">
+        <div
+          onClick={() => setOpenDiscountDrawer(true)}
+          className="flex h-12 max-w-full items-center justify-between border-b border-t border-orange-300 bg-orange-100 px-5"
+        >
+          <p className="font-semibold">Use a promo?</p>
+          <div className="mr-3 flex justify-end">
+            <ChevronRight className="max-h-4 max-w-4 font-light" />
+          </div>
         </div>
-      </div>
-      <DiscountSheet
-        discounts={discounts}
-        openState={openDiscountDrawer}
-        setOpenState={setOpenDiscountDrawer}
-        closeDrawer={setDiscounts}
-        refetch={refetchDiscounts}
-      />
+        <DiscountSheet
+          discounts={discounts}
+          openState={openDiscountDrawer}
+          setOpenState={setOpenDiscountDrawer}
+          closeDrawer={setDiscounts}
+          refetch={refetchDiscounts}
+        />
+      </section>
       <Separator className="h-1" />
-      <section className="mb-0 grid grid-cols-2 bg-white p-4 pb-8">
+      <section className="fixed bottom-0 mb-0 grid w-[88%] grid-cols-2 border-t-2 bg-white p-4 px-16 pb-4">
         <div
           onClick={() => setOpenOrderSummaryDrawer(true)}
           className="flex flex-col align-top"
@@ -306,7 +308,9 @@ const Checkout = () => {
             className="flex h-[95%] w-[90%] items-center justify-center px-4 py-2 text-lg"
             disabled={!selectedAddress || isLoadingOrder}
           >
-            {isLoadingOrder && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {isLoadingOrder && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            )}
             {isLoadingOrder ? "Processing" : "Checkout"}
           </Button>
         </div>

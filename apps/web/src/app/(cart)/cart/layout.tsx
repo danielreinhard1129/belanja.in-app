@@ -8,7 +8,7 @@ interface OrderLayoutProps {
 
 const CartLayout: FC<OrderLayoutProps> = ({ children }) => {
   return (
-    <div className="flex h-screen flex-col justify-between">
+    <div className="flex h-screen flex-col justify-between relative">
       <NonLandingHeader label="Cart" />
       {children}
       <CartFooter />

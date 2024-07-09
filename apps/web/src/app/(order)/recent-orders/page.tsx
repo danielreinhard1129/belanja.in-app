@@ -33,7 +33,7 @@ const RecentOrders = () => {
     category,
     fromDate: date?.from?.toISOString(),
     toDate: date?.to?.toISOString(),
-    search
+    search,
   });
   const handleChangePaginate = ({ selected }: { selected: number }) => {
     setPage(selected + 1);
@@ -49,48 +49,52 @@ const RecentOrders = () => {
       <SkeletonOrderCard />
     </div>
   ) : !orders.length ? (
-    <main className="mx-auto md:container">
-      <Input
+    <main className="mx-auto mt-20 md:container relative">
+      <div className="fixed top-20 w-[88%]">
+        <Input
           type="text"
           placeholder="Search for order number..."
           name="search"
           onChange={(e) => {
             handleSearch(e.target.value);
           }}
-          className="ml-4 w-52 mt-2"
+          className="ml-4 mt-2 w-52"
         />
-      <FilterComponent
-        setValueStatus={setOrderStatus}
-        setCategory={setCategory}
-        category={category}
-        categories={categories}
-        date={date}
-        setDate={setDate}
-      />
-      <div className="z-0 flex flex-col items-center gap-y-2 p-4">
+        <FilterComponent
+          setValueStatus={setOrderStatus}
+          setCategory={setCategory}
+          category={category}
+          categories={categories}
+          date={date}
+          setDate={setDate}
+        />
+      </div>
+      <div className="z-0 flex flex-col items-center gap-y-2 p-4 mt-56 bg-white">
         Nothing to see here...
       </div>
     </main>
   ) : (
-    <main className="mx-auto md:container">
-      <Input
+    <main className="mx-auto md:container relative">
+       <div className="fixed top-20 w-[88%]">
+        <Input
           type="text"
           placeholder="Search for order number..."
           name="search"
           onChange={(e) => {
             handleSearch(e.target.value);
           }}
-          className="ml-4 w-52 mt-2"
+          className="ml-4 mt-2 w-52"
         />
-      <FilterComponent
-        setValueStatus={setOrderStatus}
-        setCategory={setCategory}
-        category={category}
-        categories={categories}
-        date={date}
-        setDate={setDate}
-      />
-      <div className="z-0 flex flex-col gap-y-2 p-4">
+        <FilterComponent
+          setValueStatus={setOrderStatus}
+          setCategory={setCategory}
+          category={category}
+          categories={categories}
+          date={date}
+          setDate={setDate}
+        />
+      </div>
+      <div className="z-0 flex flex-col items-center gap-y-2 p-4 mt-56 bg-white w-full">
         {orders.map((order, i) => {
           return (
             <OrderCard
