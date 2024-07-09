@@ -5,9 +5,9 @@ import { Separator } from "@/components/ui/separator";
 import useGetUserAddress from "@/hooks/api/address/useGetUserAddress";
 import useGetCartsById from "@/hooks/api/cart/useGetCartById";
 import useGetDeliveryFee from "@/hooks/api/transaction/useGetDeliveryFee";
-import { useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { ICart, IProductArg, PaymentMethodArgs } from "@/types/order.type";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, Loader2 } from "lucide-react";
 import { useState } from "react";
 import AddressSheet from "./components/AddressSheet";
 import DiscountSheet from "./components/DiscountSheet";
@@ -22,6 +22,7 @@ import PaymentMethodSheet from "./components/PaymentMethodSheet";
 import useGetDiscountsByUser from "@/hooks/api/discounts/useGetDiscountsByUser";
 import AuthGuardTrx from "@/hoc/AuthGuardTrx";
 import { divIcon } from "leaflet";
+import { setCartCounterAction } from "@/redux/slices/userSlice";
 
 const Checkout = () => {
   const [openAddressDrawer, setOpenAddressDrawer] = useState<boolean>(false);
@@ -37,6 +38,7 @@ const Checkout = () => {
     useState<PaymentMethodArgs>(PaymentMethodArgs.DIGITAL_PAYMENT);
 
   const { id: userId } = useAppSelector((state) => state.user);
+  const dispatch = useAppDispatch()
   const { carts } = useGetCartsById(userId);
   const { addresses, setAddresses } = useGetUserAddress(userId);
   const totalWeight = calculateTotalWeight(carts);
@@ -56,7 +58,7 @@ const Checkout = () => {
     productIds,
   });
 
-  const { createNewOrder } = useCreateNewOrder();
+  const { createNewOrder, isLoading: isLoadingOrder } = useCreateNewOrder();
 
   const {
     data: shippingMethods,
@@ -78,12 +80,12 @@ const Checkout = () => {
     : undefined;
 
   const deliveryFee = selectedMethod && selectedMethod.cost[0].value;
-  const handleCreateOrder = (cartItems: ICart[]) => {
+  const handleCreateOrder = async (cartItems: ICart[]) => {
     const products: IProductArg[] = cartItems.map((item) => ({
       productId: item.productId,
       qty: item.qty,
     }));
-    createNewOrder({
+    await createNewOrder({
       products: products,
       userId,
       storeId: carts[0].storeId,
@@ -96,6 +98,7 @@ const Checkout = () => {
       deliveryCourier: selectedShipping?.name,
       deliveryService: selectedMethod?.description,
     });
+    dispatch(setCartCounterAction({cartCounter:0}))
   };
 
   const baseURL = process.env.NEXT_PUBLIC_BASE_API_URL;
@@ -301,9 +304,10 @@ const Checkout = () => {
           <Button
             onClick={() => handleCreateOrder(carts)}
             className="flex h-[95%] w-[90%] items-center justify-center px-4 py-2 text-lg"
-            disabled={!selectedAddress}
+            disabled={!selectedAddress || isLoadingOrder}
           >
-            Checkout
+            {isLoadingOrder && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {isLoadingOrder ? "Processing" : "Checkout"}
           </Button>
         </div>
       </section>
