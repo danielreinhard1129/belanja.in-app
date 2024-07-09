@@ -63,7 +63,11 @@ export const getProductService = async (query: GetProductsByIdQueryParams) => {
           include: {
             images: true,
             categories: { include: { category: true } },
-            discounts: true,
+            discounts: {
+              where: {
+                isActive: true,
+              },
+            },
           },
         },
         store: { include: { City: true } },
