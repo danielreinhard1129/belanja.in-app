@@ -19,6 +19,7 @@ interface StoreAdminProps {
   stocks: Stock;
   take: number;
   total: number;
+  page: number;
   handleChangePaginate: ({ selected }: { selected: number }) => void;
   refetch: () => void;
   handleSearch: (value: string) => void;
@@ -28,6 +29,7 @@ const StoreAdmin: React.FC<StoreAdminProps> = ({
   stocks,
   take,
   total,
+  page,
   handleChangePaginate,
   refetch,
   handleSearch,
@@ -65,7 +67,9 @@ const StoreAdmin: React.FC<StoreAdminProps> = ({
             {filteredStocks && filteredStocks.length > 0 ? (
               filteredStocks.map((store, index) => (
                 <TableRow key={index}>
-                  <TableCell className="font-medium">{index + 1}</TableCell>
+                  <TableCell className="font-medium">
+                    {(page - 1) * take + index + 1}
+                  </TableCell>
                   <TableCell>{store.product.name}</TableCell>
                   <TableCell>{store.product.id}</TableCell>
                   <TableCell>{store.qty}</TableCell>

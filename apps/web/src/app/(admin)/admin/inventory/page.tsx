@@ -78,6 +78,7 @@ const Inventory = () => {
                 filteredStocks={filteredStocks}
                 take={take}
                 total={total}
+                page={page}
                 handleChangePaginate={handleChangePaginate}
                 stocks={stocks}
                 refetch={refetch}
@@ -110,6 +111,7 @@ const Inventory = () => {
           handleSearch={handleSearch}
           take={take}
           total={total}
+          page={page}
           handleChangePaginate={handleChangePaginate}
           refetch={refetch}
         />

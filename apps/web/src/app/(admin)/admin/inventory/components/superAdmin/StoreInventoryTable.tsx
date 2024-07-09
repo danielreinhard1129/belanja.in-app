@@ -18,6 +18,7 @@ interface StoreInventoryTableProps {
   filteredStocks: any;
   take: number;
   total: number;
+  page: number;
   handleChangePaginate: ({ selected }: { selected: number }) => void;
   stocks: any;
   refetch: () => void;
@@ -29,6 +30,7 @@ const StoreInventoryTable: React.FC<StoreInventoryTableProps> = ({
   filteredStocks,
   take,
   total,
+  page,
   handleChangePaginate,
   stocks,
   refetch,
@@ -72,7 +74,9 @@ const StoreInventoryTable: React.FC<StoreInventoryTableProps> = ({
             {filteredStocks && filteredStocks.length > 0 ? (
               filteredStocks.map((data: any, istore: any) => (
                 <TableRow key={istore}>
-                  <TableCell className="font-medium">{istore + 1}</TableCell>
+                  <TableCell className="font-medium">
+                    {(page - 1) * take + istore + 1}
+                  </TableCell>
                   <TableCell>{data.product.name}</TableCell>
                   <TableCell>{data.product.id}</TableCell>
                   <TableCell>{data.qty}</TableCell>
