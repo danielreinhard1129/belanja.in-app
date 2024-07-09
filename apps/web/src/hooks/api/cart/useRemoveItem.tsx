@@ -11,7 +11,7 @@ const useRemoveItem = () => {
         "/carts/user/remove-item",
         { cartId },
       );
-      toast(data.message);
+      toast("Item removed");
     } catch (error) {
       if (error instanceof AxiosError) {
         alert(error.message);
