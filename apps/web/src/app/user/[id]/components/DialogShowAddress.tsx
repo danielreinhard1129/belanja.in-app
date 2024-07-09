@@ -80,7 +80,10 @@ const DialogShowAddress = ({
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>
-        <Button variant="link" className="p-0 text-xs text-gray-600 font-normal">
+        <Button
+          variant="link"
+          className="p-0 text-xs font-normal text-gray-600"
+        >
           Show All
         </Button>
       </DialogTrigger>
@@ -88,7 +91,7 @@ const DialogShowAddress = ({
         <DialogHeader>
           <DialogTitle>Your address</DialogTitle>
         </DialogHeader>
-        {addresses ? (
+        {addresses.length !== 0 ? (
           <div className="grid gap-4 py-4">
             {addresses.map((address) => (
               <Card key={address.id} className="group w-full p-4">
