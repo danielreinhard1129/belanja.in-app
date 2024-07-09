@@ -49,8 +49,8 @@ const RecentOrders = () => {
       <SkeletonOrderCard />
     </div>
   ) : !orders.length ? (
-    <main className="mx-auto mt-20 md:container relative">
-      <div className="fixed top-20 w-[88%]">
+    <main className="relative mx-auto mt-20 md:container">
+      <div className="fixed top-16 z-50 w-full bg-white md:w-[88%]">
         <Input
           type="text"
           placeholder="Search for order number..."
@@ -69,13 +69,13 @@ const RecentOrders = () => {
           setDate={setDate}
         />
       </div>
-      <div className="z-0 flex flex-col items-center gap-y-2 p-4 mt-56 bg-white">
+      <div className="z-0 mt-40 flex flex-col items-center gap-y-2 bg-white p-4">
         Nothing to see here...
       </div>
     </main>
   ) : (
-    <main className="mx-auto md:container relative">
-       <div className="fixed top-20 w-[88%]">
+    <main className="relative mx-auto md:container">
+      <div className="fixed top-16 z-50 w-full bg-white md:w-[88%]">
         <Input
           type="text"
           placeholder="Search for order number..."
@@ -94,7 +94,7 @@ const RecentOrders = () => {
           setDate={setDate}
         />
       </div>
-      <div className="z-0 flex flex-col items-center gap-y-2 p-4 mt-56 bg-white w-full">
+      <div className="z-0 md:mt-44 mt-40  flex w-full flex-col items-center gap-y-2 bg-white p-4">
         {orders.map((order, i) => {
           return (
             <OrderCard

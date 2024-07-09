@@ -264,7 +264,7 @@ const Checkout = () => {
         />
       </section>
       <Separator className="h-1" />
-      <section className="fixed bottom-0 mb-0 grid w-[88%] grid-cols-2 border-t-2 bg-white p-4 px-16 pb-4">
+      <section className="fixed bottom-0 mb-0 grid md:w-[88%] w-full grid-cols-2 border-t-2 bg-white p-4 px-16 pb-4">
         <div
           onClick={() => setOpenOrderSummaryDrawer(true)}
           className="flex flex-col align-top"
@@ -306,7 +306,7 @@ const Checkout = () => {
           <Button
             onClick={() => handleCreateOrder(carts)}
             className="flex h-[95%] w-[90%] items-center justify-center px-4 py-2 text-lg"
-            disabled={!selectedAddress || isLoadingOrder}
+            disabled={!selectedAddress || isLoadingOrder || isLoadingShipmentFetch|| !selectedShipping}
           >
             {isLoadingOrder && (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
