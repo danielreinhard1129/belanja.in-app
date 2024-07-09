@@ -35,6 +35,7 @@ import useGetStockJournalByStoreAdmin from "@/hooks/api/stock-journal/useGetStoc
 import useArriveStockMutation from "@/hooks/api/store-product/useArriveStockMutation";
 import useConfirmStockMutation from "@/hooks/api/store-product/useConfirmStockMutation";
 import useRejectStockMutation from "@/hooks/api/store-product/useRejectStockMutation";
+import { replaceUnderscoreWithSpace } from "@/utils/replaceUnderscoreWithSpace";
 import { format } from "date-fns";
 import { Eye, Loader2, NotebookPen } from "lucide-react";
 import React, { useState } from "react";
@@ -110,9 +111,9 @@ const DialogStockActionStoreAdmin: React.FC<
               <SelectContent>
                 <SelectGroup>
                   <SelectItem value="WAITING_ADMIN_CONFIRMATION">
-                    WAITING_ADMIN_CONFIRMATION
+                    WAITING ADMIN CONFIRMATION
                   </SelectItem>
-                  <SelectItem value="ON_PROGRESS">ON_PROGRESS</SelectItem>
+                  <SelectItem value="ON_PROGRESS">ON PROGRESS</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -144,7 +145,9 @@ const DialogStockActionStoreAdmin: React.FC<
                       </TableCell>
                       <TableCell>{journal.quantity}</TableCell>
                       <TableCell>{journal.type}</TableCell>
-                      <TableCell>{journal.status}</TableCell>
+                      <TableCell>
+                        {replaceUnderscoreWithSpace(journal.status)}
+                      </TableCell>
                       <TableCell>
                         <Dialog>
                           <DialogTrigger>
@@ -227,7 +230,9 @@ const DialogStockActionStoreAdmin: React.FC<
                                 Status
                               </div>
                               <div className="col-span-1 text-center">:</div>
-                              <div className="col-span-5">{journal.status}</div>
+                              <div className="col-span-5">
+                                {replaceUnderscoreWithSpace(journal.status)}
+                              </div>
                               <div className="col-span-5 font-semibold">
                                 Date
                               </div>

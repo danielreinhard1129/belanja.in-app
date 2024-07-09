@@ -26,6 +26,7 @@ import {
 import useGetStockJournalsByStoreSuperAdmin from "@/hooks/api/stock-journal/useGetStockJournalsByStoreSuperAdmin";
 import useConfirmStockMutation from "@/hooks/api/store-product/useConfirmStockMutation";
 import useRejectStockMutation from "@/hooks/api/store-product/useRejectStockMutation";
+import { replaceUnderscoreWithSpace } from "@/utils/replaceUnderscoreWithSpace";
 import { format } from "date-fns";
 import { Eye, Loader2, NotebookPen } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -109,7 +110,9 @@ const DialogStockActionSuperAdmin: React.FC<
                       </TableCell>
                       <TableCell>{journal.quantity}</TableCell>
                       <TableCell>{journal.type}</TableCell>
-                      <TableCell>{journal.status}</TableCell>
+                      <TableCell>
+                        {replaceUnderscoreWithSpace(journal.status)}
+                      </TableCell>
                       <TableCell>
                         <Dialog>
                           <DialogTrigger>
@@ -192,7 +195,9 @@ const DialogStockActionSuperAdmin: React.FC<
                                 Status
                               </div>
                               <div className="col-span-1 text-center">:</div>
-                              <div className="col-span-5">{journal.status}</div>
+                              <div className="col-span-5">
+                                {replaceUnderscoreWithSpace(journal.status)}
+                              </div>
                               <div className="col-span-5 font-semibold">
                                 Date
                               </div>
