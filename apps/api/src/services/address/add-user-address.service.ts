@@ -8,7 +8,17 @@ export const addUserAddressService = async (body: Omit<Address, 'id'>) => {
       where: { userId },
     });
 
-    const isPrimary = !findAddress.length;
+    const countIsDelete = await prisma.address.count({
+      where: { userId, isDelete: false },
+    });
+
+    if (countIsDelete >= 5) {
+      throw new Error(
+        'You reach maximum address limit. If you want to add more address, please delete the other.',
+      );
+    }
+
+    const isPrimary = findAddress.length !== 0;
 
     const newAddress = await prisma.address.create({
       data: {

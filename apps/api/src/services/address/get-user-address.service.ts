@@ -16,7 +16,7 @@ export const getUserAddressService = async (userId: number) => {
       },
     });
 
-    const addresses = data.map((data, index) => {
+    const addresses = data.map((data) => {
       return { ...data, isSelected: false };
     });
 
