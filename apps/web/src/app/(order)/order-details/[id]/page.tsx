@@ -17,6 +17,7 @@ import UploadPaymentProofDialog from "./components/UploadPaymentProofDialog";
 import PaymentProofDialog from "./components/PaymentProofDialog";
 import { toast } from "sonner";
 import Loading from "@/components/Loading";
+import { replaceUnderscoreWithSpace } from "@/utils/replaceUnderscoreWithSpace";
 
 const OrderDetails = ({ params }: { params: { id: string } }) => {
   const [openUploadDialog, setOpenUploadDialog] = useState<boolean>(false);
@@ -62,15 +63,19 @@ const OrderDetails = ({ params }: { params: { id: string } }) => {
         if (window.snap) {
           window.snap.pay(`${order.Payment.snapToken}`, {
             onSuccess: function (result: any) {
+              refetchOrder()
               toast.success("Payment success!");
             },
             onPending: function (result: any) {
+              refetchOrder()
               toast("Waiting for your payment!");
             },
             onError: function (result: any) {
+              refetchOrder()
               toast.error("Payment failed!");
             },
             onClose: function () {
+              refetchOrder()
             },
           });
         } else {
@@ -143,7 +148,7 @@ const OrderDetails = ({ params }: { params: { id: string } }) => {
             label="Address"
             value={`${order.Delivery[0].addresses.addressLine}, ${order.Delivery[0].addresses.subdistricts.subdistrictName}, ${order.Delivery[0].addresses.cities.citName}, ${order.Delivery[0].addresses.cities.province.provinceName}`}
           />
-          <GridItem label="Delivery status" value={order.Delivery[0].status} />
+          <GridItem label="Delivery status" value={replaceUnderscoreWithSpace(order.Delivery[0].status)}/>
         </div>
       </div>
       <Separator className="h-1" />
