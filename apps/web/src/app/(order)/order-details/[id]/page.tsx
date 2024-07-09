@@ -16,6 +16,7 @@ import { OrderStatus } from "@/types/order.type";
 import UploadPaymentProofDialog from "./components/UploadPaymentProofDialog";
 import PaymentProofDialog from "./components/PaymentProofDialog";
 import { toast } from "sonner";
+import Loading from "@/components/Loading";
 
 const OrderDetails = ({ params }: { params: { id: string } }) => {
   const [openUploadDialog, setOpenUploadDialog] = useState<boolean>(false);
@@ -82,9 +83,9 @@ const OrderDetails = ({ params }: { params: { id: string } }) => {
   };
 
   return isLoadingOrder || !order ? (
-    <p className="">Loading...</p>
+    <div className="mt-16"><Loading /></div>
   ) : (
-    <main>
+    <main className="mt-16">
       <div className="flex flex-col gap-y-2 p-4 text-xs">
         <div className="flex items-center justify-between text-base">
           <div className="flex items-center gap-2 font-semibold">

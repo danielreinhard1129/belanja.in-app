@@ -39,6 +39,7 @@ export const getProductService = async (query: GetProductsByIdQueryParams) => {
       }
     }
 
+    
     const where: Prisma.StoreProductWhereInput = {
       productId,
       product: { isDelete: false },

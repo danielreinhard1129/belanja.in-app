@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import useGetCartsById from "@/hooks/api/cart/useGetCartById";
-import { useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import AlertDialogRemoveItem from "./components/AlertDialogRemoveItem";
@@ -13,14 +13,17 @@ import useRemoveItem from "@/hooks/api/cart/useRemoveItem";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import AuthGuardTrx from "@/hoc/AuthGuardTrx";
+import { setCartCounterAction } from "@/redux/slices/userSlice";
 
 const Cart = () => {
   const router = useRouter()
+  const dispatch = useAppDispatch()
   const { id: userId } = useAppSelector((state) => state.user);
   const {
     carts,
     isLoading,
     setCarts,
+    cartsCount,
     refetch: refetchCart,
   } = useGetCartsById(userId);
   const [isLoadingIndex, setIsLoadingIndex] = useState<number | null>(null);
@@ -34,7 +37,9 @@ const Cart = () => {
     setIsLoadingIndex(index);
     await removeItem(id);
     setIsLoadingIndex(null);
-    refetchCart();
+    await refetchCart();
+    dispatch(setCartCounterAction({ cartCounter: cartsCount - 1 }));
+
   };
 
   const handleIncrement = async (index: number, id: number) => {
@@ -63,7 +68,7 @@ const Cart = () => {
   }
 
   return (
-    <div className="p-4 z-0 relative h-screen mb-auto">
+    <div className="p-4 z-0 relative h-fit pb-16 mt-16">
       {carts.map((cart, index) => {
         return (
           cart.isActive && (

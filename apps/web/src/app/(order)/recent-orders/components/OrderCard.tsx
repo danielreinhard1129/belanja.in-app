@@ -39,7 +39,7 @@ const OrderCard: FC<OrderCardProps> = ({
   const router = useRouter();
   return (
     <Card
-      className={`flex min-h-40 flex-col place-content-center justify-start rounded-xl p-4 shadow-[0px_1px_4px_0px_#D6DFEB] transition-all duration-75 hover:scale-[99%]`}
+      className={`flex min-h-40 flex-col place-content-center justify-start rounded-xl p-4 w-full shadow-[0px_1px_4px_0px_#D6DFEB] transition-all duration-75 hover:scale-[99%]`}
       onClick={() => router.push(`/order-details/${orderId}`)}
     >
       <CardHeader>
