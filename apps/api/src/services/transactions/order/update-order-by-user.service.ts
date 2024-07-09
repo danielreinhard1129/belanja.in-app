@@ -1,5 +1,9 @@
 import prisma from '@/prisma';
 import { OrderStatus } from '@prisma/client';
+import fs from 'fs';
+import path from 'path';
+import Handlebars from 'handlebars';
+import { transporter } from '@/libs/nodemailer';
 
 interface CancelUserOrderArgs {
   userId: number;
@@ -16,16 +20,17 @@ export const updateOrderByUserService = async (body: CancelUserOrderArgs) => {
 
     const findOrder = await prisma.order.findFirst({
       where: { id: orderId },
-      include: { Payment: true, OrderItems: true, Delivery:true },
+      include: { Payment: true, OrderItems: true, Delivery: true },
     });
     if (!findOrder) {
       throw new Error('Order not found');
     }
 
-    prisma.$transaction(async (tx) => {
+    const cancel = await prisma.$transaction(async (tx) => {
       const cancelOrder = await tx.order.update({
         where: { id: orderId, userId },
         data: { status: OrderStatus.ORDER_CANCELLED },
+        include: { users: true },
       });
 
       await tx.payment.update({
@@ -86,7 +91,31 @@ export const updateOrderByUserService = async (body: CancelUserOrderArgs) => {
       const findDelivery = await tx.delivery.findFirst({
         where: { id: findOrder.Delivery[0].id },
       });
-      await tx.delivery.update({where:{id:findDelivery?.id}, data:{status:'CANCELLED'}})
+      await tx.delivery.update({
+        where: { id: findDelivery?.id },
+        data: { status: 'CANCELLED' },
+      });
+
+      return cancelOrder;
+    });
+    const emailTemplatePath = path.join(
+      __dirname,
+      '../../../templates/orderUpdate.hbs',
+    );
+
+    const emailTemplateSource = fs.readFileSync(emailTemplatePath, 'utf8');
+
+    const template = Handlebars.compile(emailTemplateSource);
+    const htmlToSend = template({
+      name: cancel?.users?.name,
+      orderStatus: cancel?.status,
+    });
+
+    await transporter.sendMail({
+      from: 'Admin',
+      to: cancel?.users.email,
+      subject: 'Your order at Belanjain.com',
+      html: htmlToSend,
     });
 
     return { message: 'Order has been cancelled' };
