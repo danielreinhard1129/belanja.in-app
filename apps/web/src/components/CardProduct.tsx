@@ -80,10 +80,10 @@ const CardProduct: FC<CardProductProps> = ({
             )}
           </div>
           <div className="flex items-center gap-2 w-full">
-            <div className="h-6 w-6">
+            <div className="h-6 w-6 opacity-80">
               <Image src={defaultStore} alt="store" />
             </div>
-            <p className="text-xs line-clamp-1 font-medium text-gray-500">{store}</p>
+            <p className="text-xs line-clamp-2 font-medium text-gray-500">{store}</p>
           </div>
         </CardContent>
       </Card>

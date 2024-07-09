@@ -139,7 +139,7 @@ const ProductPage = ({ params }: { params: { id: string } }) => {
           .map((category) => (
             <Badge
               key={category.categoryId}
-              className="rounded-lg bg-[#97e6a8] text-xs font-normal text-[#19792e] hover:bg-[#97e6a8] hover:text-[#19792e]"
+              className="rounded-lg bg-[#97e6a8] text-xs mr-2 font-normal text-[#19792e] hover:bg-[#97e6a8] hover:text-[#19792e]"
             >
               {category.category.name}
             </Badge>
