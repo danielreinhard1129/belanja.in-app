@@ -33,11 +33,13 @@ export const getProductService = async (query: GetProductsByIdQueryParams) => {
               getDistance(lat, long, b.lat, b.long)
             : 0,
         );
+
       if (nearbyStores.length > 0) {
         closestStoreId = nearbyStores[0].id;
       }
     }
 
+    
     const where: Prisma.StoreProductWhereInput = {
       productId,
       product: { isDelete: false },
@@ -53,7 +55,6 @@ export const getProductService = async (query: GetProductsByIdQueryParams) => {
           : {
               store: {
                 isPrimary: true,
-                isDelete: false,
               },
             }),
       },
@@ -62,7 +63,11 @@ export const getProductService = async (query: GetProductsByIdQueryParams) => {
           include: {
             images: true,
             categories: { include: { category: true } },
-            discounts: true,
+            discounts: {
+              where: {
+                isActive: true,
+              },
+            },
           },
         },
         store: { include: { City: true } },
@@ -70,7 +75,7 @@ export const getProductService = async (query: GetProductsByIdQueryParams) => {
     });
 
     if (!storeProduct) {
-      throw new Error('Product not found');
+      throw new Error('Store Product not found');
     }
 
     return storeProduct;

@@ -1,9 +1,9 @@
-import ChangePwUserForm from "@/components/form/ChangePwUserForm";
+import ChangePasswordForm from "@/components/form/ChangePasswordForm";
 
 const ChangePasswordUser = () => {
   return (
     <div>
-      <ChangePwUserForm />
+      <ChangePasswordForm />
     </div>
   );
 };

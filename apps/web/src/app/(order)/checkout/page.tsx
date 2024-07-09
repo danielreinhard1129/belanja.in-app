@@ -264,7 +264,7 @@ const Checkout = () => {
         />
       </section>
       <Separator className="h-1" />
-      <section className="fixed bottom-0 mb-0 grid w-[88%] grid-cols-2 border-t-2 bg-white p-4 px-16 pb-4">
+      <section className="fixed bottom-0 right-0 left-0 grid justify-between w-screen grid-cols-2 border-t-2 bg-white p-4 px-4 md:px-16 pb-4">
         <div
           onClick={() => setOpenOrderSummaryDrawer(true)}
           className="flex flex-col align-top"
@@ -302,11 +302,11 @@ const Checkout = () => {
           discount={discounts.find((e) => e.isSelected)}
           price={totalPrice}
         />
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-end">
           <Button
             onClick={() => handleCreateOrder(carts)}
-            className="flex h-[95%] w-[90%] items-center justify-center px-4 py-2 text-lg"
-            disabled={!selectedAddress || isLoadingOrder}
+            className="flex h-[95%] w-fit items-center justify-center px-4 py-2 text-lg"
+            disabled={!selectedAddress || isLoadingOrder || isLoadingShipmentFetch|| !selectedShipping}
           >
             {isLoadingOrder && (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />

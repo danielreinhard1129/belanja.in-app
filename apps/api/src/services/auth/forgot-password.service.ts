@@ -4,6 +4,9 @@ import prisma from '@/prisma';
 import { appConfig } from '@/utils/config';
 import { User } from '@prisma/client';
 import { sign } from 'jsonwebtoken';
+import fs from 'fs';
+import path from 'path';
+import Handlebars from 'handlebars';
 
 export const forgotPasswordService = async (body: Pick<User, 'email'>) => {
   try {
@@ -20,11 +23,21 @@ export const forgotPasswordService = async (body: Pick<User, 'email'>) => {
 
     const link = NEXT_BASE_URL + `/reset-password?token=${token}`;
 
+    const emailTemplatePath = path.join(
+      __dirname,
+      '../../../templates/reset-password.hbs',
+    );
+
+    const emailTemplateSource = fs.readFileSync(emailTemplatePath, 'utf8');
+
+    const template = Handlebars.compile(emailTemplateSource);
+    const htmlToSend = template({ name: user?.name, link: link });
+
     await transporter.sendMail({
       from: 'Admin',
-      to: email,
-      subject: 'link reset password',
-      html: `<a href="${link}">Reset Password</a>`,
+      to: user.email,
+      subject: 'Reset Password',
+      html: htmlToSend,
     });
 
     return {

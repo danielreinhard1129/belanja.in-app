@@ -12,6 +12,7 @@ import Image from "next/image";
 import { Dispatch, FC, ReactNode, SetStateAction } from "react";
 import ConfirmPaymentDialog from "./ConfirmPaymentDialog";
 import RejectPaymentDialog from "./RejectPaymentDialog";
+import { replaceUnderscoreWithSpace } from "@/utils/replaceUnderscoreWithSpace";
 
 interface OrderDetailDialogProps {
   openState: boolean;
@@ -104,7 +105,7 @@ const OrderDetailDialog: FC<OrderDetailDialogProps> = ({
             />
             <GridItem
               label="Payment Status"
-              value={order?.Payment.paymentStatus}
+              value={replaceUnderscoreWithSpace(order?.Payment.paymentStatus)}
             />
             <GridItem
               label="Purchase Date"

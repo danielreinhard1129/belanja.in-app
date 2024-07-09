@@ -8,6 +8,10 @@ import { IOrderArgs, PaymentMethodArgs } from '@/types/order.type';
 import { OrderStatus } from '@prisma/client';
 import { MidtransClient } from 'midtrans-node-client';
 import { scheduleJob } from 'node-schedule';
+import fs from 'fs';
+import path from 'path';
+import Handlebars from 'handlebars';
+import { transporter } from '@/libs/nodemailer';
 
 export const createOrderService = async (body: IOrderArgs) => {
   const {
@@ -130,7 +134,9 @@ export const createOrderService = async (body: IOrderArgs) => {
           deliveryNumber: 'desc',
         },
       });
-      const nextDeliveryNumber = getNextNumber(lastDeliveryNumber?.deliveryNumber);
+      const nextDeliveryNumber = getNextNumber(
+        lastDeliveryNumber?.deliveryNumber,
+      );
       const deliveryNumber = `DLV-${padNumber(user.id, 4)}-${padNumber(newOrder.id, 3)}-${nextDeliveryNumber}`;
 
       let totalAmount = 0;
@@ -167,15 +173,23 @@ export const createOrderService = async (body: IOrderArgs) => {
 
           for (const userDiscount of userDiscounts) {
             const discount = userDiscount.discounts;
-            if (discount.discountType === 'PRODUCT' && discount.productId === item.productId) {
-              discValue += ((product.price * discount.discountvalue) / 100) * item.qty;
+            if (
+              discount.discountType === 'PRODUCT' &&
+              discount.productId === item.productId
+            ) {
+              discValue +=
+                ((product.price * discount.discountvalue) / 100) * item.qty;
 
               await tx.orderItems.update({
                 where: { id: newOrderItem.id },
                 data: { userDiscountId: userDiscount.id },
               });
             }
-            if (discount.discountType === 'BOGO' && discount.productId === item.productId && item.qty >= 2) {
+            if (
+              discount.discountType === 'BOGO' &&
+              discount.productId === item.productId &&
+              item.qty >= 2
+            ) {
               discValue += product.price;
 
               await tx.orderItems.update({
@@ -208,9 +222,15 @@ export const createOrderService = async (body: IOrderArgs) => {
 
         for (const userDiscount of userDiscounts) {
           const discount = userDiscount.discounts;
-          if (discount.discountType === 'MIN_PURCHASE' && totalAmount >= discount.minPurchase!) {
+          if (
+            discount.discountType === 'MIN_PURCHASE' &&
+            totalAmount >= discount.minPurchase!
+          ) {
             const discountAmount = (totalAmount * discount.discountvalue) / 100;
-            const applicableDiscount = Math.min(discountAmount, discount.discountLimit!);
+            const applicableDiscount = Math.min(
+              discountAmount,
+              discount.discountLimit!,
+            );
 
             discountValue += applicableDiscount;
 
@@ -230,7 +250,10 @@ export const createOrderService = async (body: IOrderArgs) => {
 
         for (const userVoucher of userVouchers) {
           const voucher = userVoucher.vouchers;
-          if (voucher.voucherType === 'PURCHASE' && totalAmount >= voucher.discountValue) {
+          if (
+            voucher.voucherType === 'PURCHASE' &&
+            totalAmount >= voucher.discountValue
+          ) {
             discountValue += (totalAmount * voucher.discountValue) / 100;
             await tx.order.update({
               where: { id: newOrder.id },
@@ -254,7 +277,7 @@ export const createOrderService = async (body: IOrderArgs) => {
 
       const order = await tx.order.findFirst({
         where: { id: newOrder.id },
-        include: { OrderItems: true },
+        include: { OrderItems: true, users: true },
       });
 
       if (!order) {
@@ -365,11 +388,31 @@ export const createOrderService = async (body: IOrderArgs) => {
       return order;
     });
 
+    const emailTemplatePath = path.join(
+      __dirname,
+      '../../../../templates/orderUpdate.hbs',
+    );
+
+    const emailTemplateSource = fs.readFileSync(emailTemplatePath, 'utf8');
+
+    const template = Handlebars.compile(emailTemplateSource);
+    const htmlToSend = template({
+      name: order?.users.name,
+      orderStatus: order?.status,
+    });
+
+    await transporter.sendMail({
+      from: 'Admin',
+      to: order.users.email,
+      subject: 'Your order at Belanjain.com',
+      html: htmlToSend,
+    });
+
     const schedule = new Date(Date.now() + 3600 * 1000);
     scheduleJob('run every', schedule, async () => {
       const findOrder = await prisma.order.findFirst({
         where: { id: order.id },
-        include: { OrderItems: true, Payment: true, Delivery: true },
+        include: { OrderItems: true, Payment: true, Delivery: true, users:true },
       });
 
       await prisma.$transaction(async (tx) => {
@@ -436,6 +479,25 @@ export const createOrderService = async (body: IOrderArgs) => {
             data: { status: 'CANCELLED' },
           });
         }
+      });
+      const emailTemplatePath = path.join(
+        __dirname,
+        '../../../templates/orderUpdate.hbs',
+      );
+
+      const emailTemplateSource = fs.readFileSync(emailTemplatePath, 'utf8');
+
+      const template = Handlebars.compile(emailTemplateSource);
+      const htmlToSend = template({
+        name: findOrder?.users.name,
+        orderStatus: findOrder?.status,
+      });
+
+      await transporter.sendMail({
+        from: 'Admin',
+        to: findOrder?.users.email,
+        subject: 'Your order at Belanjain.com',
+        html: htmlToSend,
       });
     });
 

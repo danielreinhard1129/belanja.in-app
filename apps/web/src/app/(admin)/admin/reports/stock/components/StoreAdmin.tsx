@@ -41,6 +41,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import ImageNotFoundStore from "../../../../../../../public/no-store.svg";
 import ItemFilterMonth from "../../components/ItemFilterMonth";
+import { replaceUnderscoreWithSpace } from "@/utils/replaceUnderscoreWithSpace";
 
 const StoreAdmin = () => {
   const now = new Date();
@@ -121,10 +122,10 @@ const StoreAdmin = () => {
                 <SelectGroup>
                   <SelectItem value="all">All</SelectItem>
                   <SelectItem value="WAITING_ADMIN_CONFIRMATION">
-                    WAITING_ADMIN_CONFIRMATION
+                    WAITING ADMIN CONFIRMATION
                   </SelectItem>
                   <SelectItem value="REJECT">REJECT</SelectItem>
-                  <SelectItem value="ON_PROGRESS">ON_PROGRESS</SelectItem>
+                  <SelectItem value="ON_PROGRESS">ON PROGRESS</SelectItem>
                   <SelectItem value="AUTOMATED">AUTOMATED</SelectItem>
                   <SelectItem value="SUCCESS">SUCCESS</SelectItem>
                 </SelectGroup>
@@ -182,7 +183,9 @@ const StoreAdmin = () => {
                       </TableCell>
                       <TableCell>{journal.quantity}</TableCell>
                       <TableCell>{journal.type}</TableCell>
-                      <TableCell>{journal.status}</TableCell>
+                      <TableCell>
+                        {replaceUnderscoreWithSpace(journal.status)}
+                      </TableCell>
                       <TableCell>
                         <Dialog>
                           <DialogTrigger>
@@ -265,7 +268,9 @@ const StoreAdmin = () => {
                                 Status
                               </div>
                               <div className="col-span-1 text-center">:</div>
-                              <div className="col-span-5">{journal.status}</div>
+                              <div className="col-span-5">
+                                {replaceUnderscoreWithSpace(journal.status)}
+                              </div>
                               <div className="col-span-5 font-semibold">
                                 Date
                               </div>
