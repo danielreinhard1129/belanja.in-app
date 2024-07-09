@@ -39,6 +39,7 @@ import { debounce } from "lodash";
 import { Eye } from "lucide-react";
 import { useEffect, useState } from "react";
 import ItemFilterMonth from "../../components/ItemFilterMonth";
+import { replaceUnderscoreWithSpace } from "@/utils/replaceUnderscoreWithSpace";
 const SuperAdmin = () => {
   const now = new Date();
   const [page, setPage] = useState<number>(1);
@@ -119,10 +120,10 @@ const SuperAdmin = () => {
                 <SelectGroup>
                   <SelectItem value="all">All</SelectItem>
                   <SelectItem value="WAITING_ADMIN_CONFIRMATION">
-                    WAITING_ADMIN_CONFIRMATION
+                    WAITING ADMIN CONFIRMATION
                   </SelectItem>
                   <SelectItem value="REJECT">REJECT</SelectItem>
-                  <SelectItem value="ON_PROGRESS">ON_PROGRESS</SelectItem>
+                  <SelectItem value="ON_PROGRESS">ON PROGRESS</SelectItem>
                   <SelectItem value="AUTOMATED">AUTOMATED</SelectItem>
                   <SelectItem value="SUCCESS">SUCCESS</SelectItem>
                 </SelectGroup>
@@ -180,7 +181,9 @@ const SuperAdmin = () => {
                       </TableCell>
                       <TableCell>{journal.quantity}</TableCell>
                       <TableCell>{journal.type}</TableCell>
-                      <TableCell>{journal.status}</TableCell>
+                      <TableCell>
+                        {replaceUnderscoreWithSpace(journal.status)}
+                      </TableCell>
                       <TableCell>
                         <Dialog>
                           <DialogTrigger>
@@ -263,7 +266,9 @@ const SuperAdmin = () => {
                                 Status
                               </div>
                               <div className="col-span-1 text-center">:</div>
-                              <div className="col-span-5">{journal.status}</div>
+                              <div className="col-span-5">
+                                {replaceUnderscoreWithSpace(journal.status)}
+                              </div>
                               <div className="col-span-5 font-semibold">
                                 Date
                               </div>
