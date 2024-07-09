@@ -3,7 +3,7 @@ import prisma from '@/prisma';
 export const getAddressByIdService = async (addressId: number) => {
   try {
     const address = await prisma.address.findFirst({
-      where: { id: addressId },
+      where: { id: addressId, isDelete: false },
     });
 
     if (!address) {

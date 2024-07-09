@@ -31,8 +31,11 @@ export const deleteUserAddressService = async (addressId: number) => {
       }
     }
 
-    await prisma.address.delete({
+    await prisma.address.update({
       where: { id: addressId },
+      data: {
+        isDelete: true,
+      },
     });
 
     return {
