@@ -16,7 +16,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname:"jcwd031001.purwadhikabootcamp.com"
+        hostname:"belanjain.purwadhikabootcamp.com"
       }
     ],
   },
